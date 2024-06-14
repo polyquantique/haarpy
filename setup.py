@@ -21,8 +21,7 @@ with open("haarpy/_version.py") as f:
 
 requirements = [
     "numpy",
-    "scipy",
-    "pytest",
+    "sympy"
 ]
 
 classifiers = [
