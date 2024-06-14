@@ -16,6 +16,7 @@ d = Symbol("d")
 ### *weingarten_class*
 Takes a partition, labeling a conjugacy class of $S_p$, and a dimension $d$ as arguments. For the conjugacy class labeled by partition $\lbrace 3,1\rbrace$, the function returns
 ```Python
+from haarpy import weingarten_class
 weingarten_class((3,1),d)
 ```
 ```
