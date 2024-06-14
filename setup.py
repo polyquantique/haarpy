@@ -47,9 +47,9 @@ classifiers = [
 
 
 setup(
-    name="Haarpy",
+    name="haarpy",
     version=version,
-    description="symbolic calculation of Weingarten functions",
+    description="Symbolic calculation of Weingarten functions",
     url="https://github.com/polyquantique/haarpy",
     author="Yanic Cardin",
     author_email="yanic.cardin@polymtl.ca",
