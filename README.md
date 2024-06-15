@@ -4,6 +4,7 @@
 
 Haarpy is a Python library for the symbolic calculation of Weingarten functions and related averages of unitary matrices $U(d)$ sampled uniformly at random from the Haar measure.
 
+The original Mathematica version of this code, for the calculation of Weingarten functions of the unitary group, can be found [here](https://github.com/hdeguise/Weingarten_calculus).
 
 ## Haarpy in action
 The main functions of Haarpy are *weingarten_class* and *weingarten_element* allowing for the calculation of Weingarten functions. These functions vary in their parameters. We recommend importing the following when working with Haarpy.
