@@ -1,3 +1,15 @@
+# Version 0.4.0
+
+### New features
+
+### Improvements
+
+### Bug fixes
+
+### Contributors
+
+This release contains contributions from (in alphabetical order):
+
 
 # Version 0.3.0
 
