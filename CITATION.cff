@@ -1,0 +1,17 @@
+cff-version: 0.0.1
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Cardin"
+  given-names: "Yanic"
+  orcid:
+- family-names: "de Guise"
+  given-names: "Hubert"
+  orcid: "https://orcid.org/0000-0002-1904-4287"
+- family-names: "Quesada"
+  given-names: "Nicolás"
+  orcid: "https://orcid.org/0000-0002-0175-1688"
+title: "haarpy"
+version: 0.0.4
+doi:
+date-released: 2024-06-21
+url: "https://github.com/polyquantique/haarpy"
