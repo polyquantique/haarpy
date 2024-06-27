@@ -154,9 +154,7 @@ Please cite as:
 
 
 ## Authors
-* Yanic Cardin | yanic.cardin@polymtl.ca
-* Hubert de Guise | hdeguise@lakeheadu.ca
-* Nicolás Quesada | nicolas.quesada@polymtl.ca
+* Yanic Cardin, Hubert de Guise, Nicolás Quesada.
 
 
 ## License
