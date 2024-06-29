@@ -92,7 +92,7 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 ### Symmetric group $S_2$
 |Class| Weingarten |
 |--|--|
-|$\lbrace2\rbrace$ |$\displaystyle\frac{1}{(d-1) d (d+1)}$|
+|$\lbrace2\rbrace$ |$-\displaystyle\frac{1}{(d-1) d (d+1)}$|
 | $\lbrace1,1\rbrace$ | $\displaystyle\frac{1}{(d-1)(d+1)}$ |
 
 ### Symmetric group $S_3$
