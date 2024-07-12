@@ -450,4 +450,4 @@ def test_gram_orthogonality(n):
     character = lambda g,d,n: d**(g.cycles)
     weingarten = lambda g,d,n: ap.weingarten_element(g,n,d)
     orthogonality = sum(character(g,d,n)*weingarten(g,d,n) for g in group(n))
-    assert orthogonality == 1
+    assert simplify(orthogonality) == 1
