@@ -12,7 +12,7 @@ Fixed a bug in `murn_naka()` where invalid tableau were not properly removed.
 
 This release contains contributions from (in alphabetical order):
 
-Yanic Cardin, Matthew Duschenes, Nicolas Quesada
+Yanic Cardin, Hubert de Guise, Matthew Duschenes, Nicolas Quesada
 
 # Version 0.0.3
 
