@@ -444,6 +444,7 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
 
 @pytest.mark.parametrize("n", [2, 3, 4, 5, 6])
 def test_gram_orthogonality(n):
+    "Test the orthogonality relation between Weingarten matrix and Graham matrix"
     d = Symbol("d")
     group = lambda n: SymmetricGroup(n).generate_schreier_sims()
     character = lambda g, d, n: d ** (g.cycles)
