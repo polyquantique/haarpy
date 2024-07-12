@@ -118,9 +118,7 @@ def test_get_class_cycle_type_error(degree, cycle):
 )
 def test_get_class_cycle_value_error(degree, cycle):
     """Test the cycle parameter ValueError if permutation maximum value is greater than the degree"""
-    with pytest.raises(
-        ValueError, match=".*Incompatible degree and permutation cycle.*"
-    ):
+    with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
         ap.get_class(cycle, degree)
 
 
@@ -443,11 +441,12 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
         list(ap.get_class(cycle, degree)), d
     )
 
-@pytest.mark.parametrize("n",[2,3,4,5,6])
+
+@pytest.mark.parametrize("n", [2, 3, 4, 5, 6])
 def test_gram_orthogonality(n):
-    d = Symbol('d')
+    d = Symbol("d")
     group = lambda n: SymmetricGroup(n).generate_schreier_sims()
-    character = lambda g,d,n: d**(g.cycles)
-    weingarten = lambda g,d,n: ap.weingarten_element(g,n,d)
-    orthogonality = sum(character(g,d,n)*weingarten(g,d,n) for g in group(n))
+    character = lambda g, d, n: d ** (g.cycles)
+    weingarten = lambda g, d, n: ap.weingarten_element(g, n, d)
+    orthogonality = sum(character(g, d, n) * weingarten(g, d, n) for g in group(n))
     assert simplify(orthogonality) == 1
