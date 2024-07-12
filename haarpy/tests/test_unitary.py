@@ -118,7 +118,9 @@ def test_get_class_cycle_type_error(degree, cycle):
 )
 def test_get_class_cycle_value_error(degree, cycle):
     """Test the cycle parameter ValueError if permutation maximum value is greater than the degree"""
-    with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
+    with pytest.raises(
+        ValueError, match=".*Incompatible degree and permutation cycle.*"
+    ):
         ap.get_class(cycle, degree)
 
 
