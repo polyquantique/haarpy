@@ -33,6 +33,7 @@ weingarten_class((3,1),4)
 ### *weingarten_element*
 Takes an element and the degree $p$ of the symmetric group $S_p,$ and a dimension $d$ as arguments, the conjugacy class being obtained from the first two.
 ```Python
+from haarpy import weingarten_element
 weingarten_element(Permutation(0,1,2), 4, d)
 ```
 ```
@@ -44,6 +45,7 @@ Auxiliary functions include, but are not limited to, the following. For a compre
 ### *murn_naka*
 Implementation of the Murnaghan-Nakayama rule for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
 ```Python
+from haarpy import murn_naka
 murn_naka((3,1), (1,1,1,1))
 ```
 ```
@@ -52,6 +54,7 @@ murn_naka((3,1), (1,1,1,1))
 ### *get_class*
 Returns the class of a given element of $S_p$ when given the order and the element.
 ```Python
+from haarpy import get_class
 get_class(Permutation(0,1,2), 4)
 ```
 ```
@@ -60,6 +63,7 @@ get_class(Permutation(0,1,2), 4)
 ### *sn_dimension*
 Takes a partition labeling an irrep of $S_p$ and returns the dimension of this irrep.
 ```Python
+from haarpy import sn_dimension
 sn_dimension((5,4,2,1,1,1))
 ```
 ```
@@ -68,6 +72,7 @@ sn_dimension((5,4,2,1,1,1))
 ### *ud_dimension*
 Takes a partition labeling an irrep of the unitary group $U(d)$, as well as the dimension $d$, and returns the dimension of this irrep.
 ```Python
+from haarpy import ud_dimension
 ud_dimension((5, 4, 2, 1, 1, 1),d)
 ```
 ```
@@ -87,7 +92,7 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 ### Symmetric group $S_2$
 |Class| Weingarten |
 |--|--|
-|$\lbrace2\rbrace$ |$\displaystyle\frac{1}{(d-1) d (d+1)}$|
+|$\lbrace2\rbrace$ |$-\displaystyle\frac{1}{(d-1) d (d+1)}$|
 | $\lbrace1,1\rbrace$ | $\displaystyle\frac{1}{(d-1)(d+1)}$ |
 
 ### Symmetric group $S_3$
@@ -119,14 +124,14 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 ## Installation
 Haarpy requires Python version 3.9 or later. Installation can be done through the pip command
 ```
-pip install git+https://github.com/polyquantique/haarpy.git
+pip install haarpy
 ```
 
 ## Compiling from source
 Haarpy has the following dependencies:
-* [Python](https://www.python.org/) $<=$ 3.9
-* [NumPy](https://numpy.org/) $<=$ 1.26.4
-* [SymPy](https://www.sympy.org) $<=$ 1.12
+* [Python](https://www.python.org/) >= 3.9
+* [NumPy](https://numpy.org/) >= 1.26.4
+* [SymPy](https://www.sympy.org) >= 1.12
 
 
 ## Documentation
@@ -136,7 +141,7 @@ Haarpy documentation is available online on [Read the Docs]().
 ## How to cite this work
 Please cite as:
 ```
-@article{cardin2024haarpy,
+@misc{cardin2024haarpy,
   author={Cardin, Yanic and de Guise, Hubert and Quesada, Nicol{\'a}s},
   title={Haarpy, a Python library for the symbolic calculation of Weingarten functions},
   year={2024},
@@ -149,9 +154,7 @@ Please cite as:
 
 
 ## Authors
-* Yanic Cardin | yanic.cardin@polymtl.ca
-* Hubert de Guise | hdeguise@lakeheadu.ca
-* Nicolás Quesada | nicolas.quesada@polymtl.ca
+* Yanic Cardin, Hubert de Guise, Nicolás Quesada.
 
 
 ## License
