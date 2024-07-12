@@ -192,6 +192,7 @@ def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     ]
 
     skip = False
+    deleted = 0
     tableaux_list = np.array(tableaux_list)
     for i, tableau in enumerate(tableaux_list):
         for j in range(len(partition) - 1):
@@ -206,7 +207,8 @@ def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
                     == tableau[j + 1, k]
                     == tableau[j + 1, k + 1]
                 ):
-                    np.delete(tableaux_list, i, 0)
+                    tableaux_list = np.delete(tableaux_list, i - deleted, 0)
+                    deleted += 1
                     skip = True
                     break
 
