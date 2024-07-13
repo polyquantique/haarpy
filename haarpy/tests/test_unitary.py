@@ -20,7 +20,8 @@ import haarpy as ap
 from fractions import Fraction
 from sympy.combinatorics import Permutation
 from numpy import allclose
-from sympy import Symbol
+from sympy import Symbol, simplify
+from sympy.combinatorics.named_groups import SymmetricGroup
 
 
 @pytest.mark.parametrize(
@@ -441,3 +442,14 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
     assert ap.weingarten_element(cycle, degree, d) == ap.weingarten_class(
         list(ap.get_class(cycle, degree)), d
     )
+
+
+@pytest.mark.parametrize("n", [2, 3, 4, 5, 6])
+def test_gram_orthogonality(n):
+    "Test the orthogonality relation between Weingarten matrix and Graham matrix"
+    d = Symbol("d")
+    group = lambda n: SymmetricGroup(n).generate_schreier_sims()
+    character = lambda g, d, n: d ** (g.cycles)
+    weingarten = lambda g, d, n: ap.weingarten_element(g, n, d)
+    orthogonality = sum(character(g, d, n) * weingarten(g, d, n) for g in group(n))
+    assert simplify(orthogonality) == 1
