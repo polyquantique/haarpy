@@ -19,8 +19,7 @@ import pytest
 import haarpy as ap
 from fractions import Fraction
 from sympy.combinatorics import Permutation
-from numpy import allclose
-from sympy import Symbol, simplify
+from sympy import Symbol, simplify, fraction, factor
 from sympy.combinatorics.named_groups import SymmetricGroup
 
 
@@ -58,6 +57,7 @@ from sympy.combinatorics.named_groups import SymmetricGroup
         ),
         (6, Permutation(2, 3, 4, 0, 1, 5), (6,)),
         (7, Permutation(2, 3, 4, 0, 1, 6), (6, 1)),
+        (1, Permutation(0,), (1,))
     ],
 )
 def test_get_class(degree, cycle, conjugacy):
@@ -80,12 +80,12 @@ def test_get_class_degree_type_error(degree, cycle):
         ap.get_class(cycle, degree)
 
 
-@pytest.mark.parametrize("degree", range(-2, 2))
+@pytest.mark.parametrize("degree", range(-3, 1))
 def test_get_class_degree_value_error(degree):
     """Test the degree parameter ValueError"""
     with pytest.raises(
         ValueError,
-        match=".*The degree you have provided is too low. It must be an integer greater than 1.*",
+        match=".*The degree you have provided is too low. It must be an integer greater than 0.*",
     ):
         ap.get_class(Permutation(0, 1, 2), degree)
 
@@ -453,3 +453,51 @@ def test_gram_orthogonality(n):
     weingarten = lambda g, d, n: ap.weingarten_element(g, n, d)
     orthogonality = sum(character(g, d, n) * weingarten(g, d, n) for g in group(n))
     assert simplify(orthogonality) == 1
+
+
+@pytest.mark.parametrize(
+    "target, shuffled",
+    [
+        ("a", "a"),
+        ("a", "b"),
+        ("ab", "ba"),
+        ("abc", "cba"),
+        ("abc", "cbz"),
+        ("aabb", "baba"),
+        ("abcd", "dcab"),
+        ("abcdaddc", "aabccddd"),
+    ],
+)
+def test_string_permutation(target, shuffled):
+    "Test ordering permutations against brute force permutations"
+    brute_permutation = set(
+        sigma
+        for sigma in SymmetricGroup(len(target)).elements
+        if target == "".join(sigma(shuffled))
+    )
+    assert set(ap.string_permutation(target, shuffled)) == brute_permutation
+
+
+@pytest.mark.parametrize(
+    "target, shuffled, weingarten",
+    [
+        ((1,2), (1,2), {(1,):1,}),
+        ("ijkj", "ijkj", {(1, 1): 1, (2,): 1}),
+        ((1, 2, 3, 2), (1, 2, 3, 2), {(1, 1): 1, (2,): 1}),
+        ("ijkl", "ijkl", {(1, 1): 1}),  
+        ("ijkl", "ilkj", {(2,): 1}),
+        ("ijklmn", "ijklmn", {(1, 1, 1): 1}),
+        ("iljmkn", "imjnkl", {(3,): 1}),
+        ("iljlkm", "iljmkl", {(3,): 1, (2, 1): 1}),
+        ((1, 4, 2, 4, 3, 4), (1, 4, 2, 4, 3, 4), {(1, 1, 1): 1, (2, 1): 3, (3,): 2}),
+    ],
+)
+def test_haar_integral(target, shuffled, weingarten):
+    dimension = Symbol("d")
+    integral = sum(
+        frequency * ap.weingarten_class(conjugacy, dimension)
+        for conjugacy, frequency in weingarten.items()
+    )
+    numerator, denominator = fraction(simplify(integral))
+    integral = factor(numerator) / factor(denominator)
+    assert ap.haar_integral(target, shuffled, dimension) == integral

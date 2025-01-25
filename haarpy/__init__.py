@@ -34,6 +34,8 @@ Functions
     ud_dimension
     weingarten_class
     weingarten_element
+    string_permutation
+    haar_integral
 
 Code details
 ------------
@@ -48,6 +50,8 @@ from .unitary import (
     ud_dimension,
     weingarten_class,
     weingarten_element,
+    string_permutation,
+    haar_integral,
 )
 
 from ._version import __version__
@@ -62,6 +66,8 @@ __all__ = [
     "ud_dimension",
     "weingarten_class",
     "weingarten_element",
+    "string_permutation",
+    "haar_integral",
 ]
 
 
