@@ -492,7 +492,8 @@ def test_string_permutation(target, shuffled):
         ((1, 4, 2, 4, 3, 4), (1, 4, 2, 4, 3, 4), {(1, 1, 1): 1, (2, 1): 3, (3,): 2}),
     ],
 )
-def test_haar_integral(target, shuffled, weingarten):
+def test_haar_integral_hand(target, shuffled, weingarten):
+    "Test against hand-calculated integrals"
     dimension = Symbol("d")
     integral = sum(
         frequency * ap.weingarten_class(conjugacy, dimension)

@@ -7,7 +7,7 @@ Haarpy is a Python library for the symbolic calculation of Weingarten functions 
 The original Mathematica version of this code, for the calculation of Weingarten functions of the unitary group, can be found [here](https://github.com/hdeguise/Weingarten_calculus).
 
 ## Haarpy in action
-The main functions of Haarpy are *weingarten_class* and *weingarten_element* allowing for the calculation of Weingarten functions. These functions vary in their parameters. We recommend importing the following when working with Haarpy.
+The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar-measure. We recommend importing the following when working with Haarpy.
 ```Python
 from sympy import Symbol
 from sympy.combinatorics import Permutation
@@ -40,7 +40,15 @@ weingarten_element(Permutation(0,1,2), 4, d)
 (2*d**2 - 3)/(d**2*(d - 3)*(d - 2)*(d - 1)*(d + 1)*(d + 2)*(d + 3))
 ```
 Which yields the same result as before since $\lbrace 3,1\rbrace$ is the class of permutation $(0,1,2)$ in $S_4$.
-
+### *haar_integral*
+Takes two strings, $\mathbf{i}$ and $\mathbf{j}$, and the dimension $d$ of the unitary group and returns the value of the integral $\int dU\,U_{i_1i_2}\dots U_{i_{p-1}i_p}U^*_{j_1j_2}\dots U^*_{j_{p-1}j_p}$.
+```Python
+from haarpy import haar_integral
+haar_integral("ijkl", "ijkl", d)
+```
+```
+d/((d-1)*(d+1))
+```
 Auxiliary functions include, but are not limited to, the following. For a comprehensive list of functionalities, please refer to the [documentation]().
 ### *murn_naka*
 Implementation of the Murnaghan-Nakayama rule for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
@@ -121,6 +129,20 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 | $\lbrace 2,2,1\rbrace$  |$\displaystyle\frac{-d^4+14 d^2-24}{(d-4) (d-3) (d-2) (d-1) d^2  (d+1) (d+2) (d+3) (d+4)}$|
 | $\lbrace 1,1,1,1,1\rbrace$|$\displaystyle\frac{d^4-20 d^2+78}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3) (d+4)}$|
 
+## Example of integrals over Haar-random unitaries
+$$
+\begin{align*}
+    \int dU\,U_{ij}U^*_{ij} &=\frac{1}{d}\\
+    \int dU\,U_{ij}U_{kj}U^*_{ij}U^*_{kj} &=\frac{1}{d(d+1)}\\
+    \int dU\,U_{ik}U_{k\ell}U^*_{ij}U^*_{k\ell} &=\frac{1}{(d-1)(d+1)}\\
+    \int dU\,U_{ij}U_{k\ell}U^*_{i\ell}U^*_{kj} &=\frac{-1}{(d-1)d(d+1)}\\
+    \int dU\,U_{ij}U_{k\ell}U_{mn}U^*_{ij}U^*_{k\ell}U^*_{mn} &=\frac{d^2-2}{d(d-2)(d-1)(d+1)(d+2)}\\
+    \int dU\,U_{i\ell}U_{jm}U_{kn}U^*_{im}U^*_{jn}U^*_{k\ell} &=\frac{2}{d(d-2)(d-1)(d+1)(d+2)}\\
+    \int dU\,U_{i\ell}U_{j\ell}U_{km}U^*_{i\ell}U^*_{jm}U^*_{k\ell} &=\frac{-1}{d(d-1)(d+1)(d+2)}\\
+    \int dU\,U_{i\ell}U_{j\ell}U_{k\ell}U^*_{i\ell}U^*_{j\ell}U^*_{k\ell} &= \frac{1}{d(d+1)(d+2)}\\
+    \int dU\,U_{ij}U_{ik}U_{i\ell}U_{im}U^*_{ij}U^*_{ik}U^*_{i\ell}U^*_{im}&=\frac{1}{d(d + 1)(d + 2)(d + 3)}
+\end{align*}
+$$
 ## Installation
 Haarpy requires Python version 3.9 or later. Installation can be done through the pip command
 ```
