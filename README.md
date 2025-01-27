@@ -131,6 +131,12 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 
 ## Example of integrals over Haar-random unitaries
 $$
+\begin{split}
+  \dot{x} & = \sigma(y-x) \\
+  \dot{y} & = \rho x- y - xz 
+\end{split}
+$$
+$$
 \begin{align}
     \int dU\,U_{ij}U_{ij} &=\frac{1}{d}\\
     \int dU\,U_{ij}U_{kj}U_{ij}U_{kj} &=\frac{1}{d(d+1)}
