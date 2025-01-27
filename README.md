@@ -130,19 +130,12 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 | $\lbrace 1,1,1,1,1\rbrace$|$\displaystyle\frac{d^4-20 d^2+78}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3) (d+4)}$|
 
 ## Example of integrals over Haar-random unitaries
-$$
-\begin{split}
-  \dot{x} & = \sigma(y-x) \\
-  \dot{y} & = \rho x- y - xz 
-\end{split}
-$$
-$$
-\begin{align}
-    \int dU\,U_{ij}U_{ij} &=\frac{1}{d}\\
-    \int dU\,U_{ij}U_{kj}U_{ij}U_{kj} &=\frac{1}{d(d+1)}
-\end{align}
-$$
-test
+Selected integrals
+|Integral| Result |
+|--|--|
+| $\int dU\,U_{ij}U^\ast_{ij}$ |$\frac{1}{d}$|
+
+
 $$
 \begin{align*}
     \int dU\,U_{ij}U^*_{ij} &=\frac{1}{d}\\
