@@ -133,7 +133,7 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 Selected integrals
 |Integral| Result |
 |--|--|
-| $\int dU\,U_{ij}U^\ast_{ij}$ |$\frac{1}{d}$|
+| $\int dU\,U_{ij}U^\ast_{ij}$ |$\displaystyle\frac{1}{d}$|
 
 
 $$
