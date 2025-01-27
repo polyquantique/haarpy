@@ -41,7 +41,7 @@ weingarten_element(Permutation(0,1,2), 4, d)
 ```
 Which yields the same result as before since $\lbrace 3,1\rbrace$ is the class of permutation $(0,1,2)$ in $S_4$.
 ### *haar_integral*
-Takes two strings, $\mathbf{i}$ and $\mathbf{j}$, and the dimension $d$ of the unitary group and returns the value of the integral $\int dU\,U_{i_1i_2}\dots U_{i_{p-1}i_p}U^\*_{j_1j_2}\dots U^\*_{j_{p-1}j_p}$
+Takes two strings, $\mathbf{i}$ and $\mathbf{j}$, and the dimension $d$ of the unitary group and returns the value of the integral $\int dU\,U_{i_1i_2}\dots U_{i_{p-1}i_p}U^\star_{j_1j_2}\dots U^\star_{j_{p-1}j_p}$
 $.
 ```Python
 from haarpy import haar_integral
@@ -131,6 +131,12 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 | $\lbrace 1,1,1,1,1\rbrace$|$\displaystyle\frac{d^4-20 d^2+78}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3) (d+4)}$|
 
 ## Example of integrals over Haar-random unitaries
+$$
+\begin{align*}
+    \int dU\,U_{ij}U_{ij} &=\frac{1}{d}\\
+    \int dU\,U_{ij}U_{kj}U_{ij}U_{kj} &=\frac{1}{d(d+1)}\\
+\end{align*}
+$$
 $$
 \begin{align*}
     \int dU\,U_{ij}U^*_{ij} &=\frac{1}{d}\\
