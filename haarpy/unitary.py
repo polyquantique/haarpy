@@ -19,19 +19,13 @@ haarpy Python interface
 
 .. currentmodule:: haarpy.unitary
 
-This submodule provides access to algorithms to sample from the
-hafnian or the torontonian of Gaussian quantum states.
+This submodule provides access to ...
 
-Hafnian sampling
+Functions
 ----------------
 
 .. autosummary::
     get_class
-
-Torontonian sampling
---------------------
-
-.. autosummary::
     derivative_tableau
 
 Code details

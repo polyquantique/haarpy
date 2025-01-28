@@ -15,7 +15,7 @@ r"""
 Haarpy
 ==========
 
-.. currentmodule:: Haarpy
+.. currentmodule:: haarpy
 
 This is the top level module of Haarpy, containing functions for
 the symbolic calculation of Weingarten functions and related averages

@@ -11,10 +11,14 @@ documentation for details.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Haarpy's Functions
+   :caption: Getting started
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Background
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Haarpy API
 
    haarpy
-   haarpy.tests
-
-.. automodule:: haarpy.unitary
-    :members:
