@@ -1,14 +1,6 @@
 Haarpy
 ==============
 
-Functions
------------
-
-.. toctree::
-   :maxdepth: 4
-
-   haarpy.tests
-
 Tests
 ----------
 

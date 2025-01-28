@@ -13,8 +13,30 @@
 # limitations under the License.
 """
 haarpy Python interface
-"""
+=======================
 
+**Module name:** :mod:`haarpy.unitary`
+
+.. currentmodule:: haarpy.unitary
+
+This submodule provides access to algorithms to sample from the
+hafnian or the torontonian of Gaussian quantum states.
+
+Hafnian sampling
+----------------
+
+.. autosummary::
+    get_class
+
+Torontonian sampling
+--------------------
+
+.. autosummary::
+    derivative_tableau
+
+Code details
+------------
+"""
 from math import factorial
 from copy import deepcopy
 from itertools import product

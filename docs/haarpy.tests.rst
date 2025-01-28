@@ -1,8 +1,5 @@
-haarpy.tests package
-====================
-
-Submodules
-----------
+haarpy.tests
+============
 
 haarpy.tests.test\_about module
 -------------------------------
