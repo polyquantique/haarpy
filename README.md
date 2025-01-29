@@ -133,15 +133,15 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 Selected integrals
 |Integral| Result |
 |--|--|
-| $\int dU U_{ij}U^\ast_{ij}$ |$\displaystyle\frac{1}{d}$|
-| $\int dU U_{ij}U_{kj}U^\ast_{ij}U^\ast_{kj}$ | $\displaystyle\frac{1}{d(d+1)}$|
-| $\int dU U_{ik}U_{k\ell}U^\ast_{ij}U^\ast_{k\ell}$ |$\displaystyle\frac{1}{(d-1)(d+1)}$|
-| $\int dU U_{ij}U_{k\ell}U^\ast_{i\ell}U^\ast_{kj}$ | $\displaystyle\frac{-1}{(d-1)d(d+1)}$ |
-| $\int dU U_{ij}U_{k\ell}U_{mn}U^\ast_{ij}U^\ast_{k\ell}U^\ast_{mn}$ | $\displaystyle\frac{d^2-2}{(d-2)(d-1)d(d+1)(d+2)}$ |
-| $\int dU U_{i\ell}U_{jm}U_{kn}U^\ast_{im}U^\ast_{jn}U^\ast_{k\ell}$ | $\displaystyle\frac{2}{(d-2)(d-1)d(d+1)(d+2)}$ |
-| $\int dU U_{i\ell}U_{j\ell}U_{km}U^\ast_{i\ell}U^\ast_{jm}U^\ast_{k\ell}$ | $\displaystyle\frac{-1}{(d-1)d(d+1)(d+2)}$ |
-| $\int dU U_{i\ell}U_{j\ell}U_{k\ell}U^\ast_{i\ell}U^\ast_{j\ell}U^\ast_{k\ell}$ | $\displaystyle\frac{1}{d(d+1)(d+2)}$ |
-| $\int dU U_{ij}U_{ik}U_{i\ell}U_{im}U^\ast_{ij}U^\ast_{ik}U^\ast_{i\ell}U^\ast_{im}$ | $\displaystyle\frac{1}{d(d + 1)(d + 2)(d + 3)}$ |
+| $\int dU \ U_{ij}U^\ast_{ij}$ |$\displaystyle\frac{1}{d}$|
+| $\int dU \ U_{ij}U_{kj}U^\ast_{ij}U^\ast_{kj}$ | $\displaystyle\frac{1}{d(d+1)}$|
+| $\int dU \ U_{ik}U_{k\ell}U^\ast_{ij}U^\ast_{k\ell}$ |$\displaystyle\frac{1}{(d-1)(d+1)}$|
+| $\int dU \ U_{ij}U_{k\ell}U^\ast_{i\ell}U^\ast_{kj}$ | $\displaystyle\frac{-1}{(d-1)d(d+1)}$ |
+| $\int dU \ U_{ij}U_{k\ell}U_{mn}U^\ast_{ij}U^\ast_{k\ell}U^\ast_{mn}$ | $\displaystyle\frac{d^2-2}{(d-2)(d-1)d(d+1)(d+2)}$ |
+| $\int dU \ U_{i\ell}U_{jm}U_{kn}U^\ast_{im}U^\ast_{jn}U^\ast_{k\ell}$ | $\displaystyle\frac{2}{(d-2)(d-1)d(d+1)(d+2)}$ |
+| $\int dU \ U_{i\ell}U_{j\ell}U_{km}U^\ast_{i\ell}U^\ast_{jm}U^\ast_{k\ell}$ | $\displaystyle\frac{-1}{(d-1)d(d+1)(d+2)}$ |
+| $\int dU  \ U_{i\ell}U_{j\ell}U_{k\ell}U^\ast_{i\ell}U^\ast_{j\ell}U^\ast_{k\ell}$ | $\displaystyle\frac{1}{d(d+1)(d+2)}$ |
+| $\int dU \ U_{ij}U_{ik}U_{i\ell}U_{im}U^\ast_{ij}U^\ast_{ik}U^\ast_{i\ell}U^\ast_{im}$ | $\displaystyle\frac{1}{d(d + 1)(d + 2)(d + 3)}$ |
 ## Installation
 Haarpy requires Python version 3.9 or later. Installation can be done through the pip command
 ```
