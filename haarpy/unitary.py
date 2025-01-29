@@ -385,17 +385,28 @@ def haar_integral(str_target: str, str_shuffled: str, group_dimension: int) -> S
         raise ValueError("Requires two strings of even size")
     if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
         return 0
-    
-    permutation_i = (perm for perm in SymmetricGroup(len(str_i)).elements if perm(str_i_prime) == list(str_i))
-    permutation_j = (perm for perm in SymmetricGroup(len(str_j)).elements if perm(str_j_prime) == list(str_j))
+
+    permutation_i = (
+        perm
+        for perm in SymmetricGroup(len(str_i)).elements
+        if perm(str_i_prime) == list(str_i)
+    )
+    permutation_j = (
+        perm
+        for perm in SymmetricGroup(len(str_j)).elements
+        if perm(str_j_prime) == list(str_j)
+    )
     degree = len(str_i)
-    class_mapping = dict(Counter(
-        get_class(cycle_i*~cycle_j, degree) for cycle_i, cycle_j in product(
-            permutation_i,
-            permutation_j
+    class_mapping = dict(
+        Counter(
+            get_class(cycle_i * ~cycle_j, degree)
+            for cycle_i, cycle_j in product(permutation_i, permutation_j)
         )
-    ))
-    integral = sum(count*weingarten_class(conjugacy, group_dimension) for conjugacy, count in class_mapping.items())
+    )
+    integral = sum(
+        count * weingarten_class(conjugacy, group_dimension)
+        for conjugacy, count in class_mapping.items()
+    )
 
     if isinstance(group_dimension, Symbol):
         numerator, denominator = fraction(simplify(integral))

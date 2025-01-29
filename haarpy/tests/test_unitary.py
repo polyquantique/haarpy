@@ -57,7 +57,13 @@ from sympy.combinatorics.named_groups import SymmetricGroup
         ),
         (6, Permutation(2, 3, 4, 0, 1, 5), (6,)),
         (7, Permutation(2, 3, 4, 0, 1, 6), (6, 1)),
-        (1, Permutation(0,), (1,))
+        (
+            1,
+            Permutation(
+                0,
+            ),
+            (1,),
+        ),
     ],
 )
 def test_get_class(degree, cycle, conjugacy):
@@ -458,10 +464,16 @@ def test_gram_orthogonality(n):
 @pytest.mark.parametrize(
     "target, shuffled, weingarten",
     [
-        ((1,2), (1,2), {(1,):1,}),
+        (
+            (1, 2),
+            (1, 2),
+            {
+                (1,): 1,
+            },
+        ),
         ("ijkj", "ijkj", {(1, 1): 1, (2,): 1}),
         ((1, 2, 3, 2), (1, 2, 3, 2), {(1, 1): 1, (2,): 1}),
-        ("ijkl", "ijkl", {(1, 1): 1}),  
+        ("ijkl", "ijkl", {(1, 1): 1}),
         ("ijkl", "ilkj", {(2,): 1}),
         ("ijklmn", "ijklmn", {(1, 1, 1): 1}),
         ("iljmkn", "imjnkl", {(3,): 1}),
