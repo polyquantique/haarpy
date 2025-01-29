@@ -376,7 +376,7 @@ def string_permutation(str_target: str, str_shuffled: str):
         str_shuffled (str) : The shuffled string
 
     Returns:
-        Generator : Generator with ordoring permutations
+        Generator : Generator with ordering permutations
     """
     # different sizes or components
     if sorted(str_target) != sorted(str_shuffled):
