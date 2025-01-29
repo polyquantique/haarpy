@@ -482,7 +482,7 @@ def test_gram_orthogonality(n):
     ],
 )
 def test_haar_integral_hand(target, shuffled, weingarten):
-    "Test against hand-calculated integrals"
+    "Test integral of Haar distribution unitaries against hand-calculated integrals"
     dimension = Symbol("d")
     integral = sum(
         frequency * ap.weingarten_class(conjugacy, dimension)
