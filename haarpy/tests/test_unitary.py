@@ -456,29 +456,6 @@ def test_gram_orthogonality(n):
 
 
 @pytest.mark.parametrize(
-    "target, shuffled",
-    [
-        ("a", "a"),
-        ("a", "b"),
-        ("ab", "ba"),
-        ("abc", "cba"),
-        ("abc", "cbz"),
-        ("aabb", "baba"),
-        ("abcd", "dcab"),
-        ("abcdaddc", "aabccddd"),
-    ],
-)
-def test_string_permutation(target, shuffled):
-    "Test ordering permutations against brute force permutations"
-    brute_permutation = set(
-        sigma
-        for sigma in SymmetricGroup(len(target)).elements
-        if target == "".join(sigma(shuffled))
-    )
-    assert set(ap.string_permutation(target, shuffled)) == brute_permutation
-
-
-@pytest.mark.parametrize(
     "target, shuffled, weingarten",
     [
         ((1,2), (1,2), {(1,):1,}),

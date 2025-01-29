@@ -34,7 +34,6 @@ Functions
     ud_dimension
     weingarten_class
     weingarten_element
-    string_permutation
     haar_integral
 
 Code details
@@ -50,7 +49,6 @@ from .unitary import (
     ud_dimension,
     weingarten_class,
     weingarten_element,
-    string_permutation,
     haar_integral,
 )
 
@@ -66,7 +64,6 @@ __all__ = [
     "ud_dimension",
     "weingarten_class",
     "weingarten_element",
-    "string_permutation",
     "haar_integral",
 ]
 
@@ -97,7 +94,7 @@ def about():
         Python version:            3.12.3
         Platform info:             Linux-6.8.0-31-generic-x86_64-with-glibc2.39
         Installation path:         /home/username/haarpy
-        Haarpy version:            0.0.1
+        Haarpy version:            0.0.4
         Numpy version:             1.26.4
         SymPy version:             1.12
     """

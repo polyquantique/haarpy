@@ -368,50 +368,6 @@ def weingarten_element(
     return weingarten_class(conjugacy_class, unitary_dimension)
 
 
-def string_permutation(str_target: str, str_shuffled: str):
-    """Returns a generator of the ordering permutations
-
-    Args:
-        str_target (str) : The target string
-        str_shuffled (str) : The shuffled string
-
-    Returns:
-        Generator : Generator with ordering permutations
-    """
-    # different sizes or components
-    if sorted(str_target) != sorted(str_shuffled):
-        return ()
-
-    # unique element
-    string_len = len(str_target)
-    string_set_len = len(set(str_target))
-    if string_set_len == 1:
-        return (cycle for cycle in SymmetricGroup(string_len).elements)
-
-    # set case
-    cycle_target = Permutation(sorted(range(len(str_target)), key=lambda i: str_target[i]))
-    cycle_shuffled = Permutation(sorted(range(len(str_shuffled)), key=lambda i: str_shuffled[i]))
-    if string_len == string_set_len:
-        return (~cycle_target * cycle_shuffled for _ in (1,))
-
-    # general case
-    sorted_string = cycle_target(str_target)
-    identical_groups = (
-        (sorted_string.index(j), sorted_string.count(j)) for j in set(sorted_string)
-    )
-    seed = (Permutation(string_len - 1),)  # the seed is the identity
-    for index, size in identical_groups:
-        if size == 1:
-            continue
-        symm = (
-            Permutation([[i + index for i in j] for j in p.cyclic_form])
-            for p in SymmetricGroup(size).elements
-        )
-        seed = (i * j for i, j in product(seed, symm))
-
-    return (~cycle_target * cycle * cycle_shuffled for cycle in seed)
-
-
 def haar_integral(str_target: str, str_shuffled: str, group_dimension: int) -> Symbol:
     """Returns integral under Haar measure
 
@@ -430,14 +386,16 @@ def haar_integral(str_target: str, str_shuffled: str, group_dimension: int) -> S
     if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
         return 0
     
+    permutation_i = (perm for perm in SymmetricGroup(len(str_i)).elements if perm(str_i_prime) == list(str_i))
+    permutation_j = (perm for perm in SymmetricGroup(len(str_j)).elements if perm(str_j_prime) == list(str_j))
     degree = len(str_i)
     class_mapping = dict(Counter(
         get_class(cycle_i*~cycle_j, degree) for cycle_i, cycle_j in product(
-            string_permutation(str_i,str_i_prime),
-            string_permutation(str_j,str_j_prime)
+            permutation_i,
+            permutation_j
         )
     ))
-    integral = sum(frequency*weingarten_class(conjugacy, group_dimension) for conjugacy, frequency in class_mapping.items())
+    integral = sum(count*weingarten_class(conjugacy, group_dimension) for conjugacy, count in class_mapping.items())
 
     if isinstance(group_dimension, Symbol):
         numerator, denominator = fraction(simplify(integral))
