@@ -278,6 +278,8 @@ def test_bad_mapping_true(tableau, conjugacy_class):
         ((4, 3), (1, 1, 1, 1, 1, 1, 1), 14),
         ((2, 2, 1), (2, 3), -1),
         ((2, 2, 2), (4, 2), -1),
+        ((5,3), (7,1), 0),
+        ((4, 2, 1, 1), (7,1), -1),
     ],
 )
 def test_murn_naka(partition, conjugacy_class, caracter):
@@ -359,27 +361,28 @@ def test_ud_dimension_wrong_dimension(partition):
 
 
 @pytest.mark.parametrize(
-    "conjugacy, num, denum",
+    "conjugacy, dimension, num, denum",
     [
-        ((1,), 1, 7),
-        ((2,), -1, 336),
-        ((1, 1), 1, 48),
-        ((2, 1), -1, 2160),
-        ((1, 1, 1), 47, 15120),
-        ((3, 1), 19, 846720),
-        ((2, 2), 11, 846720),
-        ((3, 2), -61, 69854400),
-        ((3, 1, 1), 1, 249480),
-        ((2, 2, 1), 47, 19958400),
-        ((3, 3), 311, 3353011200),
-        ((2, 1, 1, 1, 1), -421, 191600640),
-        ((1, 1, 1, 1, 1, 1), 82477, 6706022400),
-        ((4, 3), -17, 792529920),
+        ((1,), 7, 1, 7),
+        ((2,), 7, -1, 336),
+        ((1, 1), 7, 1, 48),
+        ((2, 1), 7, -1, 2160),
+        ((1, 1, 1), 7, 47, 15120),
+        ((3, 1), 7, 19, 846720),
+        ((2, 2), 7, 11, 846720),
+        ((3, 2), 7, -61, 69854400),
+        ((3, 1, 1), 7, 1, 249480),
+        ((2, 2, 1), 7, 47, 19958400),
+        ((3, 3), 7, 311, 3353011200),
+        ((2, 1, 1, 1, 1), 7, -421, 191600640),
+        ((1, 1, 1, 1, 1, 1), 7, 82477, 6706022400),
+        ((4, 3), 7, -17, 792529920),
+        ((7,1), 8, 151, 317011968000),
     ],
 )
-def test_weingarten_class(conjugacy, num, denum):
+def test_weingarten_class(conjugacy, dimension, num, denum):
     "Test weingarten_class based on the outputs form weingarten mathematica package"
-    assert ap.weingarten_class(conjugacy, 7) == Fraction(num, denum)
+    assert ap.weingarten_class(conjugacy, dimension) == Fraction(num, denum)
 
 
 @pytest.mark.parametrize(
