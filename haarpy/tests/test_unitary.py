@@ -386,24 +386,24 @@ def test_weingarten_class(conjugacy, dimension, num, denum):
 
 
 @pytest.mark.parametrize(
-    "cycle, degree, num, denum",
+    "cycle, degree, dimension, num, denum",
     [
-        (Permutation(0, 1), 2, -1, 336),
-        (Permutation(0), 2, 1, 48),
-        (Permutation(0, 1, 2), 3, 1, 7560),
-        (Permutation(1, 2), 3, -1, 2160),
-        (Permutation(2), 3, 47, 15120),
-        (Permutation(0, 1, 2), 4, 19, 846720),
-        (Permutation(0, 2)(1, 3), 4, 11, 846720),
-        (Permutation(2), 4, 403, 846720),
-        (Permutation(4, 1), 5, -1739, 139708800),
-        (Permutation(2), 5, 1499, 19958400),
-        (Permutation(3, 4, 5), 6, 5167, 6706022400),
+        (Permutation(0, 1), 2, 7, -1, 336),
+        (Permutation(0), 2, 7, 1, 48),
+        (Permutation(0, 1, 2), 3, 7, 1, 7560),
+        (Permutation(1, 2), 3, 7, -1, 2160),
+        (Permutation(2), 3, 7, 47, 15120),
+        (Permutation(0, 1, 2), 4, 7, 19, 846720),
+        (Permutation(0, 2)(1, 3), 4, 7, 11, 846720),
+        (Permutation(2), 4, 7, 403, 846720),
+        (Permutation(4, 1), 5, 7, -1739, 139708800),
+        (Permutation(2), 5, 7, 1499, 19958400),
+        (Permutation(3, 4, 5), 6, 7, 5167, 6706022400),
     ],
 )
-def test_weingarten_element(cycle, degree, num, denum):
+def test_weingarten_element(cycle, degree, dimension, num, denum):
     "Test weingarten_element based on the outputs form weingarten mathematica package"
-    assert ap.weingarten_element(cycle, degree, 7) == Fraction(num, denum)
+    assert ap.weingarten_element(cycle, degree, dimension) == Fraction(num, denum)
 
 
 @pytest.mark.parametrize(

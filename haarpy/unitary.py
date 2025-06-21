@@ -192,13 +192,12 @@ def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
         if not bad_mapping(tableau, conjugacy_class)
     ]
 
-    skip = False
-    deleted = 0
     tableaux_list = np.array(tableaux_list)
+    good_tableaux_list = []
+    skip = False
     for i, tableau in enumerate(tableaux_list):
         for j in range(len(partition) - 1):
             if skip:
-                skip = False
                 break
             for k in range(partition[0] - 1):
                 if (
@@ -208,21 +207,23 @@ def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
                     == tableau[j + 1, k]
                     == tableau[j + 1, k + 1]
                 ):
-                    tableaux_list = np.delete(tableaux_list, i - deleted, 0)
-                    deleted += 1
                     skip = True
                     break
+        if skip:
+            skip = False
+        else:
+            good_tableaux_list.append(tableau)
 
-    height = np.empty(shape=(len(tableaux_list), len(conjugacy_class)))
+    height = np.empty(shape=(len(good_tableaux_list), len(conjugacy_class)))
     height.fill(-1)
-    weight = np.empty(shape=(len(tableaux_list),))
-    for i, tableau in enumerate(tableaux_list):
+    weight = np.empty(shape=(len(good_tableaux_list),))
+    for i, tableau in enumerate(good_tableaux_list):
         for j in range(len(conjugacy_class)):
             for k in range(len(partition)):
                 height[i, j] += 1 if np.count_nonzero(tableau[k] == j + 1) else 0
         weight[i] = (-1) ** np.sum(height[i, : len(conjugacy_class)])
 
-    return int(np.sum(weight[: len(tableaux_list)]))
+    return int(np.sum(weight[: len(good_tableaux_list)]))
 
 
 def sn_dimension(partition: tuple[int]) -> int:
