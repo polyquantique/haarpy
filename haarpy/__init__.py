@@ -34,6 +34,7 @@ Functions
     ud_dimension
     weingarten_class
     weingarten_element
+    haar_integral
 
 Code details
 ------------
@@ -42,12 +43,13 @@ from .unitary import (
     get_class,
     derivative_tableau,
     ssyt,
-    bad_mapping,
-    murn_naka,
+    border_strip_tableau,
+    murn_naka_rule,
     sn_dimension,
     ud_dimension,
     weingarten_class,
     weingarten_element,
+    haar_integral,
 )
 
 from ._version import __version__
@@ -56,12 +58,13 @@ __all__ = [
     "get_class",
     "derivative_tableau",
     "ssyt",
-    "bad_mapping",
-    "murn_naka",
+    "border_strip_tableau",
+    "murn_naka_rule",
     "sn_dimension",
     "ud_dimension",
     "weingarten_class",
     "weingarten_element",
+    "haar_integral",
 ]
 
 
@@ -91,7 +94,7 @@ def about():
         Python version:            3.12.3
         Platform info:             Linux-6.8.0-31-generic-x86_64-with-glibc2.39
         Installation path:         /home/username/haarpy
-        Haarpy version:            0.0.1
+        Haarpy version:            0.0.4
         Numpy version:             1.26.4
         SymPy version:             1.12
     """

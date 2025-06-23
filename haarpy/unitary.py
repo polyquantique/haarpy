@@ -18,10 +18,11 @@ haarpy Python interface
 from math import factorial
 from copy import deepcopy
 from itertools import product
+from collections import Counter
 from fractions import Fraction
 import numpy as np
 from sympy import Symbol, fraction, simplify, factor
-from sympy.combinatorics import Permutation
+from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 
 
@@ -43,14 +44,12 @@ def get_class(cycle: Permutation, degree: int) -> tuple:
     """
     if not isinstance(degree, int):
         raise TypeError("degree must be of type int")
-    if degree < 2:
+    if degree < 1:
         raise ValueError(
-            "The degree you have provided is too low. It must be an integer greater than 1."
+            "The degree you have provided is too low. It must be an integer greater than 0."
         )
     if not isinstance(cycle, Permutation):
-        raise TypeError(
-            "cycle must be of type sympy.combinatorics.permutations.Permutation"
-        )
+        raise TypeError("cycle must be of type sympy.combinatorics.permutations.Permutation")
 
     if cycle.support() == []:
         return degree * (1,)
@@ -81,12 +80,8 @@ def derivative_tableau(
         for j in range(partition[i]):
             if tableau[i][j] == 0:
                 cond = i == 0 and j == 0 and add_unit == 1
-                cond |= (
-                    j == 0 and tableau[i - 1][0] <= add_unit and tableau[i - 1][0] != 0
-                )
-                cond |= (
-                    i == 0 and tableau[0][j - 1] <= add_unit and tableau[0][j - 1] != 0
-                )
+                cond |= j == 0 and tableau[i - 1][0] <= add_unit and tableau[i - 1][0] != 0
+                cond |= i == 0 and tableau[0][j - 1] <= add_unit and tableau[0][j - 1] != 0
                 cond |= (
                     i != 0
                     and j != 0
@@ -124,16 +119,17 @@ def ssyt(partition: tuple[int], conjugacy_class: tuple[int]) -> list[list[int]]:
     return tableau
 
 
-def bad_mapping(tableau: list[list[int]], conjugacy_class: tuple[int]) -> bool:
-    """Flags tableaux that have a bad mapping
+def border_strip_tableau(tableau: list[list[int]], conjugacy_class: tuple[int]) -> bool:
+    """Flags Young tableaux that are valid border-strip tableau
 
     Args:
         tableau (list[list[int]]) : A semi-standard Young tableau
         conjugacy_class (list[int]) : A conjugacy class, in partition form, of Sp
 
     Returns:
-        bool : True if mapping is wrong
+        bool : True if the tableau is a border-strip
     """
+    # Skeweness condition
     for i in range(len(conjugacy_class)):
         # indices of matching elements
         matching = [
@@ -162,15 +158,24 @@ def bad_mapping(tableau: list[list[int]], conjugacy_class: tuple[int]) -> bool:
 
         for val in d:
             if counting >= 2 and val == 0:
-                return True
+                return False
 
         if d.count(1) > 2 or (d.count(1) == 0 and counting != 1):
-            return True
+            return False
 
-    return False
+    # 2x2 square condition
+    for i in range(len(tableau) - 1):
+        for j in range(len(tableau[0]) - 1):
+            if (
+                tableau[i][j]
+                and tableau[i][j] == tableau[i][j + 1] == tableau[i + 1][j] == tableau[i + 1][j + 1]
+            ):
+                return False
+
+    return True
 
 
-def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
+def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     """Implementation of the Murnaghan-Nakayama rule for the characters irreducible
     representations of the symmetric group Sp
 
@@ -186,32 +191,10 @@ def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
 
     tableaux_list = ssyt(partition, conjugacy_class)
     tableaux_list = [
-        tableau
-        for tableau in tableaux_list
-        if not bad_mapping(tableau, conjugacy_class)
+        tableau for tableau in tableaux_list if border_strip_tableau(tableau, conjugacy_class)
     ]
 
-    skip = False
-    deleted = 0
     tableaux_list = np.array(tableaux_list)
-    for i, tableau in enumerate(tableaux_list):
-        for j in range(len(partition) - 1):
-            if skip:
-                skip = False
-                break
-            for k in range(partition[0] - 1):
-                if (
-                    tableau[j, k]
-                    and tableau[j, k]
-                    == tableau[j, k + 1]
-                    == tableau[j + 1, k]
-                    == tableau[j + 1, k + 1]
-                ):
-                    tableaux_list = np.delete(tableaux_list, i - deleted, 0)
-                    deleted += 1
-                    skip = True
-                    break
-
     height = np.empty(shape=(len(tableaux_list), len(conjugacy_class)))
     height.fill(-1)
     weight = np.empty(shape=(len(tableaux_list),))
@@ -264,8 +247,7 @@ def ud_dimension(partition: tuple[int], unitary_dimension: Symbol) -> int:
         Symbol : The dimension of U(d)
     """
     conjugate_partition = [
-        sum(1 for _, part in enumerate(partition) if i < part)
-        for i in range(partition[0])
+        sum(1 for _, part in enumerate(partition) if i < part) for i in range(partition[0])
     ]
     if isinstance(unitary_dimension, int):
         dimension = np.prod(
@@ -321,15 +303,14 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
 
     degree = sum(conjugacy_class)
     partition_list = [
-        sum([value * (key,) for key, value in part.items()], ())
-        for part in partitions(degree)
+        sum([value * (key,) for key, value in part.items()], ()) for part in partitions(degree)
     ]
     irrep_dimension_list = [sn_dimension(part) for part in partition_list]
 
     if isinstance(unitary_dimension, int):
         weingarten = sum(
             Fraction(
-                irrep_dimension**2 * murn_naka(part, conjugacy_class),
+                irrep_dimension**2 * murn_naka_rule(part, conjugacy_class),
                 ud_dimension(part, unitary_dimension),
             )
             for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
@@ -338,7 +319,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
         weingarten = (
             sum(
                 irrep_dimension**2
-                * murn_naka(part, conjugacy_class)
+                * murn_naka_rule(part, conjugacy_class)
                 / ud_dimension(part, unitary_dimension)
                 for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
             )
@@ -350,9 +331,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
     return weingarten
 
 
-def weingarten_element(
-    cycle: Permutation, degree: int, unitary_dimension: Symbol
-) -> Symbol:
+def weingarten_element(cycle: Permutation, degree: int, unitary_dimension: Symbol) -> Symbol:
     """Returns the Weingarten function
 
     Args:
@@ -365,3 +344,53 @@ def weingarten_element(
     """
     conjugacy_class = list(get_class(cycle, degree))
     return weingarten_class(conjugacy_class, unitary_dimension)
+
+
+def haar_integral(sequences: tuple[tuple[int]], group_dimension: int) -> Symbol:
+    """Returns integral over unitary group polynomial sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple(tuple(int))) : Indices of matrix elements
+        group_dimension (int) : Dimension of the compact group
+
+    Returns:
+        Symbol : Integral under the Haar measure
+
+    Raise:
+        ValueError : If sequences doesn't contain 4 tuples
+        ValueError : If tuples i and j are of different length 
+    """
+    if len(sequences) != 4:
+        raise ValueError("Wrong tuple format")
+
+    str_i, str_j, str_i_prime, str_j_prime = sequences
+
+    if len(str_i) != len(str_j) or len(str_i_prime) != len(str_j_prime):
+        raise ValueError("Wrong tuple format")
+
+    if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
+        return 0
+
+    permutation_i = (
+        perm for perm in SymmetricGroup(len(str_i)).elements if perm(str_i_prime) == list(str_i)
+    )
+    permutation_j = (
+        perm for perm in SymmetricGroup(len(str_j)).elements if perm(str_j_prime) == list(str_j)
+    )
+    degree = len(str_i)
+    class_mapping = dict(
+        Counter(
+            get_class(cycle_i * ~cycle_j, degree)
+            for cycle_i, cycle_j in product(permutation_i, permutation_j)
+        )
+    )
+    integral = sum(
+        count * weingarten_class(conjugacy, group_dimension)
+        for conjugacy, count in class_mapping.items()
+    )
+
+    if isinstance(group_dimension, Symbol):
+        numerator, denominator = fraction(simplify(integral))
+        integral = factor(numerator) / factor(denominator)
+
+    return integral
