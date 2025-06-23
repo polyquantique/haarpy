@@ -42,7 +42,7 @@ weingarten_element(Permutation(0,1,2), 4, d)
 Which yields the same result as before since $\lbrace 3,1\rbrace$ is the class of permutation $(0,1,2)$ in $S_4$.
 
 ### *haar_integral*
-Takes in a tuple of sequences $((i_1,\dots,i_p),\, (j_1,\dots,j_p),\, (i^\prime_1,\dots, i^\prime_p),\, (j^\prime_1,\dots,j^\prime_p))$, and the dimension $d$ of the unitary group. Returns the value of the integral $\int dU\, U_{i_1j_1}\dots U_{i_pj_p}U^\ast_{i^\prime_1 j^\prime_1}\dots U^\ast_{i^\prime_p j^\prime_p}$.
+Takes in a tuple of sequences $((i_1,\dots,i_p),\, (j_1,\dots,j_p),\, (i\prime_1,\dots, i_p\prime),\, (j^\prime_1,\dots,j^\prime_p))$, and the dimension $d$ of the unitary group. Returns the value of the integral $\int dU\, U_{i_1j_1}\dots U_{i_pj_p}U^\ast_{i^\prime_1 j^\prime_1}\dots U^\ast_{i^\prime_p j^\prime_p}$.
 ```Python
 from haarpy import haar_integral
 haar_integral(((1,2), (1,2), (1,2), (1,2)), d)
