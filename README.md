@@ -52,11 +52,11 @@ haar_integral(((1,2), (1,2), (1,2), (1,2)), d)
 ```
 Auxiliary functions include, but are not limited to, the following. For a comprehensive list of functionalities, please refer to the [documentation]().
 
-### *murn_naka*
+### *murn_naka_rule*
 Implementation of the Murnaghan-Nakayama rule for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
 ```Python
-from haarpy import murn_naka
-murn_naka((3,1), (1,1,1,1))
+from haarpy import murn_naka_rule
+murn_naka_rule((3,1), (1,1,1,1))
 ```
 ```
 3
