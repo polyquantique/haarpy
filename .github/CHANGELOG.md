@@ -1,24 +1,24 @@
 # Version 1.0.0
+
 ### New features
-Added a function.
+
+`haar_integral()` function has been added to the library. This function takes sequences of matrix indices and the dimension of the unitary group as arguments and returns the Haar integral over the unitary group.
 
 ### Improvements
+
 Certain functions have been renamed to improve clarity:
 * `bad_mapping()` -> `border_strip_tableau()`
 * `murn_naka()` -> `murn_naka_rule()`
 
-`border_strip_tableau` has been rewritten and a parameter has been removed.
-Documents has been added with links toward Readthedocs
-
 ### Bug fixes
 
-Fixed a bug in `murn_naka_rule()` where certain Young tableaux with 2x2 square values were flagged as proper border-strip tableaux.
+Fixed a bug in `murn_naka_rule()` where certain Young tableaux with 2x2 square values were flagged as proper border-strip tableaux. In order to do so, the function `bad_mapping()` (now called `border_strip_tableau()`) has been rewritten so that it now returns True if the input Young tableau is a valid border-strip tableau.
 
 ### Contributors
 
 This release contains contributions from (in alphabetical order):
 
-Yanic Cardin, Nicolas Quesada
+Yanic Cardin, Nicolás Quesada
 
 # Version 0.0.4
 
@@ -34,7 +34,7 @@ Fixed a bug in `murn_naka()` where invalid tableau were not properly removed.
 
 This release contains contributions from (in alphabetical order):
 
-Yanic Cardin, Hubert de Guise, Matthew Duschenes, Nicolas Quesada
+Yanic Cardin, Hubert de Guise, Matthew Duschenes, Nicolás Quesada
 
 # Version 0.0.3
 
@@ -50,4 +50,4 @@ First release with Weingarten functions for the unitary group.
 
 This release contains contributions from (in alphabetical order):
 
-Yanic Cardin, Hubert de Guise, Nicolas Quesada
+Yanic Cardin, Hubert de Guise, Nicolás Quesada

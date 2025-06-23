@@ -124,6 +124,7 @@ def ssyt(partition: tuple[int], conjugacy_class: tuple[int]) -> list[list[int]]:
 
     return tableau
 
+
 def border_strip_tableau(tableau: list[list[int]], conjugacy_class: tuple[int]) -> bool:
     """Flags Young tableaux that are valid border-strip tableau
 
@@ -167,16 +168,16 @@ def border_strip_tableau(tableau: list[list[int]], conjugacy_class: tuple[int]) 
 
         if d.count(1) > 2 or (d.count(1) == 0 and counting != 1):
             return False
-        
+
     # 2x2 square condition
-    for i in range(len(tableau)-1):
-        for j in range(len(tableau[0])-1):
+    for i in range(len(tableau) - 1):
+        for j in range(len(tableau[0]) - 1):
             if (
                 tableau[i][j]
-                and tableau[i][j] 
-                == tableau[i][j+1]
-                == tableau[i+1][j]
-                == tableau[i+1][j+1]
+                and tableau[i][j]
+                == tableau[i][j + 1]
+                == tableau[i + 1][j]
+                == tableau[i + 1][j + 1]
             ):
                 return False
 
@@ -360,12 +361,14 @@ def weingarten_element(
     return weingarten_class(conjugacy_class, unitary_dimension)
 
 
-def haar_integral(target_tuple: tuple, shuffled_tuple: tuple, group_dimension: int) -> Symbol:
-    """Returns integral under Haar measure
+def haar_integral_old(
+    target_tuple: tuple, shuffled_tuple: tuple, group_dimension: int
+) -> Symbol:
+    """Returns integral over unitary group polynomial sampled at random from the Haar measure
 
     Args:
-        target_tuple (tuple) : The target string
-        shuffled_tuple (tuple) : The shuffled string
+        target_tuple (tuple) : Indices of unconjugated matrix elements
+        shuffled_tuple (tuple) : Indices of conjugated matrix elements
         group_dimension (int) : Dimension of the compact group
 
     Returns:
@@ -374,7 +377,57 @@ def haar_integral(target_tuple: tuple, shuffled_tuple: tuple, group_dimension: i
     str_i, str_j = target_tuple[::2], target_tuple[1::2]
     str_i_prime, str_j_prime = shuffled_tuple[::2], shuffled_tuple[1::2]
     if len(str_i) != len(str_j):
-        raise ValueError("Requires two strings of even size")
+        raise ValueError("Requires two tuples of even size")
+    if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
+        return 0
+
+    permutation_i = (
+        perm
+        for perm in SymmetricGroup(len(str_i)).elements
+        if perm(str_i_prime) == list(str_i)
+    )
+    permutation_j = (
+        perm
+        for perm in SymmetricGroup(len(str_j)).elements
+        if perm(str_j_prime) == list(str_j)
+    )
+    degree = len(str_i)
+    class_mapping = dict(
+        Counter(
+            get_class(cycle_i * ~cycle_j, degree)
+            for cycle_i, cycle_j in product(permutation_i, permutation_j)
+        )
+    )
+    integral = sum(
+        count * weingarten_class(conjugacy, group_dimension)
+        for conjugacy, count in class_mapping.items()
+    )
+
+    if isinstance(group_dimension, Symbol):
+        numerator, denominator = fraction(simplify(integral))
+        integral = factor(numerator) / factor(denominator)
+
+    return integral
+
+
+def haar_integral(sequences: tuple[tuple[int]], group_dimension: int) -> Symbol:
+    """Returns integral over unitary group polynomial sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple(tuple(int))) : Indices of matrix elements
+        group_dimension (int) : Dimension of the compact group
+
+    Returns:
+        Symbol : Integral under the Haar measure
+    """
+    if len(sequences) != 4:
+        raise ValueError("Wrong tuple format")
+
+    str_i, str_j, str_i_prime, str_j_prime = sequences
+
+    if len(str_i) != len(str_j) or len(str_i_prime) != len(str_j_prime):
+        raise ValueError("Wrong tuple format")
+
     if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
         return 0
 

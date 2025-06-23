@@ -281,8 +281,8 @@ def test_border_strip_tableau_false(tableau, conjugacy_class):
         ((4, 3), (1, 1, 1, 1, 1, 1, 1), 14),
         ((2, 2, 1), (2, 3), -1),
         ((2, 2, 2), (4, 2), -1),
-        ((5,3), (7,1), 0),
-        ((4, 2, 1, 1), (7,1), -1),
+        ((5, 3), (7, 1), 0),
+        ((4, 2, 1, 1), (7, 1), -1),
     ],
 )
 def test_murn_naka_rule(partition, conjugacy_class, caracter):
@@ -380,7 +380,7 @@ def test_ud_dimension_wrong_dimension(partition):
         ((2, 1, 1, 1, 1), 7, -421, 191600640),
         ((1, 1, 1, 1, 1, 1), 7, 82477, 6706022400),
         ((4, 3), 7, -17, 792529920),
-        ((7,1), 8, 151, 317011968000),
+        ((7, 1), 8, 151, 317011968000),
     ],
 )
 def test_weingarten_class(conjugacy, dimension, num, denum):
@@ -468,26 +468,26 @@ def test_gram_orthogonality(n):
 
 
 @pytest.mark.parametrize(
-    "target, shuffled, weingarten_map",
+    "sequences, weingarten_map",
     [
+        (((1,), (2,), (1,), (2,)), {(1,): 1}),
+        (("ik", "jj", "ik", "jj"), {(1, 1): 1, (2,): 1}),
+        (((1, 3), (2, 2), (1, 3), (2, 2)), {(1, 1): 1, (2,): 1}),
+        (("ik", "jl", "ik", "jl"), {(1, 1): 1}),
+        (("ik", "jl", "ik", "lj"), {(2,): 1}),
+        (("ikm", "jln", "ikm", "jln"), {(1, 1, 1): 1}),
+        (("ijk", "lmn", "ijk", "mnl"), {(3,): 1}),
+        (("ijk", "llm", "ijk", "lml"), {(3,): 1, (2, 1): 1}),
         (
-            (1, 2),
-            (1, 2),
-            {
-                (1,): 1,
-            },
+            ((1, 2, 3), (4, 4, 4), (1, 2, 3), (4, 4, 4)),
+            {(1, 1, 1): 1, (2, 1): 3, (3,): 2},
         ),
-        ("ijkj", "ijkj", {(1, 1): 1, (2,): 1}),
-        ((1, 2, 3, 2), (1, 2, 3, 2), {(1, 1): 1, (2,): 1}),
-        ("ijkl", "ijkl", {(1, 1): 1}),
-        ("ijkl", "ilkj", {(2,): 1}),
-        ("ijklmn", "ijklmn", {(1, 1, 1): 1}),
-        ("iljmkn", "imjnkl", {(3,): 1}),
-        ("iljlkm", "iljmkl", {(3,): 1, (2, 1): 1}),
-        ((1, 4, 2, 4, 3, 4), (1, 4, 2, 4, 3, 4), {(1, 1, 1): 1, (2, 1): 3, (3,): 2}),
+        (((1, 1, 3), (1, 4, 4), (1, 2, 3), (1, 4, 4)), {(3,): 0}),
+        (((1, 2, 3), (4, 4, 4), (1, 2, 4), (4, 4, 4)), {(3,): 0}),
+        (((1, 2, 3), (4, 4, 4), (1, 2), (4, 4)), {(3,): 0}),
     ],
 )
-def test_haar_integral_hand(target, shuffled, weingarten_map):
+def test_haar_integral_hand(sequences, weingarten_map):
     "Test integral of Haar distribution unitaries against hand-calculated integrals"
     dimension = Symbol("d")
     integral = sum(
@@ -496,4 +496,19 @@ def test_haar_integral_hand(target, shuffled, weingarten_map):
     )
     numerator, denominator = fraction(simplify(integral))
     integral = factor(numerator) / factor(denominator)
-    assert ap.haar_integral(target, shuffled, dimension) == integral
+    assert ap.haar_integral(sequences, dimension) == integral
+
+
+@pytest.mark.parametrize(
+    "sequence",
+    [
+        ((1,), (1,), (1,)),
+        ((1, 1, 1), (1, 1), (1, 1, 1), (1, 1, 1)),
+        ((1, 1, 1), (1, 1, 1), (1, 1), (1, 1, 1)),
+    ],
+)
+def test_haar_integral_wrong_format(sequence):
+    """Test wrong tuple format ValueError"""
+    dimension = Symbol("d")
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral(sequence, dimension)
