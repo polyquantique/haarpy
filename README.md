@@ -7,7 +7,7 @@ Haarpy is a Python library for the symbolic calculation of Weingarten functions 
 The original Mathematica version of this code, for the calculation of Weingarten functions of the unitary group, can be found [here](https://github.com/hdeguise/Weingarten_calculus).
 
 ## Haarpy in action
-The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar-measure. We recommend importing the following when working with Haarpy.
+The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar-measure. We recommend importing the following when working with Haarpy:
 ```Python
 from sympy import Symbol
 from sympy.combinatorics import Permutation
@@ -40,16 +40,18 @@ weingarten_element(Permutation(0,1,2), 4, d)
 (2*d**2 - 3)/(d**2*(d - 3)*(d - 2)*(d - 1)*(d + 1)*(d + 2)*(d + 3))
 ```
 Which yields the same result as before since $\lbrace 3,1\rbrace$ is the class of permutation $(0,1,2)$ in $S_4$.
+
 ### *haar_integral*
-Takes in two strings, $\mathbf{i} = (i_1,\dots,i_p)$ and $\mathbf{j} = (j_1,\dots,j_p)$, and the dimension $d$ of the unitary group. Returns the value of the integral $\int dU U_{i_1i_2}\dots U_{i_{p-1}i_p}U^\ast_{j_1j_2}\dots U^\ast_{j_{p-1}j_p}$.
+Takes in a tuple of sequences $((i_1,\dots,i_p),\, (j_1,\dots,j_p),\, (i^\prime_1,\dots, i^\prime_p),\, (j^\prime_1,\dots,j^\prime_p))$, and the dimension $d$ of the unitary group. Returns the value of the integral $\int dU\, U_{i_1j_1}\dots U_{i_pj_p}U^\ast_{i^\prime_1 j^\prime_1}\dots U^\ast_{i^\prime_p j^\prime_p}$.
 ```Python
 from haarpy import haar_integral
-haar_integral("ijkl", "ijkl", d)
+haar_integral(((1,2), (1,2), (1,2), (1,2)), d)
 ```
 ```
-d/((d-1)*(d+1))
+1/((d-1)*(d+1))
 ```
 Auxiliary functions include, but are not limited to, the following. For a comprehensive list of functionalities, please refer to the [documentation]().
+
 ### *murn_naka*
 Implementation of the Murnaghan-Nakayama rule for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
 ```Python

@@ -10,6 +10,8 @@ Certain functions have been renamed to improve clarity:
 * `bad_mapping()` -> `border_strip_tableau()`
 * `murn_naka()` -> `murn_naka_rule()`
 
+README.md has been updated with the previous function name changes. Some typos have been fixed. Examples of unitary Haar integrals have also been added to the document.
+
 ### Bug fixes
 
 Fixed a bug in `murn_naka_rule()` where certain Young tableaux with 2x2 square values were flagged as proper border-strip tableaux. In order to do so, the function `bad_mapping()` (now called `border_strip_tableau()`) has been rewritten so that it now returns True if the input Young tableau is a valid border-strip tableau.
