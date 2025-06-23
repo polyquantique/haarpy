@@ -24,46 +24,20 @@ from sympy.combinatorics.named_groups import SymmetricGroup
 
 
 @pytest.mark.parametrize(
-    "degree,cycle,conjugacy",
+    "degree, cycle, conjugacy",
     [
         (3, Permutation(0, 1, 2), (3,)),
-        (
-            3,
-            Permutation(
-                2,
-            )(0, 1),
-            (2, 1),
-        ),
+        (3, Permutation(2)(0, 1), (2, 1)),
         (4, Permutation(0, 1, 2, 3), (4,)),
         (4, Permutation(0, 1, 2), (3, 1)),
         (4, Permutation(0, 1)(2, 3), (2, 2)),
         (5, Permutation(0, 1, 2), (3, 1, 1)),
         (5, Permutation(1, 2, 4), (3, 1, 1)),
-        (
-            5,
-            Permutation(
-                3,
-            )(0, 1, 2),
-            (3, 1, 1),
-        ),
-        (
-            6,
-            Permutation(
-                2,
-            )(
-                3, 4, 5
-            )(0, 1),
-            (3, 2, 1),
-        ),
+        (5, Permutation(3)(0, 1, 2), (3, 1, 1)),
+        (6, Permutation(2)(3, 4, 5)(0, 1), (3, 2, 1)),
         (6, Permutation(2, 3, 4, 0, 1, 5), (6,)),
         (7, Permutation(2, 3, 4, 0, 1, 6), (6, 1)),
-        (
-            1,
-            Permutation(
-                0,
-            ),
-            (1,),
-        ),
+        (1, Permutation(0), (1,)),
     ],
 )
 def test_get_class(degree, cycle, conjugacy):
@@ -72,7 +46,7 @@ def test_get_class(degree, cycle, conjugacy):
 
 
 @pytest.mark.parametrize(
-    "degree,cycle",
+    "degree, cycle",
     [
         ("a", Permutation(0, 1, 2)),
         (0.1, Permutation(2)(0, 1)),
@@ -97,7 +71,7 @@ def test_get_class_degree_value_error(degree):
 
 
 @pytest.mark.parametrize(
-    "degree,cycle",
+    "degree, cycle",
     [
         (3, [1, 2, 3]),
         (4, "a"),
@@ -114,7 +88,7 @@ def test_get_class_cycle_type_error(degree, cycle):
 
 
 @pytest.mark.parametrize(
-    "degree,cycle",
+    "degree, cycle",
     [
         (3, Permutation(0, 1, 2, 3)),
         (3, Permutation(2, 3)(0, 1)),
@@ -124,16 +98,16 @@ def test_get_class_cycle_type_error(degree, cycle):
 )
 def test_get_class_cycle_value_error(degree, cycle):
     """Test the cycle parameter ValueError if permutation maximum value is greater than the degree"""
-    with pytest.raises(
-        ValueError, match=".*Incompatible degree and permutation cycle.*"
-    ):
+    with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
         ap.get_class(cycle, degree)
 
 
 @pytest.mark.parametrize(
-    "tableau,add_unit,partition,result",
+    "tableau, add_unit,partition, result",
     [
         ([[0, 0, 0], [0, 0, 0]], 1, (3, 1), [[[1, 0, 0], [0, 0, 0]]]),
+        ([[1, 2, 0], [2, 3, 0]], 4, [3, 2], [[[1, 2, 4], [2, 3, 0]]]),
+        ([[1, 1, 1, 3], [2, 0, 0, 0]], 4, (4, 2), [[[1, 1, 1, 3], [2, 4, 0, 0]]]),
         (
             [[1, 0, 0], [0, 0, 0]],
             1,
@@ -146,14 +120,12 @@ def test_get_class_cycle_value_error(degree, cycle):
             (3, 2),
             [[[1, 2, 2], [0, 0, 0]], [[1, 2, 0], [2, 0, 0]]],
         ),
-        ([[1, 2, 0], [2, 3, 0]], 4, [3, 2], [[[1, 2, 4], [2, 3, 0]]]),
         (
             [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
             1,
             (3, 1, 1),
             [[[1, 0, 0], [0, 0, 0], [0, 0, 0]]],
         ),
-        ([[1, 1, 1, 3], [2, 0, 0, 0]], 4, (4, 2), [[[1, 1, 1, 3], [2, 4, 0, 0]]]),
         (
             [[1, 2, 3, 0], [1, 2, 0, 0], [1, 0, 0, 0]],
             3,
@@ -478,10 +450,7 @@ def test_gram_orthogonality(n):
         (("ikm", "jln", "ikm", "jln"), {(1, 1, 1): 1}),
         (("ijk", "lmn", "ijk", "mnl"), {(3,): 1}),
         (("ijk", "llm", "ijk", "lml"), {(3,): 1, (2, 1): 1}),
-        (
-            ((1, 2, 3), (4, 4, 4), (1, 2, 3), (4, 4, 4)),
-            {(1, 1, 1): 1, (2, 1): 3, (3,): 2},
-        ),
+        (((1, 2, 3), (4, 4, 4), (1, 2, 3), (4, 4, 4)), {(1, 1, 1): 1, (2, 1): 3, (3,): 2}),
         (((1, 1, 3), (1, 4, 4), (1, 2, 3), (1, 4, 4)), {(3,): 0}),
         (((1, 2, 3), (4, 4, 4), (1, 2, 4), (4, 4, 4)), {(3,): 0}),
         (((1, 2, 3), (4, 4, 4), (1, 2), (4, 4)), {(3,): 0}),

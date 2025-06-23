@@ -49,9 +49,7 @@ def get_class(cycle: Permutation, degree: int) -> tuple:
             "The degree you have provided is too low. It must be an integer greater than 0."
         )
     if not isinstance(cycle, Permutation):
-        raise TypeError(
-            "cycle must be of type sympy.combinatorics.permutations.Permutation"
-        )
+        raise TypeError("cycle must be of type sympy.combinatorics.permutations.Permutation")
 
     if cycle.support() == []:
         return degree * (1,)
@@ -82,12 +80,8 @@ def derivative_tableau(
         for j in range(partition[i]):
             if tableau[i][j] == 0:
                 cond = i == 0 and j == 0 and add_unit == 1
-                cond |= (
-                    j == 0 and tableau[i - 1][0] <= add_unit and tableau[i - 1][0] != 0
-                )
-                cond |= (
-                    i == 0 and tableau[0][j - 1] <= add_unit and tableau[0][j - 1] != 0
-                )
+                cond |= j == 0 and tableau[i - 1][0] <= add_unit and tableau[i - 1][0] != 0
+                cond |= i == 0 and tableau[0][j - 1] <= add_unit and tableau[0][j - 1] != 0
                 cond |= (
                     i != 0
                     and j != 0
@@ -174,10 +168,7 @@ def border_strip_tableau(tableau: list[list[int]], conjugacy_class: tuple[int]) 
         for j in range(len(tableau[0]) - 1):
             if (
                 tableau[i][j]
-                and tableau[i][j]
-                == tableau[i][j + 1]
-                == tableau[i + 1][j]
-                == tableau[i + 1][j + 1]
+                and tableau[i][j] == tableau[i][j + 1] == tableau[i + 1][j] == tableau[i + 1][j + 1]
             ):
                 return False
 
@@ -200,9 +191,7 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
 
     tableaux_list = ssyt(partition, conjugacy_class)
     tableaux_list = [
-        tableau
-        for tableau in tableaux_list
-        if border_strip_tableau(tableau, conjugacy_class)
+        tableau for tableau in tableaux_list if border_strip_tableau(tableau, conjugacy_class)
     ]
 
     tableaux_list = np.array(tableaux_list)
@@ -258,8 +247,7 @@ def ud_dimension(partition: tuple[int], unitary_dimension: Symbol) -> int:
         Symbol : The dimension of U(d)
     """
     conjugate_partition = [
-        sum(1 for _, part in enumerate(partition) if i < part)
-        for i in range(partition[0])
+        sum(1 for _, part in enumerate(partition) if i < part) for i in range(partition[0])
     ]
     if isinstance(unitary_dimension, int):
         dimension = np.prod(
@@ -315,8 +303,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
 
     degree = sum(conjugacy_class)
     partition_list = [
-        sum([value * (key,) for key, value in part.items()], ())
-        for part in partitions(degree)
+        sum([value * (key,) for key, value in part.items()], ()) for part in partitions(degree)
     ]
     irrep_dimension_list = [sn_dimension(part) for part in partition_list]
 
@@ -344,9 +331,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
     return weingarten
 
 
-def weingarten_element(
-    cycle: Permutation, degree: int, unitary_dimension: Symbol
-) -> Symbol:
+def weingarten_element(cycle: Permutation, degree: int, unitary_dimension: Symbol) -> Symbol:
     """Returns the Weingarten function
 
     Args:
@@ -370,6 +355,10 @@ def haar_integral(sequences: tuple[tuple[int]], group_dimension: int) -> Symbol:
 
     Returns:
         Symbol : Integral under the Haar measure
+
+    Raise:
+        ValueError : If sequences doesn't contain 4 tuples
+        ValueError : If tuples i and j are of different length 
     """
     if len(sequences) != 4:
         raise ValueError("Wrong tuple format")
@@ -383,14 +372,10 @@ def haar_integral(sequences: tuple[tuple[int]], group_dimension: int) -> Symbol:
         return 0
 
     permutation_i = (
-        perm
-        for perm in SymmetricGroup(len(str_i)).elements
-        if perm(str_i_prime) == list(str_i)
+        perm for perm in SymmetricGroup(len(str_i)).elements if perm(str_i_prime) == list(str_i)
     )
     permutation_j = (
-        perm
-        for perm in SymmetricGroup(len(str_j)).elements
-        if perm(str_j_prime) == list(str_j)
+        perm for perm in SymmetricGroup(len(str_j)).elements if perm(str_j_prime) == list(str_j)
     )
     degree = len(str_i)
     class_mapping = dict(
