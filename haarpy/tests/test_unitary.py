@@ -468,7 +468,7 @@ def test_gram_orthogonality(n):
 
 
 @pytest.mark.parametrize(
-    "target, shuffled, weingarten",
+    "target, shuffled, weingarten_map",
     [
         (
             (1, 2),
@@ -487,12 +487,12 @@ def test_gram_orthogonality(n):
         ((1, 4, 2, 4, 3, 4), (1, 4, 2, 4, 3, 4), {(1, 1, 1): 1, (2, 1): 3, (3,): 2}),
     ],
 )
-def test_haar_integral_hand(target, shuffled, weingarten):
+def test_haar_integral_hand(target, shuffled, weingarten_map):
     "Test integral of Haar distribution unitaries against hand-calculated integrals"
     dimension = Symbol("d")
     integral = sum(
         frequency * ap.weingarten_class(conjugacy, dimension)
-        for conjugacy, frequency in weingarten.items()
+        for conjugacy, frequency in weingarten_map.items()
     )
     numerator, denominator = fraction(simplify(integral))
     integral = factor(numerator) / factor(denominator)

@@ -360,19 +360,19 @@ def weingarten_element(
     return weingarten_class(conjugacy_class, unitary_dimension)
 
 
-def haar_integral(str_target: str, str_shuffled: str, group_dimension: int) -> Symbol:
+def haar_integral(target_tuple: tuple, shuffled_tuple: tuple, group_dimension: int) -> Symbol:
     """Returns integral under Haar measure
 
     Args:
-        str_target (str) : The target string
-        str_shuffled (str) : The shuffled string
+        target_tuple (tuple) : The target string
+        shuffled_tuple (tuple) : The shuffled string
         group_dimension (int) : Dimension of the compact group
 
     Returns:
         Symbol : Integral under the Haar measure
     """
-    str_i, str_j = str_target[::2], str_target[1::2]
-    str_i_prime, str_j_prime = str_shuffled[::2], str_shuffled[1::2]
+    str_i, str_j = target_tuple[::2], target_tuple[1::2]
+    str_i_prime, str_j_prime = shuffled_tuple[::2], shuffled_tuple[1::2]
     if len(str_i) != len(str_j):
         raise ValueError("Requires two strings of even size")
     if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
