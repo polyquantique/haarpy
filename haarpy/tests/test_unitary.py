@@ -231,11 +231,12 @@ def test_ssyt(partition, conjugacy_class, result):
         ([[1, 1, 2, 2], [3, 3, 0, 0]], (2, 2, 2)),
         ([[1, 1, 3, 3], [2, 2, 0, 0]], (2, 2, 2)),
         ([[1, 2, 3, 3], [1, 2, 0, 0]], (2, 2, 2)),
+        ([[1, 1, 1, 1, 1], [1, 2, 2, 0, 0]], (6, 2)),
     ],
 )
-def test_bad_mapping_false(tableau, conjugacy_class):
+def test_border_strip_tableau_true(tableau, conjugacy_class):
     "Test bad_mapping for well mapped tableaux, returns False"
-    assert not ap.bad_mapping(tableau, conjugacy_class)
+    assert ap.border_strip_tableau(tableau, conjugacy_class)
 
 
 @pytest.mark.parametrize(
@@ -247,11 +248,13 @@ def test_bad_mapping_false(tableau, conjugacy_class):
         ([[1, 2, 4], [2, 3, 0]], (1, 2, 1, 1)),
         ([[1, 1, 2, 3], [2, 3, 0, 0]], (2, 2, 2)),
         ([[1, 2, 2, 3], [1, 3, 0, 0]], (2, 2, 2)),
+        ([[1, 1, 1, 1, 1], [1, 1, 2, 0, 0]], (7, 1)),
+        ([[1, 1, 1, 1, 2], [1, 1, 1, 0, 0]], (7, 1)),
     ],
 )
-def test_bad_mapping_true(tableau, conjugacy_class):
+def test_border_strip_tableau_false(tableau, conjugacy_class):
     "Test bad_mapping for wrong mapped tableaux, returns True"
-    assert ap.bad_mapping(tableau, conjugacy_class)
+    assert not ap.border_strip_tableau(tableau, conjugacy_class)
 
 
 @pytest.mark.parametrize(
@@ -282,9 +285,9 @@ def test_bad_mapping_true(tableau, conjugacy_class):
         ((4, 2, 1, 1), (7,1), -1),
     ],
 )
-def test_murn_naka(partition, conjugacy_class, caracter):
-    "Test murn_naka based on the outputs form weingarten mathematica package"
-    assert ap.murn_naka(partition, conjugacy_class) == caracter
+def test_murn_naka_rule(partition, conjugacy_class, caracter):
+    "Test murn_naka_rule based on the outputs form weingarten mathematica package"
+    assert ap.murn_naka_rule(partition, conjugacy_class) == caracter
 
 
 @pytest.mark.parametrize(
@@ -319,10 +322,10 @@ def test_sn_dimension(partition, dimension):
         ((4, 3, 2, 1, 1)),
     ],
 )
-def test_sn_dimension_murn_naka(partition):
-    "Reconcil sn_dimension and murn_naka for a class mu of ones"
+def test_sn_dimension_murn_naka_rule(partition):
+    "Reconcil sn_dimension and murn_naka_rule for a class mu of ones"
     mu = sum(partition) * [1]
-    assert ap.sn_dimension(partition) == ap.murn_naka(partition, mu)
+    assert ap.sn_dimension(partition) == ap.murn_naka_rule(partition, mu)
 
 
 @pytest.mark.parametrize(

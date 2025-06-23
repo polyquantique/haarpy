@@ -124,17 +124,17 @@ def ssyt(partition: tuple[int], conjugacy_class: tuple[int]) -> list[list[int]]:
 
     return tableau
 
-
-def bad_mapping(tableau: list[list[int]], conjugacy_class: tuple[int]) -> bool:
-    """Flags tableaux that have a bad mapping
+def border_strip_tableau(tableau: list[list[int]], conjugacy_class: tuple[int]) -> bool:
+    """Flags Young tableaux that are valid border-strip tableau
 
     Args:
         tableau (list[list[int]]) : A semi-standard Young tableau
         conjugacy_class (list[int]) : A conjugacy class, in partition form, of Sp
 
     Returns:
-        bool : True if mapping is wrong
+        bool : True if the tableau is a border-strip
     """
+    # Skeweness condition
     for i in range(len(conjugacy_class)):
         # indices of matching elements
         matching = [
@@ -163,15 +163,27 @@ def bad_mapping(tableau: list[list[int]], conjugacy_class: tuple[int]) -> bool:
 
         for val in d:
             if counting >= 2 and val == 0:
-                return True
+                return False
 
         if d.count(1) > 2 or (d.count(1) == 0 and counting != 1):
-            return True
+            return False
+        
+    # 2x2 square condition
+    for i in range(len(tableau)-1):
+        for j in range(len(tableau[0])-1):
+            if (
+                tableau[i][j]
+                and tableau[i][j] 
+                == tableau[i][j+1]
+                == tableau[i+1][j]
+                == tableau[i+1][j+1]
+            ):
+                return False
 
-    return False
+    return True
 
 
-def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
+def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     """Implementation of the Murnaghan-Nakayama rule for the characters irreducible
     representations of the symmetric group Sp
 
@@ -189,41 +201,20 @@ def murn_naka(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     tableaux_list = [
         tableau
         for tableau in tableaux_list
-        if not bad_mapping(tableau, conjugacy_class)
+        if border_strip_tableau(tableau, conjugacy_class)
     ]
 
     tableaux_list = np.array(tableaux_list)
-    good_tableaux_list = []
-    skip = False
-    for i, tableau in enumerate(tableaux_list):
-        for j in range(len(partition) - 1):
-            if skip:
-                break
-            for k in range(partition[0] - 1):
-                if (
-                    tableau[j, k]
-                    and tableau[j, k]
-                    == tableau[j, k + 1]
-                    == tableau[j + 1, k]
-                    == tableau[j + 1, k + 1]
-                ):
-                    skip = True
-                    break
-        if skip:
-            skip = False
-        else:
-            good_tableaux_list.append(tableau)
-
-    height = np.empty(shape=(len(good_tableaux_list), len(conjugacy_class)))
+    height = np.empty(shape=(len(tableaux_list), len(conjugacy_class)))
     height.fill(-1)
-    weight = np.empty(shape=(len(good_tableaux_list),))
-    for i, tableau in enumerate(good_tableaux_list):
+    weight = np.empty(shape=(len(tableaux_list),))
+    for i, tableau in enumerate(tableaux_list):
         for j in range(len(conjugacy_class)):
             for k in range(len(partition)):
                 height[i, j] += 1 if np.count_nonzero(tableau[k] == j + 1) else 0
         weight[i] = (-1) ** np.sum(height[i, : len(conjugacy_class)])
 
-    return int(np.sum(weight[: len(good_tableaux_list)]))
+    return int(np.sum(weight[: len(tableaux_list)]))
 
 
 def sn_dimension(partition: tuple[int]) -> int:
@@ -331,7 +322,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
     if isinstance(unitary_dimension, int):
         weingarten = sum(
             Fraction(
-                irrep_dimension**2 * murn_naka(part, conjugacy_class),
+                irrep_dimension**2 * murn_naka_rule(part, conjugacy_class),
                 ud_dimension(part, unitary_dimension),
             )
             for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
@@ -340,7 +331,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
         weingarten = (
             sum(
                 irrep_dimension**2
-                * murn_naka(part, conjugacy_class)
+                * murn_naka_rule(part, conjugacy_class)
                 / ud_dimension(part, unitary_dimension)
                 for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
             )
