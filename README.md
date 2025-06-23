@@ -131,7 +131,7 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 | $\lbrace 2,2,1\rbrace$  |$\displaystyle\frac{-d^4+14 d^2-24}{(d-4) (d-3) (d-2) (d-1) d^2  (d+1) (d+2) (d+3) (d+4)}$|
 | $\lbrace 1,1,1,1,1\rbrace$|$\displaystyle\frac{d^4-20 d^2+78}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3) (d+4)}$|
 
-## Example of integrals over Haar-random unitaries
+## Examples of integrals over Haar-random unitaries
 Selected integrals of unitary groups. Characters $i,j,k$ and $\ell$ are assumed to take distinct integer values in the following.
 |Integral| Result |
 |--|--|
