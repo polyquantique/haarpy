@@ -25,11 +25,11 @@ Functions
 ---------
 
 .. autosummary::
-    get_class
+    get_conjugacy_class
     derivative_tableau
     ssyt
-    bad_mapping
-    murn_naka
+    border_strip_tableau
+    murn_naka_rule
     sn_dimension
     ud_dimension
     weingarten_class
@@ -40,7 +40,7 @@ Code details
 ------------
 """
 from .unitary import (
-    get_class,
+    get_conjugacy_class,
     derivative_tableau,
     ssyt,
     border_strip_tableau,
@@ -55,7 +55,7 @@ from .unitary import (
 from ._version import __version__
 
 __all__ = [
-    "get_class",
+    "get_conjugacy_class",
     "derivative_tableau",
     "ssyt",
     "border_strip_tableau",

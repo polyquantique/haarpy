@@ -40,9 +40,9 @@ from sympy.combinatorics.named_groups import SymmetricGroup
         (1, Permutation(0), (1,)),
     ],
 )
-def test_get_class(degree, cycle, conjugacy):
-    """Test the normal usage of get_class"""
-    assert ap.get_class(cycle, degree) == conjugacy
+def test_get_conjugacy_class(degree, cycle, conjugacy):
+    """Test the normal usage of get_conjugacy_class"""
+    assert ap.get_conjugacy_class(cycle, degree) == conjugacy
 
 
 @pytest.mark.parametrize(
@@ -54,20 +54,20 @@ def test_get_class(degree, cycle, conjugacy):
         ([5], Permutation(0, 1, 2)),
     ],
 )
-def test_get_class_degree_type_error(degree, cycle):
+def test_get_conjugacy_class_degree_type_error(degree, cycle):
     """Test the degree parameter TypeError"""
     with pytest.raises(TypeError, match=".*degree must be of type int.*"):
-        ap.get_class(cycle, degree)
+        ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize("degree", range(-3, 1))
-def test_get_class_degree_value_error(degree):
+def test_get_conjugacy_class_degree_value_error(degree):
     """Test the degree parameter ValueError"""
     with pytest.raises(
         ValueError,
         match=".*The degree you have provided is too low. It must be an integer greater than 0.*",
     ):
-        ap.get_class(Permutation(0, 1, 2), degree)
+        ap.get_conjugacy_class(Permutation(0, 1, 2), degree)
 
 
 @pytest.mark.parametrize(
@@ -78,13 +78,13 @@ def test_get_class_degree_value_error(degree):
         (7, 2.0),
     ],
 )
-def test_get_class_cycle_type_error(degree, cycle):
+def test_get_conjugacy_class_cycle_type_error(degree, cycle):
     """Test the cycle parameter TypeError"""
     with pytest.raises(
         TypeError,
         match=".*cycle must be of type sympy.combinatorics.permutations.Permutation.*",
     ):
-        ap.get_class(cycle, degree)
+        ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize(
@@ -96,14 +96,14 @@ def test_get_class_cycle_type_error(degree, cycle):
         (4, Permutation(4, 1)),
     ],
 )
-def test_get_class_cycle_value_error(degree, cycle):
+def test_get_conjugacy_class_cycle_value_error(degree, cycle):
     """Test the cycle parameter ValueError if permutation maximum value is greater than the degree"""
     with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
-        ap.get_class(cycle, degree)
+        ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize(
-    "tableau, add_unit,partition, result",
+    "tableau, add_unit, partition, result",
     [
         ([[0, 0, 0], [0, 0, 0]], 1, (3, 1), [[[1, 0, 0], [0, 0, 0]]]),
         ([[1, 2, 0], [2, 3, 0]], 4, [3, 2], [[[1, 2, 4], [2, 3, 0]]]),
@@ -402,7 +402,7 @@ def test_weingarten_element(cycle, degree, dimension, num, denum):
 def test_weingarten_reconciliation(cycle, degree):
     "Numeric reconciliation of weingarten_class and weingarten_element"
     assert ap.weingarten_element(cycle, degree, 9) == ap.weingarten_class(
-        ap.get_class(cycle, degree), 9
+        ap.get_conjugacy_class(cycle, degree), 9
     )
 
 
@@ -426,7 +426,7 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
     "Symbolic reconciliation of weingarten_class and weingarten_element"
     d = Symbol("d")
     assert ap.weingarten_element(cycle, degree, d) == ap.weingarten_class(
-        list(ap.get_class(cycle, degree)), d
+        list(ap.get_conjugacy_class(cycle, degree)), d
     )
 
 

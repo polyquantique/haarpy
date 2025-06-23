@@ -26,12 +26,12 @@ from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 
 
-def get_class(cycle: Permutation, degree: int) -> tuple:
+def get_conjugacy_class(cycle: Permutation, degree: int) -> tuple:
     """Returns the conjugacy class of an element of the symmetric group Sp
 
     Args:
+        cycle (Permutation): Permutation cycle from the symmetric group
         degree (integer): Order of the symmetric group
-        cycle (cycle): Permutation cycle from the symmetric group
 
     Returns:
         tuple[int]: the conjugacy class in partition form
@@ -64,19 +64,19 @@ def get_class(cycle: Permutation, degree: int) -> tuple:
 def derivative_tableau(
     tableau: list[list[int]], add_unit: int, partition: tuple[int]
 ) -> list[list[list[int]]]:
-    """Takes a single tableau and adds the selected number to it's contents
+    """Takes a single tableau and adds the selected number to its contents
     in a way that keeps it semi-standard
 
     Args:
         tableau (list[list[int]]): The tableau
         add_unit (int): Selected number to be added
-        partition ([list[int]) : partition characterizing an irrep of Sp
+        partition (tuple[int]) : partition characterizing an irrep of Sp
 
     Returns:
-        list[list[list[int]]]: Modified tableau
+        list[list[list[int]]]: Modified tableaux
     """
     tableau_derivatives = []
-    for i, _ in enumerate(partition):
+    for i in range(len(partition)):
         for j in range(partition[i]):
             if tableau[i][j] == 0:
                 cond = i == 0 and j == 0 and add_unit == 1
@@ -108,7 +108,7 @@ def ssyt(partition: tuple[int], conjugacy_class: tuple[int]) -> list[list[int]]:
         list[list[list[int]]]: all eligible semi-standard young tableaux
     """
     tableau = [[partition[0] * [0] for _ in range(len(partition))]]
-    add_unit = [i + 1 for i, m in enumerate(conjugacy_class) for j in range(m)]
+    add_unit = (i + 1 for i, m in enumerate(conjugacy_class) for _ in range(m))
 
     for unit in add_unit:
         tableau = [derivative_tableau(see, unit, partition) for see in tableau]
@@ -342,7 +342,7 @@ def weingarten_element(cycle: Permutation, degree: int, unitary_dimension: Symbo
     Returns:
         Symbol : The Weingarten function
     """
-    conjugacy_class = list(get_class(cycle, degree))
+    conjugacy_class = list(get_conjugacy_class(cycle, degree))
     return weingarten_class(conjugacy_class, unitary_dimension)
 
 
@@ -380,7 +380,7 @@ def haar_integral(sequences: tuple[tuple[int]], group_dimension: int) -> Symbol:
     degree = len(str_i)
     class_mapping = dict(
         Counter(
-            get_class(cycle_i * ~cycle_j, degree)
+            get_conjugacy_class(cycle_i * ~cycle_j, degree)
             for cycle_i, cycle_j in product(permutation_i, permutation_j)
         )
     )

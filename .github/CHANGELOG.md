@@ -7,6 +7,7 @@
 ### Breaking changes
 
 Certain functions have been renamed to improve clarity:
+* `get_class()` -> `get_conjugacy_class()`
 * `bad_mapping()` -> `border_strip_tableau()`
 * `murn_naka()` -> `murn_naka_rule()`
 
