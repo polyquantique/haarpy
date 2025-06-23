@@ -1,16 +1,18 @@
-# Version 1.0.0
+# Version 0.0.5
 
 ### New features
 
-`haar_integral()` function has been added to the library. This function takes sequences of matrix indices and the dimension of the unitary group as arguments and returns the Haar integral over the unitary group.
+`haar_integral()` function has been added to the library. This function takes sequences of matrix indices and the dimension of the unitary group as arguments and returns the Haar integral over the unitary group. See README for an example on how to use this function.
 
-### Improvements
+### Breaking changes
 
 Certain functions have been renamed to improve clarity:
 * `bad_mapping()` -> `border_strip_tableau()`
 * `murn_naka()` -> `murn_naka_rule()`
 
-README.md has been updated with the previous function name changes. Some typos have been fixed. Examples of unitary Haar integrals have also been added to the document.
+### Improvements
+
+README has been updated with the previous function name changes. Some typos have been fixed. Examples of unitary Haar integrals have also been added to the README.
 
 ### Bug fixes
 
