@@ -410,14 +410,26 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
     )
 
 
-@pytest.mark.parametrize("n", [2, 3, 4, 5, 6])
-def test_gram_orthogonality(n):
+@pytest.mark.parametrize("n", range(2,5))
+def test_gram_orthogonality_elements(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
     d = Symbol("d")
-    group = lambda n: SymmetricGroup(n).generate_schreier_sims()
-    character = lambda g, d, n: d ** (g.cycles)
-    weingarten = lambda g, d, n: ap.weingarten_element(g, n, d)
-    orthogonality = sum(character(g, d, n) * weingarten(g, d, n) for g in group(n))
+    orthogonality = sum(
+        d ** (g.cycles) * ap.weingarten_element(g, n, d)
+        for g in SymmetricGroup(n).generate_schreier_sims()
+        )
+    assert simplify(orthogonality) == 1
+
+
+@pytest.mark.parametrize("n", range(2,10))
+def test_gram_orthogonality_classes(n):
+    "Test the orthogonality relation between Weingarten matrix and Graham matrix"
+    d = Symbol("d")
+    weight = lambda g : d ** (g.cycles) * ap.weingarten_class(ap.get_conjugacy_class(g, n), d)
+    orthogonality = sum(
+        len(c) * weight(c.pop())
+        for c in SymmetricGroup(n).conjugacy_classes()
+        )
     assert simplify(orthogonality) == 1
 
 
