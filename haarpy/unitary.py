@@ -102,7 +102,9 @@ def derivative_tableaux(
             current_row_length < min(part, previous_row__length)
             and tableau[index][current_row_length] <= increment
         ):
-            yield tuple(row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau))
+            yield tuple(
+                row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau)
+            )
 
 
 def semi_standard_young_tableaux(
@@ -186,8 +188,7 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     tableaux_set = ((set(row) for row in tableau) for tableau in tableaux)
     heights = (tuple(i for row in tableau for i in row) for tableau in tableaux_set)
     heights = (
-        sum(height.count(unit) - 1 for unit in range(len(conjugacy_class)))
-        for height in heights
+        sum(height.count(unit) - 1 for unit in range(len(conjugacy_class))) for height in heights
     )
 
     character = sum((-1) ** height for height in heights)
