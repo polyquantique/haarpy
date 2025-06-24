@@ -65,14 +65,14 @@ def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
 
 
 def derivative_tableaux(
-    tableau: tuple[tuple[int]], unit: int, partition: tuple[int]
+    tableau: tuple[tuple[int]], increment: int, partition: tuple[int]
 ) -> Generator[tuple[tuple[int]], None, None]:
     """Takes a single tableau and adds the selected number to its contents
     in a way that keeps it semi-standard. All possible tableaux are yielded
 
     Args:
         tableau (tuple[tuple[int]]): An incomplet Young tableau
-        unit (int): Selected number to be added
+        increment (int): Selected number to be added
         partition (tuple[int]) : partition characterizing an irrep of Sp
 
     Yields:
@@ -80,12 +80,12 @@ def derivative_tableaux(
     """
     # empty tableau
     if not len(tableau[0]):
-        yield ((unit,),) + tableau[1:]
+        yield ((increment,),) + tableau[1:]
         return
 
     # first row
-    if len(tableau[0]) < partition[0] and tableau[0][-1] <= unit:
-        yield (tableau[0] + (unit,),) + tableau[1:]
+    if len(tableau[0]) < partition[0] and tableau[0][-1] <= increment:
+        yield (tableau[0] + (increment,),) + tableau[1:]
 
     # other rows
     for index, part in enumerate(partition[1:]):
@@ -93,16 +93,16 @@ def derivative_tableaux(
         current_row_length = len(tableau[index + 1])
         # first row input
         if not current_row_length:
-            if tableau[index][0] <= unit:
+            if tableau[index][0] <= increment:
                 yield tuple(
-                    row if i != index + 1 else row + (unit,) for i, row in enumerate(tableau)
+                    row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau)
                 )
             return
         if (
             current_row_length < min(part, previous_row__length)
-            and tableau[index][current_row_length] <= unit
+            and tableau[index][current_row_length] <= increment
         ):
-            yield tuple(row if i != index + 1 else row + (unit,) for i, row in enumerate(tableau))
+            yield tuple(row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau))
 
 
 def semi_standard_young_tableaux(
@@ -118,12 +118,12 @@ def semi_standard_young_tableaux(
         set[tuple[tuple[int]]]: all eligible semi-standard young tableaux
     """
     tableaux = (tuple(() for _ in partition),)
-    add_unit = (i + 1 for i, m in enumerate(conjugacy_class) for _ in range(m))
-    for unit in add_unit:
+    cell_values = (i for i, m in enumerate(conjugacy_class) for _ in range(m))
+    for increment in cell_values:
         tableaux = {
             tableau
             for derivative in tableaux
-            for tableau in derivative_tableaux(derivative, unit, partition)
+            for tableau in derivative_tableaux(derivative, increment, partition)
         }
 
     return tableaux
@@ -186,7 +186,7 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     tableaux_set = ((set(row) for row in tableau) for tableau in tableaux)
     heights = (tuple(i for row in tableau for i in row) for tableau in tableaux_set)
     heights = (
-        sum(height.count(unit + 1) - 1 for unit in range(len(conjugacy_class)))
+        sum(height.count(unit) - 1 for unit in range(len(conjugacy_class)))
         for height in heights
     )
 
