@@ -8,7 +8,8 @@
 
 Certain functions have been renamed to improve clarity:
 * `get_class()` -> `get_conjugacy_class()`
-* `bad_mapping()` -> `border_strip_tableau()`
+* `ssyt()` -> `semi_standard_young_tableaux()`
+* `bad_mapping()` -> `proper_border_strip()`
 * `murn_naka()` -> `murn_naka_rule()`
 
 ### Improvements

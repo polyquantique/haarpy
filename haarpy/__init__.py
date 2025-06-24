@@ -26,9 +26,9 @@ Functions
 
 .. autosummary::
     get_conjugacy_class
-    derivative_tableau
-    ssyt
-    border_strip_tableau
+    derivative_tableaux
+    semi_standard_young_tableaux
+    proper_border_strip
     murn_naka_rule
     sn_dimension
     ud_dimension
@@ -41,9 +41,9 @@ Code details
 """
 from .unitary import (
     get_conjugacy_class,
-    derivative_tableau,
-    ssyt,
-    border_strip_tableau,
+    derivative_tableaux,
+    semi_standard_young_tableaux,
+    proper_border_strip,
     murn_naka_rule,
     sn_dimension,
     ud_dimension,
@@ -56,9 +56,9 @@ from ._version import __version__
 
 __all__ = [
     "get_conjugacy_class",
-    "derivative_tableau",
-    "ssyt",
-    "border_strip_tableau",
+    "derivative_tableaux",
+    "semi_standard_young_tableaux",
+    "proper_border_strip",
     "murn_naka_rule",
     "sn_dimension",
     "ud_dimension",

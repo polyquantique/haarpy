@@ -105,132 +105,112 @@ def test_get_conjugacy_class_cycle_value_error(degree, cycle):
 @pytest.mark.parametrize(
     "tableau, add_unit, partition, result",
     [
-        ([[0, 0, 0], [0, 0, 0]], 1, (3, 1), [[[1, 0, 0], [0, 0, 0]]]),
-        ([[1, 2, 0], [2, 3, 0]], 4, [3, 2], [[[1, 2, 4], [2, 3, 0]]]),
-        ([[1, 1, 1, 3], [2, 0, 0, 0]], 4, (4, 2), [[[1, 1, 1, 3], [2, 4, 0, 0]]]),
-        (
-            [[1, 0, 0], [0, 0, 0]],
-            1,
-            (3, 1),
-            [[[1, 1, 0], [0, 0, 0]], [[1, 0, 0], [1, 0, 0]]],
-        ),
-        (
-            [[1, 2, 0], [0, 0, 0]],
-            2,
-            (3, 2),
-            [[[1, 2, 2], [0, 0, 0]], [[1, 2, 0], [2, 0, 0]]],
-        ),
-        (
-            [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-            1,
-            (3, 1, 1),
-            [[[1, 0, 0], [0, 0, 0], [0, 0, 0]]],
-        ),
-        (
-            [[1, 2, 3, 0], [1, 2, 0, 0], [1, 0, 0, 0]],
-            3,
-            (4, 2, 1),
-            [[[1, 2, 3, 3], [1, 2, 0, 0], [1, 0, 0, 0]]],
-        ),
+        (((), ()), 1, (3, 1), (((1,), ()),)),
+        (((1, 2), (2, 3)), 4, (3, 2), (((1, 2, 4), (2, 3)),)),
+        (((1, 1, 1, 3), (2,)), 4, (4, 2), (((1, 1, 1, 3), (2, 4,)),)),
+        (((1,), ()), 1, (3, 1), (((1, 1), ()), ((1,), (1,)))),
+        (((1, 2), ()), 2, (3, 2), (((1, 2, 2), ()), ((1, 2), (2,)))),
+        (((), (), ()), 1, (3, 1, 1), (((1,), (), ()),)),
+        (((1, 2, 3), (1, 2), (1,)), 3, (4, 2, 1), (((1, 2, 3, 3), (1, 2), (1,)),)),
     ],
 )
-def test_derivative_tableau(tableau, add_unit, partition, result):
-    """Test the normal usage of derivative_tableau"""
-    assert ap.derivative_tableau(tableau, add_unit, partition) == result
+def test_derivative_tableaux(tableau, add_unit, partition, result):
+    """Test the normal usage of derivative_tableaux"""
+    assert tuple(ap.derivative_tableaux(tableau, add_unit, partition)) == result
 
 
 @pytest.mark.parametrize(
     "partition, conjugacy_class, result",
     [
-        ((3, 1), (2, 2), [[[1, 2, 2], [1, 0, 0]], [[1, 1, 2], [2, 0, 0]]]),
+        ((3, 1), (2, 2), {((1, 2, 2), (1,)), ((1, 1, 2), (2,))}),
         (
             (3, 1, 1),
             (3, 2),
-            [
-                [[1, 1, 1], [2, 0, 0], [2, 0, 0]],
-                [[1, 1, 2], [1, 0, 0], [2, 0, 0]],
-                [[1, 2, 2], [1, 0, 0], [1, 0, 0]],
-            ],
+            {
+                ((1, 1, 1), (2,), (2,)),
+                ((1, 1, 2), (1,), (2,)),
+                ((1, 2, 2), (1,), (1,)),
+            },
         ),
         (
             (3, 2),
             (1, 2, 1, 1),
-            [[[1, 2, 2], [3, 4, 0]], [[1, 2, 3], [2, 4, 0]], [[1, 2, 4], [2, 3, 0]]],
+            {((1, 2, 2), (3, 4)), ((1, 2, 3), (2, 4)), ((1, 2, 4), (2, 3))},
         ),
         (
             (4, 2),
             (2, 2, 2),
-            [
-                [[1, 1, 2, 3], [2, 3, 0, 0]],
-                [[1, 2, 2, 3], [1, 3, 0, 0]],
-                [[1, 2, 3, 3], [1, 2, 0, 0]],
-                [[1, 1, 2, 2], [3, 3, 0, 0]],
-                [[1, 1, 3, 3], [2, 2, 0, 0]],
-            ],
+            {
+                ((1, 1, 2, 3), (2, 3)),
+                ((1, 2, 2, 3), (1, 3)),
+                ((1, 2, 3, 3), (1, 2)),
+                ((1, 1, 2, 2), (3, 3)),
+                ((1, 1, 3, 3), (2, 2)),
+            },
         ),
         (
             (4, 3),
             (2, 2, 2),
-            [
-                [[1, 1, 2, 0], [2, 3, 3, 0]],
-                [[1, 1, 2, 3], [2, 3, 0, 0]],
-                [[1, 1, 3, 0], [2, 2, 3, 0]],
-                [[1, 2, 2, 0], [1, 3, 3, 0]],
-                [[1, 2, 3, 0], [1, 2, 3, 0]],
-                [[1, 2, 2, 3], [1, 3, 0, 0]],
-                [[1, 2, 3, 3], [1, 2, 0, 0]],
-                [[1, 1, 2, 2], [3, 3, 0, 0]],
-                [[1, 1, 3, 3], [2, 2, 0, 0]],
-            ],
+            {
+                ((1, 1, 2), (2, 3, 3)),
+                ((1, 1, 2, 3), (2, 3)),
+                ((1, 1, 3), (2, 2, 3)),
+                ((1, 2, 2), (1, 3, 3)),
+                ((1, 2, 3), (1, 2, 3)),
+                ((1, 2, 2, 3), (1, 3)),
+                ((1, 2, 3, 3), (1, 2)),
+                ((1, 1, 2, 2), (3, 3)),
+                ((1, 1, 3, 3), (2, 2)),
+            },
         ),
-        ((4, 2), (2, 2, 2, 2), []),
+        ((4, 2), (2, 2, 2, 2), set()),
     ],
 )
-def test_ssyt(partition, conjugacy_class, result):
-    """Test the normal usage of ssyt"""
-    assert ap.ssyt(partition, conjugacy_class) == result
+def test_semi_standard_young_tableaux(partition, conjugacy_class, result):
+    """Test the normal usage of semi_standard_young_tableaux"""
+    assert ap.semi_standard_young_tableaux(partition, conjugacy_class) == result
 
 
 @pytest.mark.parametrize(
     "tableau, conjugacy_class",
     [
-        ([[1, 2, 2], [1, 0, 0]], (2, 2)),
-        ([[1, 1, 1], [2, 0, 0]], (3, 1)),
-        ([[1, 1, 2], [1, 0, 0]], (3, 1)),
-        ([[1, 1, 1], [2, 0, 0], [2, 0, 0]], (3, 2)),
-        ([[1, 2, 2], [1, 0, 0], [1, 0, 0]], (3, 2)),
-        ([[1, 2, 2], [3, 4, 0]], (1, 2, 1, 1)),
-        ([[1, 1, 2, 2], [3, 3, 0, 0]], (2, 2, 2)),
-        ([[1, 1, 3, 3], [2, 2, 0, 0]], (2, 2, 2)),
-        ([[1, 2, 3, 3], [1, 2, 0, 0]], (2, 2, 2)),
-        ([[1, 1, 1, 1, 1], [1, 2, 2, 0, 0]], (6, 2)),
+        (((1, 2, 2), (1,)), (2, 2)),
+        (((1, 1, 1), (2,)), (3, 1)),
+        (((1, 1, 2), (1,)), (3, 1)),
+        (((1, 1, 1), (2,), (2,)), (3, 2)),
+        (((1, 2, 2), (1,), (1,)), (3, 2)),
+        (((1, 2, 2), (3, 4)), (1, 2, 1, 1)),
+        (((1, 1, 2, 2), (3, 3)), (2, 2, 2)),
+        (((1, 1, 3, 3), (2, 2)), (2, 2, 2)),
+        (((1, 2, 3, 3), (1, 2)), (2, 2, 2)),
+        (((1, 1, 1, 1, 1), (1, 2, 2)), (6, 2)),
     ],
 )
-def test_border_strip_tableau_true(tableau, conjugacy_class):
+def test_proper_border_strip_true(tableau, conjugacy_class):
     "Test bad_mapping for well mapped tableaux, returns False"
-    assert ap.border_strip_tableau(tableau, conjugacy_class)
+    assert ap.proper_border_strip(tableau, conjugacy_class)
 
 
 @pytest.mark.parametrize(
     "tableau, conjugacy_class",
     [
-        ([[1, 1, 2], [2, 0, 0]], (2, 2)),
-        ([[1, 1, 2], [1, 0, 0], [2, 0, 0]], (3, 2)),
-        ([[1, 2, 3], [2, 4, 0]], (1, 2, 1, 1)),
-        ([[1, 2, 4], [2, 3, 0]], (1, 2, 1, 1)),
-        ([[1, 1, 2, 3], [2, 3, 0, 0]], (2, 2, 2)),
-        ([[1, 2, 2, 3], [1, 3, 0, 0]], (2, 2, 2)),
-        ([[1, 1, 1, 1, 1], [1, 1, 2, 0, 0]], (7, 1)),
-        ([[1, 1, 1, 1, 2], [1, 1, 1, 0, 0]], (7, 1)),
+        (((1, 1, 2), (2,)), (2, 2)),
+        (((1, 1, 2), (1,), (2,)), (3, 2)),
+        (((1, 2, 3), (2, 4)), (1, 2, 1, 1)),
+        (((1, 2, 4), (2, 3)), (1, 2, 1, 1)),
+        (((1, 1, 2, 3), (2, 3)), (2, 2, 2)),
+        (((1, 2, 2, 3), (1, 3)), (2, 2, 2)),
+        (((1, 1, 1, 1, 1), (1, 1, 2)), (7, 1)),
+        (((1, 1, 1, 1, 2), (1, 1, 1)), (7, 1)),
     ],
 )
-def test_border_strip_tableau_false(tableau, conjugacy_class):
+def test_proper_border_strip_false(tableau, conjugacy_class):
     "Test bad_mapping for wrong mapped tableaux, returns True"
-    assert not ap.border_strip_tableau(tableau, conjugacy_class)
+    assert not ap.proper_border_strip(tableau, conjugacy_class)
 
 
 @pytest.mark.parametrize(
-    "partition, conjugacy_class, caracter",
+    "partition, conjugacy_class, character",
     [
         ((2, 1), (1, 1, 1), 2),
         ((3, 1), (1, 1, 1, 1), 3),
@@ -259,9 +239,9 @@ def test_border_strip_tableau_false(tableau, conjugacy_class):
         ((4, 2, 1, 1), (7, 1), -1),
     ],
 )
-def test_murn_naka_rule(partition, conjugacy_class, caracter):
+def test_murn_naka_rule(partition, conjugacy_class, character):
     "Test murn_naka_rule based on the outputs form weingarten mathematica package"
-    assert ap.murn_naka_rule(partition, conjugacy_class) == caracter
+    assert ap.murn_naka_rule(partition, conjugacy_class) == character
 
 
 @pytest.mark.parametrize(
