@@ -25,11 +25,11 @@ from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 
 
-def get_conjugacy_class(cycle: Permutation, degree: int) -> tuple:
+def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
     """Returns the conjugacy class of an element of the symmetric group Sp
 
     Args:
-        cycle (Permutation): Permutation cycle from the symmetric group
+        perm (Permutation): Permutation cycle from the symmetric group
         degree (integer): Order of the symmetric group
 
     Returns:
@@ -43,20 +43,24 @@ def get_conjugacy_class(cycle: Permutation, degree: int) -> tuple:
     """
     if not isinstance(degree, int):
         raise TypeError("degree must be of type int")
+
     if degree < 1:
         raise ValueError(
             "The degree you have provided is too low. It must be an integer greater than 0."
         )
-    if not isinstance(cycle, Permutation):
-        raise TypeError("cycle must be of type sympy.combinatorics.permutations.Permutation")
+    if not isinstance(perm, Permutation):
+        raise TypeError("Permutation must be of type sympy.combinatorics.permutations.Permutation")
 
-    if cycle.support() == []:
-        return degree * (1,)
-
-    if max(cycle.support()) >= degree:
+    if perm.size > degree:
         raise ValueError("Incompatible degree and permutation cycle")
-    return tuple(sorted([len(i) for i in cycle.cyclic_form], reverse=True)) + (1,) * (
-        degree - len(cycle.support())
+
+    perm = perm * Permutation(degree - 1)
+
+    return tuple(
+        sorted(
+            (key for key, value in perm.cycle_structure.items() for _ in range(value)),
+            reverse=True,
+        )
     )
 
 
@@ -334,13 +338,21 @@ def haar_integral(sequences: tuple[tuple[int]], group_dimension: int) -> Symbol:
     if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
         return 0
 
-    permutation_i = (
-        perm for perm in SymmetricGroup(len(str_i)).elements if perm(str_i_prime) == list(str_i)
-    )
-    permutation_j = (
-        perm for perm in SymmetricGroup(len(str_j)).elements if perm(str_j_prime) == list(str_j)
-    )
     degree = len(str_i)
+    str_i, str_j = list(str_i), list(str_j)
+
+    permutation_i = (
+        perm
+        for perm in SymmetricGroup(degree).generate_schreier_sims()
+        if perm(str_i_prime) == str_i
+    )
+
+    permutation_j = (
+        perm
+        for perm in SymmetricGroup(degree).generate_schreier_sims()
+        if perm(str_j_prime) == str_j
+    )
+
     class_mapping = dict(
         Counter(
             get_conjugacy_class(cycle_i * ~cycle_j, degree)

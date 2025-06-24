@@ -82,7 +82,7 @@ def test_get_conjugacy_class_cycle_type_error(degree, cycle):
     """Test the cycle parameter TypeError"""
     with pytest.raises(
         TypeError,
-        match=".*cycle must be of type sympy.combinatorics.permutations.Permutation.*",
+        match=".*Permutation must be of type sympy.combinatorics.permutations.Permutation.*",
     ):
         ap.get_conjugacy_class(cycle, degree)
 
