@@ -61,11 +61,11 @@ murn_naka_rule((3,1), (1,1,1,1))
 ```
 3
 ```
-### *get_class*
+### *get_conjugacy_class*
 Returns the class of a given element of $S_p$ when given the order and the element.
 ```Python
-from haarpy import get_class
-get_class(Permutation(0,1,2), 4)
+from haarpy import get_conjugacy_class
+get_conjugacy_class(Permutation(0,1,2), 4)
 ```
 ```
 (3,1)
