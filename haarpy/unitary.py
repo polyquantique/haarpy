@@ -269,10 +269,10 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
         raise TypeError("unitary_dimension must be an instance of int or sympy.Symbol")
 
     degree = sum(conjugacy_class)
-    partition_list = tuple(
+    partition_tuple = tuple(
         sum((value * (key,) for key, value in part.items()), ()) for part in partitions(degree)
     )
-    irrep_dimension_list = (irrep_dimension(part) for part in partition_list)
+    irrep_dimension_tuple = (irrep_dimension(part) for part in partition_tuple)
 
     if isinstance(unitary_dimension, int):
         weingarten = sum(
@@ -280,15 +280,15 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
                 irrep_dimension**2 * murn_naka_rule(part, conjugacy_class),
                 representation_dimension(part, unitary_dimension),
             )
-            for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
+            for part, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
         ) * Fraction(1, factorial(degree) ** 2)
     else:
         weingarten = (
             sum(
                 irrep_dimension**2
-                * murn_naka_rule(part, conjugacy_class)
-                / representation_dimension(part, unitary_dimension)
-                for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
+                * murn_naka_rule(partition, conjugacy_class)
+                / representation_dimension(partition, unitary_dimension)
+                for partition, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
             )
             / factorial(degree) ** 2
         )
