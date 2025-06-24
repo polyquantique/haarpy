@@ -216,11 +216,11 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
     """Returns the dimension of the unitary group U(d) labelled by the input partition
 
     Args:
-        partition (tuple[int]) : A partition labelling U(d)
+        partition (tuple[int]) : A partition labelling a representation of U(d)
         unitary_dimension (Symbol) : dimension d of the unitary matrix U
 
     Returns:
-        Symbol : The dimension of U(d)
+        Symbol : The dimension of the representation of U(d) labeled by the partition
     """
     conjugate_partition = tuple(
         sum(1 for _, part in enumerate(partition) if i < part) for i in range(partition[0])
@@ -253,7 +253,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
 
     Args:
         conjugacy_class (tuple[int]) : A conjugacy class, in partition form, of Sp
-        unitary_dimension (Symbol) : Dimension d of the unitary matrix U
+        unitary_dimension (Symbol) : Dimension d of the unitary group
 
     Returns:
         Symbol : The Weingarten function
@@ -265,10 +265,10 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
         raise TypeError("unitary_dimension must be an instance of int or sympy.Symbol")
 
     degree = sum(conjugacy_class)
-    partition_list = [
-        sum([value * (key,) for key, value in part.items()], ()) for part in partitions(degree)
-    ]
-    irrep_dimension_list = [irrep_dimension(part) for part in partition_list]
+    partition_list = tuple(
+        sum((value * (key,) for key, value in part.items()), ()) for part in partitions(degree)
+    )
+    irrep_dimension_list = (irrep_dimension(part) for part in partition_list)
 
     if isinstance(unitary_dimension, int):
         weingarten = sum(
@@ -305,7 +305,7 @@ def weingarten_element(cycle: Permutation, degree: int, unitary_dimension: Symbo
     Returns:
         Symbol : The Weingarten function
     """
-    conjugacy_class = list(get_conjugacy_class(cycle, degree))
+    conjugacy_class = get_conjugacy_class(cycle, degree)
     return weingarten_class(conjugacy_class, unitary_dimension)
 
 
