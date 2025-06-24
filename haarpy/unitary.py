@@ -79,7 +79,7 @@ def derivative_tableaux(
         tuple[tuple[int]]: Modified tableaux
     """
     # empty tableau
-    if not len(tableau[0]):
+    if not tableau[0]:
         yield ((increment,),) + tableau[1:]
         return
 
@@ -156,7 +156,7 @@ def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int])
             continue
 
         for current, following in zip(matching, matching[1:]):
-            if following[0] != current[0] + 1 or not (current[1] & following[1]):
+            if following[0] != current[0] + 1 or not current[1] & following[1]:
                 return False
 
     # 2x2 square condition
