@@ -70,20 +70,20 @@ get_conjugacy_class(Permutation(0,1,2), 4)
 ```
 (3,1)
 ```
-### *sn_dimension*
+### *irrep_dimension*
 Takes a partition labeling an irrep of $S_p$ and returns the dimension of this irrep.
 ```Python
-from haarpy import sn_dimension
-sn_dimension((5,4,2,1,1,1))
+from haarpy import irrep_dimension
+irrep_dimension((5,4,2,1,1,1))
 ```
 ```
 63063
 ```
-### *ud_dimension*
-Takes a partition labeling an irrep of the unitary group $U(d)$, as well as the dimension $d$, and returns the dimension of this irrep.
+### *representation_dimension*
+Takes a partition labeling a representation of the unitary group $U(d)$, as well as the dimension $d$, and returns the dimension of the representation.
 ```Python
-from haarpy import ud_dimension
-ud_dimension((5, 4, 2, 1, 1, 1),d)
+from haarpy import representation_dimension
+representation_dimension((5, 4, 2, 1, 1, 1),d)
 ```
 ```
 d**2*(d - 5)*(d - 4)*(d - 3)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)**2*(d + 3)*(d + 4)/1382400

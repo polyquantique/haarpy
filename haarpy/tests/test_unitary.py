@@ -258,9 +258,9 @@ def test_murn_naka_rule(partition, conjugacy_class, character):
         ((4, 2, 1, 1, 1, 5), -7007),
     ],
 )
-def test_sn_dimension(partition, dimension):
-    "Test sn_dimension based on the outputs form weingarten mathematica package"
-    assert ap.sn_dimension(partition) == dimension
+def test_irrep_dimension(partition, dimension):
+    "Test irrep_dimension based on the outputs form weingarten mathematica package"
+    assert ap.irrep_dimension(partition) == dimension
 
 
 @pytest.mark.parametrize(
@@ -276,10 +276,10 @@ def test_sn_dimension(partition, dimension):
         ((4, 3, 2, 1, 1)),
     ],
 )
-def test_sn_dimension_murn_naka_rule(partition):
-    "Reconcil sn_dimension and murn_naka_rule for a class mu of ones"
-    mu = sum(partition) * [1]
-    assert ap.sn_dimension(partition) == ap.murn_naka_rule(partition, mu)
+def test_irrep_dimension_murn_naka_rule(partition):
+    "Reconcil irrep_dimension and murn_naka_rule for the identity conjugacy class"
+    conjugacy_identity = sum(partition) * (1,)
+    assert ap.irrep_dimension(partition) == ap.murn_naka_rule(partition, conjugacy_identity)
 
 
 @pytest.mark.parametrize(
@@ -296,9 +296,9 @@ def test_sn_dimension_murn_naka_rule(partition):
         ((11, 3, 2), 405097426800),
     ],
 )
-def test_ud_dimension(partition, dimension):
-    "Test ud_dimension based on the outputs form weingarten mathematica package"
-    assert ap.ud_dimension(partition, 17) == dimension
+def test_representation_dimension(partition, dimension):
+    "Test representation_dimension based on the outputs form weingarten mathematica package"
+    assert ap.representation_dimension(partition, 17) == dimension
 
 
 @pytest.mark.parametrize(
@@ -312,9 +312,9 @@ def test_ud_dimension(partition, dimension):
         ((6, 5, 4)),
     ],
 )
-def test_ud_dimension_wrong_dimension(partition):
-    "ud_dimension returns 0 if the dimension is lower than the number of parts in the partition"
-    assert not ap.ud_dimension(partition, len(partition) - 1)
+def test_representation_dimension_wrong_dimension(partition):
+    "representation_dimension returns 0 if the dimension is lower than the number of parts in the partition"
+    assert not ap.representation_dimension(partition, len(partition) - 1)
 
 
 @pytest.mark.parametrize(

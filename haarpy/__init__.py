@@ -30,8 +30,8 @@ Functions
     semi_standard_young_tableaux
     proper_border_strip
     murn_naka_rule
-    sn_dimension
-    ud_dimension
+    irrep_dimension
+    representation_dimension
     weingarten_class
     weingarten_element
     haar_integral
@@ -45,8 +45,8 @@ from .unitary import (
     semi_standard_young_tableaux,
     proper_border_strip,
     murn_naka_rule,
-    sn_dimension,
-    ud_dimension,
+    irrep_dimension,
+    representation_dimension,
     weingarten_class,
     weingarten_element,
     haar_integral,
@@ -60,8 +60,8 @@ __all__ = [
     "semi_standard_young_tableaux",
     "proper_border_strip",
     "murn_naka_rule",
-    "sn_dimension",
-    "ud_dimension",
+    "irrep_dimension",
+    "representation_dimension",
     "weingarten_class",
     "weingarten_element",
     "haar_integral",

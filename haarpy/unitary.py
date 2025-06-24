@@ -15,12 +15,11 @@
 haarpy Python interface
 """
 
-from math import factorial
+from math import factorial, prod
 from typing import Generator
 from itertools import product
 from collections import Counter
 from fractions import Fraction
-import numpy as np
 from sympy import Symbol, fraction, simplify, factor
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
@@ -186,87 +185,67 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
         sum(height.count(unit + 1) - 1 for unit in range(len(conjugacy_class)))
         for height in heights
     )
-    
+
     character = sum((-1) ** height for height in heights)
     return character
 
 
-def sn_dimension(partition: tuple[int]) -> int:
+def irrep_dimension(partition: tuple[int]) -> int:
     """Returns the dimension of the irrep of the symmetric group Sp labelled by the input partition
 
     Args:
-        partition (list[int]) : A partition labelling an irrep of Sp
+        partition (tuple[int]) : A partition labelling an irrep of Sp
 
     Returns:
         int : The dimension of the irrep
     """
-    numerator = np.prod(
-        [
-            part_i - part_j + j + 1
-            for i, part_i in enumerate(partition)
-            for j, part_j in enumerate(partition[i + 1 :])
-        ],
-        dtype=np.int64,
+    numerator = prod(
+        part_i - part_j + j + 1
+        for i, part_i in enumerate(partition)
+        for j, part_j in enumerate(partition[i + 1 :])
     )
-    len_partition = len(partition)
-    denominator = np.prod(
-        [factorial(part + len_partition - i - 1) for i, part in enumerate(partition)],
-        dtype=np.int64,
-    )
+    denominator = prod(factorial(part + len(partition) - i - 1) for i, part in enumerate(partition))
     dimension = Fraction(numerator, denominator) * factorial(sum(partition))
     if dimension.denominator != 1:
-        raise ValueError("Fraction too large for dtype int32")
+        raise ValueError
 
     return dimension.numerator
 
 
-def ud_dimension(partition: tuple[int], unitary_dimension: Symbol) -> int:
+def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> int:
     """Returns the dimension of the unitary group U(d) labelled by the input partition
 
     Args:
-        partition (list[int]) : A partition labelling U(d)
+        partition (tuple[int]) : A partition labelling U(d)
         unitary_dimension (Symbol) : dimension d of the unitary matrix U
 
     Returns:
         Symbol : The dimension of U(d)
     """
-    conjugate_partition = [
+    conjugate_partition = tuple(
         sum(1 for _, part in enumerate(partition) if i < part) for i in range(partition[0])
-    ]
+    )
     if isinstance(unitary_dimension, int):
-        dimension = np.prod(
-            [
-                np.prod(
-                    [
-                        Fraction(
-                            unitary_dimension + j - i,
-                            part + conjugate_partition[j] - i - j - 1,
-                        )
-                        for j in range(part)
-                    ]
-                )
-                for i, part in enumerate(partition)
-            ]
+        dimension = prod(
+            Fraction(
+                unitary_dimension + j - i,
+                part + conjugate_partition[j] - i - j - 1,
+            )
+            for i, part in enumerate(partition)
+            for j in range(part)
         )
         if dimension.denominator != 1:
-            raise ValueError("Fraction too large for dtype int32")
+            raise ValueError
+
         return dimension.numerator
 
-    numerator = np.prod(
-        [
-            np.prod([(unitary_dimension + k - i) for k in range(part)])
-            for i, part in enumerate(partition)
-        ]
+    dimension = prod(
+        (unitary_dimension + j - i) / (part + conjugate_partition[j] - i - j - 1)
+        for i, part in enumerate(partition)
+        for j in range(part)
     )
 
-    denominator = np.prod(
-        [
-            np.prod([part + conjugate_partition[j] - i - j - 1 for j in range(part)])
-            for i, part in enumerate(partition)
-        ]
-    )
-
-    return numerator / denominator
+    return dimension
 
 
 def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> Symbol:
@@ -289,13 +268,13 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
     partition_list = [
         sum([value * (key,) for key, value in part.items()], ()) for part in partitions(degree)
     ]
-    irrep_dimension_list = [sn_dimension(part) for part in partition_list]
+    irrep_dimension_list = [irrep_dimension(part) for part in partition_list]
 
     if isinstance(unitary_dimension, int):
         weingarten = sum(
             Fraction(
                 irrep_dimension**2 * murn_naka_rule(part, conjugacy_class),
-                ud_dimension(part, unitary_dimension),
+                representation_dimension(part, unitary_dimension),
             )
             for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
         ) * Fraction(1, factorial(degree) ** 2)
@@ -304,7 +283,7 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
             sum(
                 irrep_dimension**2
                 * murn_naka_rule(part, conjugacy_class)
-                / ud_dimension(part, unitary_dimension)
+                / representation_dimension(part, unitary_dimension)
                 for part, irrep_dimension in zip(partition_list, irrep_dimension_list)
             )
             / factorial(degree) ** 2

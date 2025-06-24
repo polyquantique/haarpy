@@ -11,10 +11,14 @@ Certain functions have been renamed to improve clarity:
 * `ssyt()` -> `semi_standard_young_tableaux()`
 * `bad_mapping()` -> `proper_border_strip()`
 * `murn_naka()` -> `murn_naka_rule()`
+* `sn_dimension()` -> `irrep_dimension()`
+* `ud_dimension()` -> `representation_dimension()`
 
 ### Improvements
 
 README has been updated with the previous function name changes. Some typos have been fixed. Examples of unitary Haar integrals have also been added to the README.
+
+Dependencies to numpy have been removed.
 
 ### Bug fixes
 
