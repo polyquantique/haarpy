@@ -109,7 +109,7 @@ def derivative_tableaux(
 
 def semi_standard_young_tableaux(
     partition: tuple[int], conjugacy_class: tuple[int]
-) -> set[tuple[tuple[int]], None, None]:
+) -> set[tuple[tuple[int]]]:
     """all eligible semi-standard young tableaux based of the partition
 
     Args:
