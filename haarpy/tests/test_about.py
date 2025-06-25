@@ -34,5 +34,4 @@ def test_about():
     assert "Python version:" in out
     pl_version_match = re.search(r"Haarpy version:\s+([\S]+)\n", out).group(1)
     assert ap.version() in pl_version_match
-    assert "Numpy version" in out
     assert "SymPy version" in out

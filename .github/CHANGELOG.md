@@ -7,12 +7,18 @@
 ### Breaking changes
 
 Certain functions have been renamed to improve clarity:
-* `bad_mapping()` -> `border_strip_tableau()`
+* `get_class()` -> `get_conjugacy_class()`
+* `ssyt()` -> `semi_standard_young_tableaux()`
+* `bad_mapping()` -> `proper_border_strip()`
 * `murn_naka()` -> `murn_naka_rule()`
+* `sn_dimension()` -> `irrep_dimension()`
+* `ud_dimension()` -> `representation_dimension()`
 
 ### Improvements
 
 README has been updated with the previous function name changes. Some typos have been fixed. Examples of unitary Haar integrals have also been added to the README.
+
+Removed any dependency on NumPy.
 
 ### Bug fixes
 

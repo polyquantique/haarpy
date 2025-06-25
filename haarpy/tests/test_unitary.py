@@ -40,9 +40,9 @@ from sympy.combinatorics.named_groups import SymmetricGroup
         (1, Permutation(0), (1,)),
     ],
 )
-def test_get_class(degree, cycle, conjugacy):
-    """Test the normal usage of get_class"""
-    assert ap.get_class(cycle, degree) == conjugacy
+def test_get_conjugacy_class(degree, cycle, conjugacy):
+    """Test the normal usage of get_conjugacy_class"""
+    assert ap.get_conjugacy_class(cycle, degree) == conjugacy
 
 
 @pytest.mark.parametrize(
@@ -54,20 +54,20 @@ def test_get_class(degree, cycle, conjugacy):
         ([5], Permutation(0, 1, 2)),
     ],
 )
-def test_get_class_degree_type_error(degree, cycle):
+def test_get_conjugacy_class_degree_type_error(degree, cycle):
     """Test the degree parameter TypeError"""
     with pytest.raises(TypeError, match=".*degree must be of type int.*"):
-        ap.get_class(cycle, degree)
+        ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize("degree", range(-3, 1))
-def test_get_class_degree_value_error(degree):
+def test_get_conjugacy_class_degree_value_error(degree):
     """Test the degree parameter ValueError"""
     with pytest.raises(
         ValueError,
         match=".*The degree you have provided is too low. It must be an integer greater than 0.*",
     ):
-        ap.get_class(Permutation(0, 1, 2), degree)
+        ap.get_conjugacy_class(Permutation(0, 1, 2), degree)
 
 
 @pytest.mark.parametrize(
@@ -78,13 +78,13 @@ def test_get_class_degree_value_error(degree):
         (7, 2.0),
     ],
 )
-def test_get_class_cycle_type_error(degree, cycle):
+def test_get_conjugacy_class_cycle_type_error(degree, cycle):
     """Test the cycle parameter TypeError"""
     with pytest.raises(
         TypeError,
-        match=".*cycle must be of type sympy.combinatorics.permutations.Permutation.*",
+        match=".*Permutation must be of type sympy.combinatorics.permutations.Permutation.*",
     ):
-        ap.get_class(cycle, degree)
+        ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize(
@@ -96,141 +96,121 @@ def test_get_class_cycle_type_error(degree, cycle):
         (4, Permutation(4, 1)),
     ],
 )
-def test_get_class_cycle_value_error(degree, cycle):
+def test_get_conjugacy_class_cycle_value_error(degree, cycle):
     """Test the cycle parameter ValueError if permutation maximum value is greater than the degree"""
     with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
-        ap.get_class(cycle, degree)
+        ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize(
-    "tableau, add_unit,partition, result",
+    "tableau, add_unit, partition, result",
     [
-        ([[0, 0, 0], [0, 0, 0]], 1, (3, 1), [[[1, 0, 0], [0, 0, 0]]]),
-        ([[1, 2, 0], [2, 3, 0]], 4, [3, 2], [[[1, 2, 4], [2, 3, 0]]]),
-        ([[1, 1, 1, 3], [2, 0, 0, 0]], 4, (4, 2), [[[1, 1, 1, 3], [2, 4, 0, 0]]]),
-        (
-            [[1, 0, 0], [0, 0, 0]],
-            1,
-            (3, 1),
-            [[[1, 1, 0], [0, 0, 0]], [[1, 0, 0], [1, 0, 0]]],
-        ),
-        (
-            [[1, 2, 0], [0, 0, 0]],
-            2,
-            (3, 2),
-            [[[1, 2, 2], [0, 0, 0]], [[1, 2, 0], [2, 0, 0]]],
-        ),
-        (
-            [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-            1,
-            (3, 1, 1),
-            [[[1, 0, 0], [0, 0, 0], [0, 0, 0]]],
-        ),
-        (
-            [[1, 2, 3, 0], [1, 2, 0, 0], [1, 0, 0, 0]],
-            3,
-            (4, 2, 1),
-            [[[1, 2, 3, 3], [1, 2, 0, 0], [1, 0, 0, 0]]],
-        ),
+        (((), ()), 1, (3, 1), (((1,), ()),)),
+        (((1, 2), (2, 3)), 4, (3, 2), (((1, 2, 4), (2, 3)),)),
+        (((1, 1, 1, 3), (2,)), 4, (4, 2), (((1, 1, 1, 3), (2, 4,)),)),
+        (((1,), ()), 1, (3, 1), (((1, 1), ()), ((1,), (1,)))),
+        (((1, 2), ()), 2, (3, 2), (((1, 2, 2), ()), ((1, 2), (2,)))),
+        (((), (), ()), 1, (3, 1, 1), (((1,), (), ()),)),
+        (((1, 2, 3), (1, 2), (1,)), 3, (4, 2, 1), (((1, 2, 3, 3), (1, 2), (1,)),)),
     ],
 )
-def test_derivative_tableau(tableau, add_unit, partition, result):
-    """Test the normal usage of derivative_tableau"""
-    assert ap.derivative_tableau(tableau, add_unit, partition) == result
+def test_derivative_tableaux(tableau, add_unit, partition, result):
+    """Test the normal usage of derivative_tableaux"""
+    assert tuple(ap.derivative_tableaux(tableau, add_unit, partition)) == result
 
 
 @pytest.mark.parametrize(
     "partition, conjugacy_class, result",
     [
-        ((3, 1), (2, 2), [[[1, 2, 2], [1, 0, 0]], [[1, 1, 2], [2, 0, 0]]]),
+        ((3, 1), (2, 2), {((0, 1, 1), (0,)), ((0, 0, 1), (1,))}),
         (
             (3, 1, 1),
             (3, 2),
-            [
-                [[1, 1, 1], [2, 0, 0], [2, 0, 0]],
-                [[1, 1, 2], [1, 0, 0], [2, 0, 0]],
-                [[1, 2, 2], [1, 0, 0], [1, 0, 0]],
-            ],
+            {
+                ((0, 0, 0), (1,), (1,)),
+                ((0, 0, 1), (0,), (1,)),
+                ((0, 1, 1), (0,), (0,)),
+            },
         ),
         (
             (3, 2),
             (1, 2, 1, 1),
-            [[[1, 2, 2], [3, 4, 0]], [[1, 2, 3], [2, 4, 0]], [[1, 2, 4], [2, 3, 0]]],
+            {((0, 1, 1), (2, 3)), ((0, 1, 2), (1, 3)), ((0, 1, 3), (1, 2))},
         ),
         (
             (4, 2),
             (2, 2, 2),
-            [
-                [[1, 1, 2, 3], [2, 3, 0, 0]],
-                [[1, 2, 2, 3], [1, 3, 0, 0]],
-                [[1, 2, 3, 3], [1, 2, 0, 0]],
-                [[1, 1, 2, 2], [3, 3, 0, 0]],
-                [[1, 1, 3, 3], [2, 2, 0, 0]],
-            ],
+            {
+                ((0, 0, 1, 2), (1, 2)),
+                ((0, 1, 1, 2), (0, 2)),
+                ((0, 1, 2, 2), (0, 1)),
+                ((0, 0, 1, 1), (2, 2)),
+                ((0, 0, 2, 2), (1, 1)),
+            },
         ),
         (
             (4, 3),
             (2, 2, 2),
-            [
-                [[1, 1, 2, 0], [2, 3, 3, 0]],
-                [[1, 1, 2, 3], [2, 3, 0, 0]],
-                [[1, 1, 3, 0], [2, 2, 3, 0]],
-                [[1, 2, 2, 0], [1, 3, 3, 0]],
-                [[1, 2, 3, 0], [1, 2, 3, 0]],
-                [[1, 2, 2, 3], [1, 3, 0, 0]],
-                [[1, 2, 3, 3], [1, 2, 0, 0]],
-                [[1, 1, 2, 2], [3, 3, 0, 0]],
-                [[1, 1, 3, 3], [2, 2, 0, 0]],
-            ],
+            {
+                ((0, 0, 1), (1, 2, 2)),
+                ((0, 0, 1, 2), (1, 2)),
+                ((0, 0, 2), (1, 1, 2)),
+                ((0, 1, 1), (0, 2, 2)),
+                ((0, 1, 2), (0, 1, 2)),
+                ((0, 1, 1, 2), (0, 2)),
+                ((0, 1, 2, 2), (0, 1)),
+                ((0, 0, 1, 1), (2, 2)),
+                ((0, 0, 2, 2), (1, 1)),
+            },
         ),
-        ((4, 2), (2, 2, 2, 2), []),
+        ((4, 2), (2, 2, 2, 2), set()),
     ],
 )
-def test_ssyt(partition, conjugacy_class, result):
-    """Test the normal usage of ssyt"""
-    assert ap.ssyt(partition, conjugacy_class) == result
+def test_semi_standard_young_tableaux(partition, conjugacy_class, result):
+    """Test the normal usage of semi_standard_young_tableaux"""
+    assert ap.semi_standard_young_tableaux(partition, conjugacy_class) == result
 
 
 @pytest.mark.parametrize(
     "tableau, conjugacy_class",
     [
-        ([[1, 2, 2], [1, 0, 0]], (2, 2)),
-        ([[1, 1, 1], [2, 0, 0]], (3, 1)),
-        ([[1, 1, 2], [1, 0, 0]], (3, 1)),
-        ([[1, 1, 1], [2, 0, 0], [2, 0, 0]], (3, 2)),
-        ([[1, 2, 2], [1, 0, 0], [1, 0, 0]], (3, 2)),
-        ([[1, 2, 2], [3, 4, 0]], (1, 2, 1, 1)),
-        ([[1, 1, 2, 2], [3, 3, 0, 0]], (2, 2, 2)),
-        ([[1, 1, 3, 3], [2, 2, 0, 0]], (2, 2, 2)),
-        ([[1, 2, 3, 3], [1, 2, 0, 0]], (2, 2, 2)),
-        ([[1, 1, 1, 1, 1], [1, 2, 2, 0, 0]], (6, 2)),
+        (((1, 2, 2), (1,)), (2, 2)),
+        (((1, 1, 1), (2,)), (3, 1)),
+        (((1, 1, 2), (1,)), (3, 1)),
+        (((1, 1, 1), (2,), (2,)), (3, 2)),
+        (((1, 2, 2), (1,), (1,)), (3, 2)),
+        (((1, 2, 2), (3, 4)), (1, 2, 1, 1)),
+        (((1, 1, 2, 2), (3, 3)), (2, 2, 2)),
+        (((1, 1, 3, 3), (2, 2)), (2, 2, 2)),
+        (((1, 2, 3, 3), (1, 2)), (2, 2, 2)),
+        (((1, 1, 1, 1, 1), (1, 2, 2)), (6, 2)),
     ],
 )
-def test_border_strip_tableau_true(tableau, conjugacy_class):
+def test_proper_border_strip_true(tableau, conjugacy_class):
     "Test bad_mapping for well mapped tableaux, returns False"
-    assert ap.border_strip_tableau(tableau, conjugacy_class)
+    assert ap.proper_border_strip(tableau, conjugacy_class)
 
 
 @pytest.mark.parametrize(
     "tableau, conjugacy_class",
     [
-        ([[1, 1, 2], [2, 0, 0]], (2, 2)),
-        ([[1, 1, 2], [1, 0, 0], [2, 0, 0]], (3, 2)),
-        ([[1, 2, 3], [2, 4, 0]], (1, 2, 1, 1)),
-        ([[1, 2, 4], [2, 3, 0]], (1, 2, 1, 1)),
-        ([[1, 1, 2, 3], [2, 3, 0, 0]], (2, 2, 2)),
-        ([[1, 2, 2, 3], [1, 3, 0, 0]], (2, 2, 2)),
-        ([[1, 1, 1, 1, 1], [1, 1, 2, 0, 0]], (7, 1)),
-        ([[1, 1, 1, 1, 2], [1, 1, 1, 0, 0]], (7, 1)),
+        (((1, 1, 2), (2,)), (2, 2)),
+        (((1, 1, 2), (1,), (2,)), (3, 2)),
+        (((1, 2, 3), (2, 4)), (1, 2, 1, 1)),
+        (((1, 2, 4), (2, 3)), (1, 2, 1, 1)),
+        (((1, 1, 2, 3), (2, 3)), (2, 2, 2)),
+        (((1, 2, 2, 3), (1, 3)), (2, 2, 2)),
+        (((1, 1, 1, 1, 1), (1, 1, 2)), (7, 1)),
+        (((1, 1, 1, 1, 2), (1, 1, 1)), (7, 1)),
     ],
 )
-def test_border_strip_tableau_false(tableau, conjugacy_class):
+def test_proper_border_strip_false(tableau, conjugacy_class):
     "Test bad_mapping for wrong mapped tableaux, returns True"
-    assert not ap.border_strip_tableau(tableau, conjugacy_class)
+    assert not ap.proper_border_strip(tableau, conjugacy_class)
 
 
 @pytest.mark.parametrize(
-    "partition, conjugacy_class, caracter",
+    "partition, conjugacy_class, character",
     [
         ((2, 1), (1, 1, 1), 2),
         ((3, 1), (1, 1, 1, 1), 3),
@@ -259,9 +239,9 @@ def test_border_strip_tableau_false(tableau, conjugacy_class):
         ((4, 2, 1, 1), (7, 1), -1),
     ],
 )
-def test_murn_naka_rule(partition, conjugacy_class, caracter):
+def test_murn_naka_rule(partition, conjugacy_class, character):
     "Test murn_naka_rule based on the outputs form weingarten mathematica package"
-    assert ap.murn_naka_rule(partition, conjugacy_class) == caracter
+    assert ap.murn_naka_rule(partition, conjugacy_class) == character
 
 
 @pytest.mark.parametrize(
@@ -278,9 +258,9 @@ def test_murn_naka_rule(partition, conjugacy_class, caracter):
         ((4, 2, 1, 1, 1, 5), -7007),
     ],
 )
-def test_sn_dimension(partition, dimension):
-    "Test sn_dimension based on the outputs form weingarten mathematica package"
-    assert ap.sn_dimension(partition) == dimension
+def test_irrep_dimension(partition, dimension):
+    "Test irrep_dimension based on the outputs form weingarten mathematica package"
+    assert ap.irrep_dimension(partition) == dimension
 
 
 @pytest.mark.parametrize(
@@ -296,10 +276,10 @@ def test_sn_dimension(partition, dimension):
         ((4, 3, 2, 1, 1)),
     ],
 )
-def test_sn_dimension_murn_naka_rule(partition):
-    "Reconcil sn_dimension and murn_naka_rule for a class mu of ones"
-    mu = sum(partition) * [1]
-    assert ap.sn_dimension(partition) == ap.murn_naka_rule(partition, mu)
+def test_irrep_dimension_murn_naka_rule(partition):
+    "Reconcil irrep_dimension and murn_naka_rule for the identity conjugacy class"
+    conjugacy_identity = sum(partition) * (1,)
+    assert ap.irrep_dimension(partition) == ap.murn_naka_rule(partition, conjugacy_identity)
 
 
 @pytest.mark.parametrize(
@@ -316,9 +296,9 @@ def test_sn_dimension_murn_naka_rule(partition):
         ((11, 3, 2), 405097426800),
     ],
 )
-def test_ud_dimension(partition, dimension):
-    "Test ud_dimension based on the outputs form weingarten mathematica package"
-    assert ap.ud_dimension(partition, 17) == dimension
+def test_representation_dimension(partition, dimension):
+    "Test representation_dimension based on the outputs form weingarten mathematica package"
+    assert ap.representation_dimension(partition, 17) == dimension
 
 
 @pytest.mark.parametrize(
@@ -332,9 +312,9 @@ def test_ud_dimension(partition, dimension):
         ((6, 5, 4)),
     ],
 )
-def test_ud_dimension_wrong_dimension(partition):
-    "ud_dimension returns 0 if the dimension is lower than the number of parts in the partition"
-    assert not ap.ud_dimension(partition, len(partition) - 1)
+def test_representation_dimension_wrong_dimension(partition):
+    "representation_dimension returns 0 if the dimension is lower than the number of parts in the partition"
+    assert not ap.representation_dimension(partition, len(partition) - 1)
 
 
 @pytest.mark.parametrize(
@@ -402,7 +382,7 @@ def test_weingarten_element(cycle, degree, dimension, num, denum):
 def test_weingarten_reconciliation(cycle, degree):
     "Numeric reconciliation of weingarten_class and weingarten_element"
     assert ap.weingarten_element(cycle, degree, 9) == ap.weingarten_class(
-        ap.get_class(cycle, degree), 9
+        ap.get_conjugacy_class(cycle, degree), 9
     )
 
 
@@ -426,18 +406,30 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
     "Symbolic reconciliation of weingarten_class and weingarten_element"
     d = Symbol("d")
     assert ap.weingarten_element(cycle, degree, d) == ap.weingarten_class(
-        list(ap.get_class(cycle, degree)), d
+        list(ap.get_conjugacy_class(cycle, degree)), d
     )
 
 
-@pytest.mark.parametrize("n", [2, 3, 4, 5, 6])
-def test_gram_orthogonality(n):
+@pytest.mark.parametrize("n", range(2,5))
+def test_gram_orthogonality_elements(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
     d = Symbol("d")
-    group = lambda n: SymmetricGroup(n).generate_schreier_sims()
-    character = lambda g, d, n: d ** (g.cycles)
-    weingarten = lambda g, d, n: ap.weingarten_element(g, n, d)
-    orthogonality = sum(character(g, d, n) * weingarten(g, d, n) for g in group(n))
+    orthogonality = sum(
+        d ** (g.cycles) * ap.weingarten_element(g, n, d)
+        for g in SymmetricGroup(n).generate_schreier_sims()
+        )
+    assert simplify(orthogonality) == 1
+
+
+@pytest.mark.parametrize("n", range(2,10))
+def test_gram_orthogonality_classes(n):
+    "Test the orthogonality relation between Weingarten matrix and Graham matrix"
+    d = Symbol("d")
+    weight = lambda g : d ** (g.cycles) * ap.weingarten_class(ap.get_conjugacy_class(g, n), d)
+    orthogonality = sum(
+        len(c) * weight(c.pop())
+        for c in SymmetricGroup(n).conjugacy_classes()
+        )
     assert simplify(orthogonality) == 1
 
 

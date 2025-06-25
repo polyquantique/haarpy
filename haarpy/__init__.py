@@ -25,13 +25,13 @@ Functions
 ---------
 
 .. autosummary::
-    get_class
-    derivative_tableau
-    ssyt
-    bad_mapping
-    murn_naka
-    sn_dimension
-    ud_dimension
+    get_conjugacy_class
+    derivative_tableaux
+    semi_standard_young_tableaux
+    proper_border_strip
+    murn_naka_rule
+    irrep_dimension
+    representation_dimension
     weingarten_class
     weingarten_element
     haar_integral
@@ -40,13 +40,13 @@ Code details
 ------------
 """
 from .unitary import (
-    get_class,
-    derivative_tableau,
-    ssyt,
-    border_strip_tableau,
+    get_conjugacy_class,
+    derivative_tableaux,
+    semi_standard_young_tableaux,
+    proper_border_strip,
     murn_naka_rule,
-    sn_dimension,
-    ud_dimension,
+    irrep_dimension,
+    representation_dimension,
     weingarten_class,
     weingarten_element,
     haar_integral,
@@ -55,13 +55,13 @@ from .unitary import (
 from ._version import __version__
 
 __all__ = [
-    "get_class",
-    "derivative_tableau",
-    "ssyt",
-    "border_strip_tableau",
+    "get_conjugacy_class",
+    "derivative_tableaux",
+    "semi_standard_young_tableaux",
+    "proper_border_strip",
     "murn_naka_rule",
-    "sn_dimension",
-    "ud_dimension",
+    "irrep_dimension",
+    "representation_dimension",
     "weingarten_class",
     "weingarten_element",
     "haar_integral",
@@ -95,7 +95,6 @@ def about():
         Platform info:             Linux-6.8.0-31-generic-x86_64-with-glibc2.39
         Installation path:         /home/username/haarpy
         Haarpy version:            0.0.4
-        Numpy version:             1.26.4
         SymPy version:             1.12
     """
     # pylint: disable=import-outside-toplevel
@@ -103,7 +102,6 @@ def about():
     import platform
 
     import sys
-    import numpy
     import sympy
 
     # a QuTiP-style infobox
@@ -116,5 +114,4 @@ def about():
     print(f"Platform info:             {platform.platform()}")
     print(f"Installation path:         {os.path.dirname(__file__)}")
     print(f"Haarpy version:            {__version__}")
-    print(f"Numpy version:             {numpy.__version__}")
     print(f"SymPy version:             {sympy.__version__}")

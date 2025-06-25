@@ -55,35 +55,35 @@ Auxiliary functions include, but are not limited to, the following. For a compre
 ### *murn_naka_rule*
 Implementation of the Murnaghan-Nakayama rule for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
 ```Python
-from haarpy import murn_naka
+from haarpy import murn_naka_rule
 murn_naka_rule((3,1), (1,1,1,1))
 ```
 ```
 3
 ```
-### *get_class*
+### *get_conjugacy_class*
 Returns the class of a given element of $S_p$ when given the order and the element.
 ```Python
-from haarpy import get_class
-get_class(Permutation(0,1,2), 4)
+from haarpy import get_conjugacy_class
+get_conjugacy_class(Permutation(0,1,2), 4)
 ```
 ```
 (3,1)
 ```
-### *sn_dimension*
+### *irrep_dimension*
 Takes a partition labeling an irrep of $S_p$ and returns the dimension of this irrep.
 ```Python
-from haarpy import sn_dimension
-sn_dimension((5,4,2,1,1,1))
+from haarpy import irrep_dimension
+irrep_dimension((5,4,2,1,1,1))
 ```
 ```
 63063
 ```
-### *ud_dimension*
-Takes a partition labeling an irrep of the unitary group $U(d)$, as well as the dimension $d$, and returns the dimension of this irrep.
+### *representation_dimension*
+Takes a partition labeling a representation of the unitary group $U(d)$, as well as the dimension $d$, and returns the dimension of the representation.
 ```Python
-from haarpy import ud_dimension
-ud_dimension((5, 4, 2, 1, 1, 1),d)
+from haarpy import representation_dimension
+representation_dimension((5, 4, 2, 1, 1, 1),d)
 ```
 ```
 d**2*(d - 5)*(d - 4)*(d - 3)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)**2*(d + 3)*(d + 4)/1382400
@@ -153,7 +153,6 @@ pip install haarpy
 ## Compiling from source
 Haarpy has the following dependencies:
 * [Python](https://www.python.org/) >= 3.9
-* [NumPy](https://numpy.org/) >= 1.26.4
 * [SymPy](https://www.sympy.org) >= 1.12
 
 
