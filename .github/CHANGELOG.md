@@ -18,7 +18,7 @@ Certain functions have been renamed to improve clarity:
 
 README has been updated with the previous function name changes. Some typos have been fixed. Examples of unitary Haar integrals have also been added to the README.
 
-Removed all dependancies to NumPy.
+Removed any dependency on NumPy.
 
 ### Bug fixes
 
