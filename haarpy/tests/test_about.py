@@ -35,4 +35,3 @@ def test_about():
     pl_version_match = re.search(r"Haarpy version:\s+([\S]+)\n", out).group(1)
     assert ap.version() in pl_version_match
     assert "SymPy version" in out
-    
