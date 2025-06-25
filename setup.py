@@ -20,7 +20,6 @@ with open("haarpy/_version.py") as f:
 
 
 requirements = [
-    "numpy>=1.26.4",
     "sympy>=1.12"
 ]
 
