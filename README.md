@@ -6,8 +6,8 @@
   <a href="https://pypi.python.org/pypi/haarpy">
     <img src="https://img.shields.io/pypi/v/haarpy.svg" alt="pypi version"/>
   </a>
-  <a href="https://pypi.python.org/pypi/haarpy">
-    <img src="https://img.shields.io/pypi/v/haarpy.svg" alt="pypi version"/>
+  <a href="https://pypi.org/project/haarpy">
+    <img src="https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat" alt="PyPI - Python Version"/>
   </a>
 </div>
 
