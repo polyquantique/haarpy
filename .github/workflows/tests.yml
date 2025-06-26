@@ -26,6 +26,7 @@ jobs:
         shell: bash
         run: |
           pip install -r requirements.txt
+          pip install -r requirements_dev.txt
           pip install pytest-cov wheel codecov
 
       - name: Install Haarpy
