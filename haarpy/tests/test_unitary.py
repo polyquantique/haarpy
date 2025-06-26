@@ -51,7 +51,7 @@ def test_get_conjugacy_class(degree, cycle, conjugacy):
         ("a", Permutation(0, 1, 2)),
         (0.1, Permutation(2)(0, 1)),
         ((1,), Permutation(0, 1, 2, 3)),
-        ((5,), Permutation(0, 1, 2)),
+        ([5], Permutation(0, 1, 2)),
     ],
 )
 def test_get_conjugacy_class_degree_type_error(degree, cycle):
@@ -73,7 +73,7 @@ def test_get_conjugacy_class_degree_value_error(degree):
 @pytest.mark.parametrize(
     "degree, cycle",
     [
-        (3, (1, 2, 3)),
+        (3, [1, 2, 3]),
         (4, "a"),
         (7, 2.0),
     ],
@@ -406,7 +406,7 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
     "Symbolic reconciliation of weingarten_class and weingarten_element"
     d = Symbol("d")
     assert ap.weingarten_element(cycle, degree, d) == ap.weingarten_class(
-        ap.get_conjugacy_class(cycle, degree), d
+        list(ap.get_conjugacy_class(cycle, degree)), d
     )
 
 

@@ -17,7 +17,6 @@ haarpy Python interface
 
 from math import factorial, prod
 from typing import Generator
-from functools import lru_cache
 from itertools import product
 from collections import Counter
 from fractions import Fraction
@@ -26,7 +25,6 @@ from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 
 
-@lru_cache
 def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
     """Returns the conjugacy class of an element of the symmetric group Sp
 
@@ -109,7 +107,6 @@ def derivative_tableaux(
             )
 
 
-@lru_cache
 def semi_standard_young_tableaux(
     partition: tuple[int], conjugacy_class: tuple[int]
 ) -> set[tuple[tuple[int]]]:
@@ -134,7 +131,6 @@ def semi_standard_young_tableaux(
     return tableaux
 
 
-@lru_cache
 def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int]) -> bool:
     """Returns True if input Young tableau is a valid border-strip tableau
 
@@ -172,7 +168,6 @@ def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int])
     return True
 
 
-@lru_cache
 def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     """Implementation of the Murnaghan-Nakayama rule for the characters irreducible
     representations of the symmetric group Sp
@@ -200,7 +195,6 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     return character
 
 
-@lru_cache
 def irrep_dimension(partition: tuple[int]) -> int:
     """Returns the dimension of the irrep of the symmetric group Sp labelled by the input partition
 
@@ -221,7 +215,6 @@ def irrep_dimension(partition: tuple[int]) -> int:
     return dimension.numerator
 
 
-@lru_cache
 def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> int:
     """Returns the dimension of the unitary group U(d) labelled by the input partition
 
@@ -256,7 +249,6 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
     return dimension
 
 
-@lru_cache
 def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> Symbol:
     """Returns the Weingarten function
 
@@ -303,7 +295,6 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
     return weingarten
 
 
-@lru_cache
 def weingarten_element(cycle: Permutation, degree: int, unitary_dimension: Symbol) -> Symbol:
     """Returns the Weingarten function
 
@@ -319,7 +310,6 @@ def weingarten_element(cycle: Permutation, degree: int, unitary_dimension: Symbo
     return weingarten_class(conjugacy_class, unitary_dimension)
 
 
-@lru_cache
 def haar_integral(sequences: tuple[tuple[int]], group_dimension: int) -> Symbol:
     """Returns integral over unitary group polynomial sampled at random from the Haar measure
 
