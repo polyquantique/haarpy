@@ -2,7 +2,11 @@
   <img src="haarpy.svg">
 </p>
 
-[![pypi version](https://img.shields.io/pypi/v/haarpy.svg)](https://pypi.python.org/pypi/haarpy)
+<div align="center">
+  <a href="https://pypi.python.org/pypi/haarpy">
+    <img src="https://img.shields.io/pypi/v/haarpy.svg" alt="pypi version"/>
+  </a>
+</div>
 
 Haarpy is a Python library for the symbolic calculation of Weingarten functions and related averages of unitary matrices $U(d)$ sampled uniformly at random from the Haar measure.
 
