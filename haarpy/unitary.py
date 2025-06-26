@@ -217,8 +217,6 @@ def irrep_dimension(partition: tuple[int]) -> int:
     )
     denominator = prod(factorial(part + len(partition) - i - 1) for i, part in enumerate(partition))
     dimension = Fraction(numerator, denominator) * factorial(sum(partition))
-    if dimension.denominator != 1:
-        raise ValueError
 
     return dimension.numerator
 
@@ -246,8 +244,6 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
             for i, part in enumerate(partition)
             for j in range(part)
         )
-        if dimension.denominator != 1:
-            raise ValueError
 
         return dimension.numerator
 

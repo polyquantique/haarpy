@@ -410,6 +410,40 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
     )
 
 
+@pytest.mark.parametrize(
+    "partition, dimension",
+    [
+        ((3, 2), 1.0),
+        ((3, 1, 1), 'a'),
+        ((2, 2, 1), (1, 0)),
+        ((3, 3), (8,)),
+    ],
+)
+def test_weingarten_class_dimension_typeError(partition, dimension):
+    with pytest.raises(
+        TypeError,
+        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+    ):
+        ap.weingarten_class(partition, dimension)
+
+
+@pytest.mark.parametrize(
+    "cycle, degree, dimension",
+    [
+        (Permutation(0, 1, 2), 4, 1.0),
+        (Permutation(0, 2)(1, 3), 4, 'a'),
+        (Permutation(2), 4, (0, 1)),
+        (Permutation(4, 1), 5, (8,)),
+    ],
+)
+def test_weingarten_element_dimension_typeError(cycle, degree, dimension):
+    with pytest.raises(
+        TypeError,
+        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+    ):
+        ap.weingarten_element(cycle, degree, dimension)
+
+
 @pytest.mark.parametrize("n", range(2,5))
 def test_gram_orthogonality_elements(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
