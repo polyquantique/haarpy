@@ -2,10 +2,25 @@
   <img src="haarpy.svg">
 </p>
 
-[![Test](https://github.com/polyquantique/haarpy/actions/workflows/tests.yml/badge.svg)](https://pypi.org/project/haarpy)
-[![Codecov coverage](https://img.shields.io/codecov/c/github/polyquantique/haarpy/master.svg?style=flat)]()
-[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat)](https://pypi.org/project/haarpy)
-[![pypi version](https://img.shields.io/pypi/v/haarpy.svg)](https://pypi.python.org/pypi/haarpy)
+<div align="center">
+
+  <a href="https://pypi.org/project/haarpy">
+    <img src="https://github.com/polyquantique/haarpy/actions/workflows/tests.yml/badge.svg" alt="Test"/>
+  </a>
+
+  <a href="#">
+    <img src="https://img.shields.io/codecov/c/github/polyquantique/haarpy/master.svg?style=flat" alt="Codecov coverage"/>
+  </a>
+
+  <a href="https://pypi.org/project/haarpy">
+    <img src="https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat" alt="Python Versions"/>
+  </a>
+
+  <a href="https://pypi.python.org/pypi/haarpy">
+    <img src="https://img.shields.io/pypi/v/haarpy.svg" alt="PyPI version"/>
+  </a>
+
+</div>
 
 Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of unitary matrices $U(d)$ sampled uniformly at random from the [Haar measure](https://en.wikipedia.org/wiki/Haar_measure).
 
