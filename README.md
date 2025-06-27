@@ -12,6 +12,10 @@
     <img src="https://img.shields.io/codecov/c/github/polyquantique/haarpy/master.svg?style=flat" alt="Codecov coverage"/>
   </a>
 
+  <a href="#">
+    <img src="https://img.shields.io/codefactor/grade/github/polyquantique/haarpy/master?style=flat" alt="CodeFactor Grade"/>
+  </a>
+
   <a href="https://pypi.org/project/haarpy">
     <img src="https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat" alt="Python Versions"/>
   </a>
