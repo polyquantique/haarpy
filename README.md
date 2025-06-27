@@ -3,7 +3,7 @@
 </p>
 
 [![Test](https://github.com/polyquantique/haarpy/actions/workflows/tests.yml/badge.svg)](https://pypi.org/project/haarpy)
-[![Codecov coverage](https://img.shields.io/codecov/c/github/polyquantique/haarpy/master.svg?style=flat)](https://codecov.io/gh/polyquantique/haarpy)
+[![Codecov coverage](https://img.shields.io/codecov/c/github/polyquantique/haarpy/master.svg?style=flat)]()
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat)](https://pypi.org/project/haarpy)
 [![pypi version](https://img.shields.io/pypi/v/haarpy.svg)](https://pypi.python.org/pypi/haarpy)
 
