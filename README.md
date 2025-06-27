@@ -7,7 +7,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat)](https://pypi.org/project/haarpy)
 [![pypi version](https://img.shields.io/pypi/v/haarpy.svg)](https://pypi.python.org/pypi/haarpy)
 
-Haarpy is a Python library for the symbolic calculation of Weingarten functions and related averages of unitary matrices $U(d)$ sampled uniformly at random from the Haar measure.
+Haarpy is a Python library for the symbolic calculation of [https://en.wikipedia.org/wiki/Weingarten_function](Weingarten functions) and related averages of unitary matrices $U(d)$ sampled uniformly at random from the Haar measure.
 
 The original Mathematica version of this code, for the calculation of Weingarten functions of the unitary group, can be found [here](https://github.com/hdeguise/Weingarten_calculus).
 
