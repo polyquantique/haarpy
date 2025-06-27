@@ -51,7 +51,7 @@ def test_get_conjugacy_class(degree, cycle, conjugacy):
         ("a", Permutation(0, 1, 2)),
         (0.1, Permutation(2)(0, 1)),
         ((1,), Permutation(0, 1, 2, 3)),
-        ((5,), Permutation(0, 1, 2)),
+        ([5], Permutation(0, 1, 2)),
     ],
 )
 def test_get_conjugacy_class_degree_type_error(degree, cycle):
@@ -73,7 +73,7 @@ def test_get_conjugacy_class_degree_value_error(degree):
 @pytest.mark.parametrize(
     "degree, cycle",
     [
-        (3, (1, 2, 3)),
+        (3, [1, 2, 3]),
         (4, "a"),
         (7, 2.0),
     ],
@@ -406,8 +406,42 @@ def test_weingarten_reconciliation_symbolic(cycle, degree):
     "Symbolic reconciliation of weingarten_class and weingarten_element"
     d = Symbol("d")
     assert ap.weingarten_element(cycle, degree, d) == ap.weingarten_class(
-        ap.get_conjugacy_class(cycle, degree), d
+        list(ap.get_conjugacy_class(cycle, degree)), d
     )
+
+
+@pytest.mark.parametrize(
+    "partition, dimension",
+    [
+        ((3, 2), 1.0),
+        ((3, 1, 1), 'a'),
+        ((2, 2, 1), (1, 0)),
+        ((3, 3), (8,)),
+    ],
+)
+def test_weingarten_class_dimension_typeError(partition, dimension):
+    with pytest.raises(
+        TypeError,
+        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+    ):
+        ap.weingarten_class(partition, dimension)
+
+
+@pytest.mark.parametrize(
+    "cycle, degree, dimension",
+    [
+        (Permutation(0, 1, 2), 4, 1.0),
+        (Permutation(0, 2)(1, 3), 4, 'a'),
+        (Permutation(2), 4, (0, 1)),
+        (Permutation(4, 1), 5, (8,)),
+    ],
+)
+def test_weingarten_element_dimension_typeError(cycle, degree, dimension):
+    with pytest.raises(
+        TypeError,
+        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+    ):
+        ap.weingarten_element(cycle, degree, dimension)
 
 
 @pytest.mark.parametrize("n", range(2,5))

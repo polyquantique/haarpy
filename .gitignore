@@ -1,2 +1,5 @@
 __pycache__/
 _build/
+
+.coverage*
+coverage.xml
