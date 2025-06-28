@@ -14,3 +14,33 @@
 """
 Orthogonal group Python interface
 """
+
+from typing import Generator
+from functools import lru_cache
+from sympy import Symbol
+from sympy.combinatorics import Permutation, SymmetricGroup
+
+
+@lru_cache
+def hyperoctahedral(order: int) -> Generator[Permutation, None, None]:
+    return
+
+
+@lru_cache
+def perfect_matching_permutations(order: int) -> Generator[Permutation, None, None]:
+    return
+
+
+@lru_cache
+def zonal_spherical_function(partition: tuple[int], order: int) -> int:
+    return
+
+
+@lru_cache
+def weingarten_orthogonal(perm: Permutation, order: int, orthogonal_dimension: int) -> Symbol:
+    return
+
+
+@lru_cache
+def haar_integral_orthogonal():
+    return
