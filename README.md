@@ -12,10 +12,6 @@
    <img src="https://codecov.io/gh/polyquantique/haarpy/graph/badge.svg?token=VYWOCW165M"/> 
   </a>
 
-  <a href="#">
-    <img src="https://img.shields.io/codefactor/grade/github/polyquantique/haarpy/master?style=flat" alt="CodeFactor Grade"/>
-  </a>
-
   <a href="https://pypi.org/project/haarpy">
     <img src="https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat" alt="Python Versions"/>
   </a>
