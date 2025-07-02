@@ -2,12 +2,34 @@
   <img src="haarpy.svg">
 </p>
 
-Haarpy is a Python library for the symbolic calculation of Weingarten functions and related averages of unitary matrices $U(d)$ sampled uniformly at random from the Haar measure.
+<div align="center">
+
+  <a href="https://pypi.org/project/haarpy">
+    <img src="https://github.com/polyquantique/haarpy/actions/workflows/tests.yml/badge.svg" alt="Test"/>
+  </a>
+
+  <a href="https://codecov.io/gh/polyquantique/haarpy" > 
+   <img src="https://codecov.io/gh/polyquantique/haarpy/graph/badge.svg?token=VYWOCW165M"/> 
+  </a>
+
+  <a href="https://pypi.org/project/haarpy">
+    <img src="https://img.shields.io/pypi/pyversions/haarpy.svg?style=flat" alt="Python Versions"/>
+  </a>
+
+  <a href="https://pypi.python.org/pypi/haarpy">
+    <img src="https://img.shields.io/pypi/v/haarpy.svg" alt="PyPI version"/>
+  </a>
+
+</div>
+
+<br>
+
+Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of unitary matrices $U(d)$ sampled uniformly at random from the [Haar measure](https://en.wikipedia.org/wiki/Haar_measure).
 
 The original Mathematica version of this code, for the calculation of Weingarten functions of the unitary group, can be found [here](https://github.com/hdeguise/Weingarten_calculus).
 
 ## Haarpy in action
-The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar-measure. We recommend importing the following when working with Haarpy:
+The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar measure. We recommend importing the following when working with Haarpy:
 ```Python
 from sympy import Symbol
 from sympy.combinatorics import Permutation
@@ -53,7 +75,7 @@ haar_integral(((1,2), (1,2), (1,2), (1,2)), d)
 Auxiliary functions include, but are not limited to, the following. For a comprehensive list of functionalities, please refer to the [documentation]().
 
 ### *murn_naka_rule*
-Implementation of the Murnaghan-Nakayama rule for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
+Implementation of the [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
 ```Python
 from haarpy import murn_naka_rule
 murn_naka_rule((3,1), (1,1,1,1))
@@ -132,7 +154,7 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 | $\lbrace 1,1,1,1,1\rbrace$|$\displaystyle\frac{d^4-20 d^2+78}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3) (d+4)}$|
 
 ## Examples of integrals over Haar-random unitaries
-Selected integrals of unitary groups. Characters $i,j,k$ and $\ell$ are assumed to take distinct integer values in the following.
+Selected integrals of unitary groups ; $i,j,k$ and $\ell$ are assumed to take distinct integer values in the following.
 |Integral| Result |
 |--|--|
 | $\int dU \ U_{ij}U^\ast_{ij}$ |$\displaystyle\frac{1}{d}$|
@@ -170,7 +192,7 @@ Please cite as:
   publisher={GitHub},
   journal={GitHub repository},
   howpublished = {\url{https://github.com/polyquantique/haarpy}},
-  version = {0.0.4}
+  version = {0.0.5}
 }
 ```
 
