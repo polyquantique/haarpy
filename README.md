@@ -8,8 +8,8 @@
     <img src="https://github.com/polyquantique/haarpy/actions/workflows/tests.yml/badge.svg" alt="Test"/>
   </a>
 
-  <a href=https://codecov.io/gh/polyquantique/haarpy>
-    <img src="(https://codecov.io/gh/polyquantique/haarpy/branch/master/graph/badge.svg" alt="Codecov coverage"/>
+  <a href="#">
+    <img src="https://codecov.io/gh/polyquantique/haarpy/branch/master/graph/badge.svg" alt="Codecov coverage"/>
   </a>
 
   <a href="#">
