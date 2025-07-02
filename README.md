@@ -158,7 +158,7 @@ The following have been retrieved using the *weingarten_class* function. Weingar
 | $\lbrace 1,1,1,1,1\rbrace$|$\displaystyle\frac{d^4-20 d^2+78}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3) (d+4)}$|
 
 ## Examples of integrals over Haar-random unitaries
-Selected integrals of unitary groups. Characters $i,j,k$ and $\ell$ are assumed to take distinct integer values in the following.
+Selected integrals of unitary groups; $i,j,k$ and $\ell$ are assumed to take distinct integer values in the following.
 |Integral| Result |
 |--|--|
 | $\int dU \ U_{ij}U^\ast_{ij}$ |$\displaystyle\frac{1}{d}$|
