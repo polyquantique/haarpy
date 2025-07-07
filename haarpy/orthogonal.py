@@ -16,11 +16,13 @@ Orthogonal group Python interface
 """
 
 from typing import Generator
+from math import prod
 from fractions import Fraction
 from functools import lru_cache
-from sympy import Symbol
-from sympy.combinatorics import Permutation, SymmetricGroup, PermutationGroup
-from unitary import murn_naka_rule, get_conjugacy_class, irrep_dimension
+from sympy import Symbol, factorial, factor, fraction, simplify
+from sympy.combinatorics import Permutation, PermutationGroup
+from sympy.utilities.iterables import partitions
+from haarpy import murn_naka_rule, get_conjugacy_class, irrep_dimension
 
 
 @lru_cache
@@ -32,7 +34,7 @@ def hyperoctahedral(degree: int) -> PermutationGroup:
 
     Returns:
         (PermutationGroup): The hyperoctahedral group
-        
+
     Raise:
         TypeError: If degree is not of type int
     """
@@ -50,44 +52,115 @@ def hyperoctahedral(degree: int) -> PermutationGroup:
 
 
 @lru_cache
-def zonal_spherical_function(permutation_or_partition, partition: tuple[int]) -> float:
+def zonal_spherical_function(cycle_type: Permutation, partition: tuple[int]) -> float:
     """Returns the zonal spherical function of the Gelfand pair (S_2k, H_k)
 
     Args:
-        perm (Permutation): A permutation of the symmetric group S_2k
+        perm (Permutation, tuple[int]): A permutation of the symmetric group S_2k
+                                        or a partition of 2k.
         partition (tuple[int]): A partition of k
 
     Returns:
         (float): The zonal spherical function of the given permutation
+
+    Raise:
+        TypeError: If degree partition is not a tuple
+        TypeError: If cycle_type is neither a permutation or a tuple.
     """
-    if isinstance(permutation_or_partition, Permutation):
-        permutation = permutation_or_partition
+    if not isinstance(partition, tuple):
+        raise TypeError
+    
+    if isinstance(cycle_type, Permutation):
+        permutation = cycle_type
         degree = permutation.size
-    else:
-        degree = sum(permutation_or_partition)
+    elif isinstance(cycle_type, tuple):
+        degree = sum(cycle_type)
         permutation = Permutation(
             tuple(
-                tuple(i + sum(permutation_or_partition[:index]) for i in range(part))
-                for index, part in enumerate(permutation_or_partition)
+                tuple(i + sum(cycle_type[:index]) for i in range(part))
+                for index, part in enumerate(cycle_type)
             )
         )
+    else:
+        raise TypeError
+
     if degree % 2:
         raise ValueError("degree should be a factor of 2")
-    if degree != 2*sum(partition):
+    if degree != 2 * sum(partition):
         raise ValueError("Invalid partition and cyle-type")
 
     double_partition = tuple(2 * part for part in partition)
     hyperocta = hyperoctahedral(degree // 2)
     numerator = sum(
-        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta, degree))
+        murn_naka_rule(
+            double_partition, get_conjugacy_class(permutation * zeta, degree)
+        )
         for zeta in hyperocta.generate()
     )
     return Fraction(numerator, hyperocta.order())
 
 
 @lru_cache
-def weingarten_orthogonal(cycle_type: Permutation, order: int, orthogonal_dimension: int) -> Symbol:
-    return
+def weingarten_orthogonal(
+    permutation: Permutation, orthogonal_dimension: Symbol
+) -> Symbol:
+    """Returns the orthogonal Weingarten function
+
+    Args:
+        permutation (Permutation): A permutation of the symmetric group S_2k
+        orthogonal_dimension (int):
+
+    Returns:
+        Symbol : The Weingarten function
+
+    Raise:
+        ValueError : If the degree 2k of the symmetric group S_2k is not a factor of 2
+    """
+    degree = permutation.size
+    if degree % 2:
+        raise ValueError("The degree of the symmetric group S_2k should be even")
+    half_degree = degree // 2
+
+    partition_tuple = tuple(
+        sum((value * (key,) for key, value in part.items()), ())
+        for part in partitions(half_degree)
+    )
+    double_partition_tuple = tuple(
+        tuple(2 * part for part in partition) for partition in partition_tuple
+    )
+    irrep_dimension_gen = (
+        irrep_dimension(partition) for partition in double_partition_tuple
+    )
+    zonal_spherical_gen = (
+        zonal_spherical_function(permutation, partition)
+        for partition in partition_tuple
+    )
+    coefficient_gen = (
+        prod(
+            orthogonal_dimension + 2 * j - i
+            for i in range(len(partition))
+            for j in range(partition[i])
+        )
+        for partition in partition_tuple
+    )
+
+    weingarten = (
+        sum(
+            irrep_dim * zonal_spherical / coefficient
+            for irrep_dim, zonal_spherical, coefficient in zip(
+                irrep_dimension_gen, zonal_spherical_gen, coefficient_gen
+            )
+            if coefficient
+        )
+        * 2**half_degree
+        * factorial(half_degree)
+        / factorial(degree)
+    )
+
+    numerator, denominator = fraction(simplify(weingarten))
+    weingarten = factor(numerator) / factor(denominator)
+
+    return simplify(weingarten)
 
 
 @lru_cache
