@@ -51,6 +51,53 @@ def hyperoctahedral(degree: int) -> PermutationGroup:
     return PermutationGroup(transpositions + double_transpositions)
 
 
+def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, None]:
+    """Returns the partitions of a tuple in terms of pairs and singles.
+
+    Args:
+        seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
+            Note that it must hold that ``len(s) >= 3``.
+
+    Returns:
+        generator: a generators that goes through all the single-double
+        partitions of the tuple
+    """
+    if len(seed) % 2:
+        return
+
+    if len(seed) == 2:
+        yield seed
+
+    for idx1 in range(1, len(seed)):
+        item_partition = (seed[0], seed[idx1])
+        rest = seed[1:idx1] + seed[idx1 + 1 :]
+        rest_partitions = perfect_matchings(rest)
+        for p in rest_partitions:
+            if isinstance(p[0], tuple):
+                yield ((item_partition),) + p
+            else:
+                yield (item_partition, p)
+
+
+def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
+    """ Returns a generator with the permutations of the coset transversal of M_2k
+    
+    Args:
+        degree (int): Degree 2k of the set M_2k
+            Note that it must hold that ``degree >= 4``
+
+    Returns:
+        (Generator[Permutation]): The permutations of M_2k
+    """
+    if degree % 2:
+        raise ValueError("degree should be a factor of 2")
+    flatten_pmp = (
+        tuple(i for pair in pmp for i in pair)
+        for pmp in perfect_matchings(tuple(range(degree)))
+    )
+    return (Permutation(pmp) for pmp in flatten_pmp)
+
+
 @lru_cache
 def zonal_spherical_function(cycle_type: Permutation, partition: tuple[int]) -> float:
     """Returns the zonal spherical function of the Gelfand pair (S_2k, H_k)
