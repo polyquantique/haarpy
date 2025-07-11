@@ -97,7 +97,7 @@ def test_hyperoctahedral_transversal_ValueError(degree):
         (Permutation(7)(0,1), (2,1,1), (2,2)),
     ],
 )
-def test_zonal_spherical_orthogonality_zero(permutation, partition1, partition2):
+def test_zonal_spherical_orthogonality_M_zero(permutation, partition1, partition2):
     """Orthogonality relation for the zonal spherical function as
     seen in Matsumoto's 'Weingarten calculus for matrix ensembles
     associated with compact symmetric spaces'. All test should be 0
@@ -128,7 +128,7 @@ def test_zonal_spherical_orthogonality_zero(permutation, partition1, partition2)
     (Permutation(0,2,3,4,5), (2,1)),
     ],
 )
-def test_zonal_spherical_orthogonality_none_zero(permutation, partition):
+def test_zonal_spherical_orthogonality_M_none_zero(permutation, partition):
     """Orthogonality relation for the zonal spherical function as
     seen in Matsumoto's 'Weingarten calculus for matrix ensembles
     associated with compact symmetric spaces'
@@ -146,6 +146,78 @@ def test_zonal_spherical_orthogonality_none_zero(permutation, partition):
         * ap.zonal_spherical_function(permutation, partition)
         / ap.irrep_dimension(double_partition)
     )
+    assert convolution == orthogonality
+
+
+@pytest.mark.parametrize(
+    "permutation, partition1, partition2",
+    [
+        (Permutation(3), (1,1), (2,)),
+        (Permutation(3)(0,1), (1,1), (2,)),
+        (Permutation(0,1,2,3), (1,1), (2,)),
+        (Permutation(3)(0,1,2), (1,1), (2,)),
+        (Permutation(0,1,2,3,4,5), (3,), (2,1)),
+        (Permutation(5)(0,4), (3,), (1,1,1)),
+        (Permutation(5)(0,4), (3,), (2,1)),
+        (Permutation(5)(0,1,2,3,4), (3,), (1,1,1)),
+        (Permutation(5)(0,1,2,3,4), (1,1,1), (2,1)),
+        (Permutation(5)(0,1,2,3,4), (3,), (2,1)),
+        (Permutation(5), (3,), (1,1,1)),
+        (Permutation(5), (3,), (2,1)),
+        (Permutation(5), (2,1), (1,1,1)),
+        (Permutation(7), (2,1,1), (2,2)),
+        (Permutation(7)(0,1), (2,1,1), (2,2)),
+    ],
+)
+def test_zonal_spherical_orthogonality_S_zero(permutation, partition1, partition2):
+    """Orthogonality relation for the zonal spherical function as
+    seen in Matsumoto's 'General moments of matrix elements from 
+    circular orthogonal ensembles'. All test should be 0 since
+    partitions are distinct
+    """
+    degree = permutation.size
+    convolution = sum(
+        ap.zonal_spherical_function(tau, partition1)
+        * ap.zonal_spherical_function(~tau * permutation, partition2)
+        for tau in SymmetricGroup(degree).generate()
+    )
+
+    assert not convolution
+
+
+@pytest.mark.parametrize(
+    "permutation, partition",
+    [
+    (Permutation(3,), (2,)),
+    (Permutation(3,), (1,1)),
+    (Permutation(5,)(0,1), (2,1)),
+    (Permutation(0,1,2,3,4,5), (3,)),
+    (Permutation(5,)(0,3,4), (3,)),
+    (Permutation(0,1,2,3,4,5), (1,1,1)),
+    (Permutation(0,1,2,3,4,5), (2,1)),
+    (Permutation(0,3,5), (2,1)),
+    (Permutation(0,3,4,5), (2,1)),
+    (Permutation(0,2,3,4,5), (2,1)),
+    ],
+)
+def test_zonal_spherical_orthogonality_S_none_zero(permutation, partition):
+    """Orthogonality relation for the zonal spherical function as
+    seen in Matsumoto's 'General moments of matrix elements from 
+    circular orthogonal ensembles'
+    """
+    degree = permutation.size
+    convolution = sum(
+        ap.zonal_spherical_function(tau, partition)
+        * ap.zonal_spherical_function(~tau * permutation, partition)
+        for tau in SymmetricGroup(degree).generate()
+    )
+
+    double_partition = tuple(2*i for i in partition)
+    orthogonality = (
+        Fraction(factorial(degree), ap.irrep_dimension(double_partition))
+        * ap.zonal_spherical_function(permutation, partition)
+    )
+
     assert convolution == orthogonality
 
 
