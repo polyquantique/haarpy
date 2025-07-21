@@ -153,7 +153,7 @@ def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int])
         matching = tuple(
             (k, {i for i, j in enumerate(row) if j == cell_value + 1})
             for k, row in enumerate(tableau)
-            if row.count(cell_value + 1)
+            if cell_value + 1 in row
         )
 
         if len(matching) == 1:
@@ -233,7 +233,7 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
         Symbol : The dimension of the representation of U(d) labeled by the partition
     """
     conjugate_partition = tuple(
-        sum(1 for _, part in enumerate(partition) if i < part) for i in range(partition[0])
+        sum(1 for part in partition if i < part) for i in range(partition[0])
     )
     if isinstance(unitary_dimension, int):
         dimension = prod(
