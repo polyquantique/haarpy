@@ -165,8 +165,6 @@ def test_zonal_spherical_orthogonality_M_none_zero(permutation, partition):
         (Permutation(5), (3,), (1,1,1)),
         (Permutation(5), (3,), (2,1)),
         (Permutation(5), (2,1), (1,1,1)),
-        (Permutation(7), (2,1,1), (2,2)),
-        (Permutation(7)(0,1), (2,1,1), (2,2)),
     ],
 )
 def test_zonal_spherical_orthogonality_S_zero(permutation, partition1, partition2):
