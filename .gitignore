@@ -3,3 +3,7 @@ _build/
 
 .coverage*
 coverage.xml
+
+.eggs/*
+*.egg-info*
+haarpy.egg-info

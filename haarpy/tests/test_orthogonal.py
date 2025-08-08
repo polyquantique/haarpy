@@ -106,7 +106,7 @@ def test_zonal_spherical_orthogonality_M_zero(permutation, partition1, partition
     degree = permutation.size
     convolution = sum(
         ap.zonal_spherical_function(tau, partition1)
-        * ap.zonal_spherical_function(~tau * permutation, partition2)
+        * ap.zonal_spherical_function(permutation * ~tau, partition2)
         for tau in ap.hyperoctahedral_transversal(degree)
     )
 
