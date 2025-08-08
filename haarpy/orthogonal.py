@@ -80,8 +80,8 @@ def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, No
 
 
 def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
-    """ Returns a generator with the permutations of the coset transversal of M_2k
-    
+    """Returns a generator with the permutations of the coset transversal of M_2k
+
     Args:
         degree (int): Degree 2k of the set M_2k
             Note that it must hold that ``degree >= 4``
@@ -116,7 +116,7 @@ def zonal_spherical_function(cycle_type: Permutation, partition: tuple[int]) -> 
     """
     if not isinstance(partition, tuple):
         raise TypeError
-    
+
     if isinstance(cycle_type, Permutation):
         permutation = cycle_type
         degree = permutation.size
@@ -211,5 +211,56 @@ def weingarten_orthogonal(
 
 
 @lru_cache
-def haar_integral_orthogonal():
-    return
+def haar_integral_orthogonal(
+    sequences: tuple[tuple[int]], group_dimension: int
+) -> Symbol:
+    """Returns integral over orthogonal group polynomial sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple(tuple(int))) : Indices of matrix elements
+        group_dimension (int) : Dimension of the compact group
+
+    Returns:
+        Symbol : Integral under the Haar measure
+
+    Raise:
+        ValueError : If sequences doesn't contain 2 tuples
+        ValueError : If tuples i and j are of different length
+    """
+    if len(sequences) != 2:
+        raise ValueError("Wrong tuple format")
+
+    seq_i, seq_j = sequences
+    degree = len(seq_i)
+
+    if degree != len(seq_j):
+        raise ValueError("Wrong tuple format")
+
+    if degree % 2:
+        return 0
+
+    permutation_i = (
+        perm
+        for perm in hyperoctahedral_transversal(degree)
+        if perm(seq_i)[::2] == perm(seq_i)[1::2]
+    )
+
+    permutation_j = (
+        perm
+        for perm in hyperoctahedral_transversal(degree)
+        if perm(seq_j)[::2] == perm(seq_j)[1::2]
+    )
+
+    class_mapping = dict(
+        Counter(
+            get_conjugacy_class(~cycle_i * cycle_j, degree)
+            for cycle_i, cycle_j in product(permutation_i, permutation_j)
+        )
+    )
+
+    integral = sum(
+        count * weingarten_orthogonal(conjugacy, group_dimension)
+        for conjugacy, count in class_mapping.items()
+    )
+
+    return integral
