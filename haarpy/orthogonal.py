@@ -84,13 +84,14 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
     Args:
         degree (int): Degree 2k of the set M_2k
-            Note that it must hold that ``degree >= 4``
 
     Returns:
         (Generator[Permutation]): The permutations of M_2k
     """
     if degree % 2:
         raise ValueError("degree should be a factor of 2")
+    if degree == 2:
+        return (Permutation(1),)
     flatten_pmp = (
         tuple(i for pair in pmp for i in pair)
         for pmp in perfect_matchings(tuple(range(degree)))
@@ -99,12 +100,11 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
 
 @lru_cache
-def zonal_spherical_function(cycle_type: Permutation, partition: tuple[int]) -> float:
+def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) -> float:
     """Returns the zonal spherical function of the Gelfand pair (S_2k, H_k)
 
     Args:
-        perm (Permutation, tuple[int]): A permutation of the symmetric group S_2k
-                                        or a partition of 2k.
+        perm (Permutation): A permutation of the symmetric group S_2k
         partition (tuple[int]): A partition of k
 
     Returns:
@@ -112,24 +112,15 @@ def zonal_spherical_function(cycle_type: Permutation, partition: tuple[int]) -> 
 
     Raise:
         TypeError: If degree partition is not a tuple
-        TypeError: If cycle_type is neither a permutation or a tuple.
+        TypeError: If permutation argument is not a permutation.
     """
     if not isinstance(partition, tuple):
         raise TypeError
 
-    if isinstance(cycle_type, Permutation):
-        permutation = cycle_type
-        degree = permutation.size
-    elif isinstance(cycle_type, tuple):
-        degree = sum(cycle_type)
-        permutation = Permutation(
-            tuple(
-                tuple(i + sum(cycle_type[:index]) for i in range(part))
-                for index, part in enumerate(cycle_type)
-            )
-        )
-    else:
+    if not isinstance(permutation, Permutation):
         raise TypeError
+
+    degree = permutation.size
 
     if degree % 2:
         raise ValueError("degree should be a factor of 2")
@@ -191,76 +182,34 @@ def weingarten_orthogonal(
         for partition in partition_tuple
     )
 
-    weingarten = (
-        sum(
-            irrep_dim * zonal_spherical / coefficient
+    if isinstance(orthogonal_dimension, int):
+        weingarten = sum(
+            Fraction(
+                irrep_dim * zonal_spherical,
+                coefficient,
+            )
             for irrep_dim, zonal_spherical, coefficient in zip(
                 irrep_dimension_gen, zonal_spherical_gen, coefficient_gen
             )
             if coefficient
+        ) * Fraction(
+            2**half_degree * factorial(half_degree),
+            factorial(degree),
         )
-        * 2**half_degree
-        * factorial(half_degree)
-        / factorial(degree)
-    )
-
-    numerator, denominator = fraction(simplify(weingarten))
-    weingarten = factor(numerator) / factor(denominator)
-
-    return simplify(weingarten)
-
-
-@lru_cache
-def haar_integral_orthogonal(
-    sequences: tuple[tuple[int]], group_dimension: int
-) -> Symbol:
-    """Returns integral over orthogonal group polynomial sampled at random from the Haar measure
-
-    Args:
-        sequences (tuple(tuple(int))) : Indices of matrix elements
-        group_dimension (int) : Dimension of the compact group
-
-    Returns:
-        Symbol : Integral under the Haar measure
-
-    Raise:
-        ValueError : If sequences doesn't contain 2 tuples
-        ValueError : If tuples i and j are of different length
-    """
-    if len(sequences) != 2:
-        raise ValueError("Wrong tuple format")
-
-    seq_i, seq_j = sequences
-    degree = len(seq_i)
-
-    if degree != len(seq_j):
-        raise ValueError("Wrong tuple format")
-
-    if degree % 2:
-        return 0
-
-    permutation_i = (
-        perm
-        for perm in hyperoctahedral_transversal(degree)
-        if perm(seq_i)[::2] == perm(seq_i)[1::2]
-    )
-
-    permutation_j = (
-        perm
-        for perm in hyperoctahedral_transversal(degree)
-        if perm(seq_j)[::2] == perm(seq_j)[1::2]
-    )
-
-    class_mapping = dict(
-        Counter(
-            get_conjugacy_class(~cycle_i * cycle_j, degree)
-            for cycle_i, cycle_j in product(permutation_i, permutation_j)
+    else:
+        weingarten = (
+            sum(
+                irrep_dim * zonal_spherical / coefficient
+                for irrep_dim, zonal_spherical, coefficient in zip(
+                    irrep_dimension_gen, zonal_spherical_gen, coefficient_gen
+                )
+                if coefficient
+            )
+            * 2**half_degree
+            * factorial(half_degree)
+            / factorial(degree)
         )
-    )
+        numerator, denominator = fraction(simplify(weingarten))
+        weingarten = simplify(factor(numerator) / factor(denominator))
 
-    integral = sum(
-        count * weingarten_orthogonal(conjugacy, group_dimension)
-        for conjugacy, count in class_mapping.items()
-    )
-
-    return integral
+    return weingarten

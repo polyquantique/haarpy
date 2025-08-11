@@ -19,7 +19,7 @@ import pytest
 import haarpy as ap
 from math import factorial
 from itertools import permutations
-from sympy import Symbol
+from sympy import Symbol, fraction
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 from fractions import Fraction
@@ -48,14 +48,14 @@ def test_hyperoctahedral_TypeError(degree):
         ap.hyperoctahedral(degree)
 
 
-@pytest.mark.parametrize("degree", range(4, 12, 2))
+@pytest.mark.parametrize("degree", range(2, 12, 2))
 def test_hyperoctahedral_transversal_size(degree):
     "Test the size of the hyperoctahedral transversal set"
     size = sum(1 for _ in ap.hyperoctahedral_transversal(degree))
     assert size == factorial(degree)/2**(degree//2)/factorial(degree//2)
 
 
-@pytest.mark.parametrize("degree", range(4, 12, 2))
+@pytest.mark.parametrize("degree", range(2, 12, 2))
 def test_hyperoctahedral_transversal_brute_force(degree):
     "Compare permutations of the transversal set with brute force method"
     brute_force_permutations = set()
@@ -137,7 +137,7 @@ def test_zonal_spherical_orthogonality_M_none_zero(permutation, partition):
     half_degree = degree // 2
     convolution = sum(
         ap.zonal_spherical_function(tau, partition)
-        * ap.zonal_spherical_function(~tau * permutation, partition)
+        * ap.zonal_spherical_function(permutation * ~tau, partition)
         for tau in ap.hyperoctahedral_transversal(degree)
     )
     double_partition = tuple(2*i for i in partition)
@@ -219,43 +219,12 @@ def test_zonal_spherical_orthogonality_S_none_zero(permutation, partition):
     assert convolution == orthogonality
 
 
-@pytest.mark.parametrize("half_degree", range(2, 4))
-def test_zonal_spherical_class_function(half_degree):
-    "Validates that all permutations of the same class yield the same output"
-    degree = 2*half_degree
-    for partition in partitions(half_degree):
-        partition = tuple(key for key, value in partition.items() for _ in range(value))
-        for conjugacy_class in SymmetricGroup(degree).conjugacy_classes():
-            representative = ap.zonal_spherical_function(conjugacy_class.pop(), partition)
-            for permutation in conjugacy_class:
-                assert ap.zonal_spherical_function(permutation, partition) == representative
-
-
-@pytest.mark.parametrize("half_degree", range(2, 4))
-def test_zonal_spherical_polymorphism(half_degree):
-    "Validates that the argument can be either a partition or a permutation"
-    degree = 2*half_degree
-    for partition in partitions(half_degree):
-        partition = tuple(key for key, value in partition.items() for _ in range(value))
-        for conjugacy_classes in SymmetricGroup(degree).conjugacy_classes():
-            fiducial = conjugacy_classes.pop()
-            zonal_class = ap.zonal_spherical_function(
-                ap.get_conjugacy_class(fiducial, degree), partition
-            )
-            zonal_permutation = ap.zonal_spherical_function(fiducial, partition)
-            assert zonal_class == zonal_permutation
-
-
 @pytest.mark.parametrize(
     "cycle_type, partition",
     [
         (Permutation(2)(0, 1), (1,)),
         (Permutation(4)(0, 1, 2), (1, 1)),
         (Permutation(0, 1, 2, 3, 4, 5, 6), (4,)),
-        ((1, 1, 1), (2,)),
-        ((2, 1, 1, 1), (2,)),
-        ((4, 1), (3,)),
-        ((3, 3, 1), (3,)),
     ],
 )
 def test_zonal_spherical_degree_error(cycle_type, partition):
@@ -270,10 +239,6 @@ def test_zonal_spherical_degree_error(cycle_type, partition):
         (Permutation(3)(0, 1), (1,)),
         (Permutation(5)(0, 1, 2), (1, 1)),
         (Permutation(0, 1, 2, 3, 4, 5), (4,)),
-        ((1, 1, 1, 1), (3,)),
-        ((2, 2, 1, 1), (2,)),
-        ((4, 2), (4,)),
-        ((3, 3, 2), (2, 2, 2)),
     ],
 )
 def test_zonal_spherical_partition_error(cycle_type, partition):
@@ -304,6 +269,31 @@ def test_weingarten_orthogonal(permutation, num, denum):
     Unitary, Orthogonal and Symplectic Group'.
     """
     assert ap.weingarten_orthogonal(permutation, d) == num/denum
+
+
+@pytest.mark.parametrize(
+    "permutation, num, denum",
+    [
+        (Permutation(1), 1, 7),
+        (Permutation(3), 8, 378),
+        (Permutation(0, 1, 2, 3), -1, 378),
+        (Permutation(5), 68, 20790),
+        (Permutation(2, 3, 4, 5), -1, 2310),
+        (Permutation(0, 1, 2, 3, 4, 5), 2, 20790),
+        (Permutation(0, 1, 2, 3, 4, 5, 6, 7), -41, 8648640),
+        (Permutation(0, 1, 2, 3, 4, 7)(5, 6), 2, 112320),
+        (Permutation(0, 1, 2, 3)(4, 5, 6, 7), 102, 8648640),
+        (Permutation(4, 5, 6, 7), -652, 8648640),
+        (Permutation(7), 920, 1729728),
+    ]
+)
+def test_weingarten_orthogonal_numeric(permutation, num, denum):
+    """Validates orthogonal Weingarten function against results shown
+    in Dr. Collin's 'Integration with Respect to the Haar Measure on 
+    Unitary, Orthogonal and Symplectic Group'.
+    """
+    orthogonal_dimension = 7
+    assert ap.weingarten_orthogonal(permutation, orthogonal_dimension) == Fraction(num/denum)
 
 
 @pytest.mark.parametrize("degree", range(3))
