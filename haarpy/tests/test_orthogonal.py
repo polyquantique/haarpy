@@ -116,16 +116,16 @@ def test_zonal_spherical_orthogonality_M_zero(permutation, partition1, partition
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-    (Permutation(3,), (2,)),
-    (Permutation(3,), (1,1)),
-    (Permutation(5,)(0,1), (2,1)),
-    (Permutation(0,1,2,3,4,5), (3,)),
-    (Permutation(5,)(0,3,4), (3,)),
-    (Permutation(0,1,2,3,4,5), (1,1,1)),
-    (Permutation(0,1,2,3,4,5), (2,1)),
-    (Permutation(0,3,5), (2,1)),
-    (Permutation(0,3,4,5), (2,1)),
-    (Permutation(0,2,3,4,5), (2,1)),
+        (Permutation(3,), (2,)),
+        (Permutation(3,), (1,1)),
+        (Permutation(5,)(0,1), (2,1)),
+        (Permutation(0,1,2,3,4,5), (3,)),
+        (Permutation(5,)(0,3,4), (3,)),
+        (Permutation(0,1,2,3,4,5), (1,1,1)),
+        (Permutation(0,1,2,3,4,5), (2,1)),
+        (Permutation(0,3,5), (2,1)),
+        (Permutation(0,3,4,5), (2,1)),
+        (Permutation(0,2,3,4,5), (2,1)),
     ],
 )
 def test_zonal_spherical_orthogonality_M_none_zero(permutation, partition):
@@ -186,16 +186,16 @@ def test_zonal_spherical_orthogonality_S_zero(permutation, partition1, partition
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-    (Permutation(3,), (2,)),
-    (Permutation(3,), (1,1)),
-    (Permutation(5,)(0,1), (2,1)),
-    (Permutation(0,1,2,3,4,5), (3,)),
-    (Permutation(5,)(0,3,4), (3,)),
-    (Permutation(0,1,2,3,4,5), (1,1,1)),
-    (Permutation(0,1,2,3,4,5), (2,1)),
-    (Permutation(0,3,5), (2,1)),
-    (Permutation(0,3,4,5), (2,1)),
-    (Permutation(0,2,3,4,5), (2,1)),
+        (Permutation(3,), (2,)),
+        (Permutation(3,), (1,1)),
+        (Permutation(5,)(0,1), (2,1)),
+        (Permutation(0,1,2,3,4,5), (3,)),
+        (Permutation(5,)(0,3,4), (3,)),
+        (Permutation(0,1,2,3,4,5), (1,1,1)),
+        (Permutation(0,1,2,3,4,5), (2,1)),
+        (Permutation(0,3,5), (2,1)),
+        (Permutation(0,3,4,5), (2,1)),
+        (Permutation(0,2,3,4,5), (2,1)),
     ],
 )
 def test_zonal_spherical_orthogonality_S_none_zero(permutation, partition):
