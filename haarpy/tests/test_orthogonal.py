@@ -248,6 +248,21 @@ def test_zonal_spherical_partition_error(cycle_type, partition):
 
 
 @pytest.mark.parametrize(
+    "cycle_type, partition",
+    [
+        (Permutation(3)(0, 1), 'a'),
+        (Permutation(5)(0, 1, 2), [1,1]),
+        ((0, 1), (1,)),
+        ('a', (1, 1)),
+    ],
+)
+def test_zonal_spherical_TypeError(cycle_type, partition):
+    "Test ValueError for invalid cycle-type and partition"
+    with pytest.raises(TypeError):
+        ap.zonal_spherical_function(cycle_type, partition)
+
+
+@pytest.mark.parametrize(
     "permutation, num, denum",
     [
         (Permutation(1), 1, d),
@@ -293,7 +308,7 @@ def test_weingarten_orthogonal_numeric(permutation, num, denum):
     Unitary, Orthogonal and Symplectic Group'.
     """
     orthogonal_dimension = 7
-    assert ap.weingarten_orthogonal(permutation, orthogonal_dimension) == Fraction(num/denum)
+    assert ap.weingarten_orthogonal(permutation, orthogonal_dimension) == Fraction(num,denum)
 
 
 @pytest.mark.parametrize("degree", range(3))

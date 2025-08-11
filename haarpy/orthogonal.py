@@ -62,9 +62,6 @@ def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, No
         generator: a generators that goes through all the single-double
         partitions of the tuple
     """
-    if len(seed) % 2:
-        return
-
     if len(seed) == 2:
         yield seed
 
