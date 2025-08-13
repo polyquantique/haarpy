@@ -287,7 +287,7 @@ def test_weingarten_orthogonal(permutation, num, denum):
 
 
 @pytest.mark.parametrize(
-    "permutation, num, denum",
+    "permutation, dimension, num, denum",
     [
         (Permutation(1), 7, 1, 7),
         (Permutation(3), 7, 8, 378),
