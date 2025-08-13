@@ -15,11 +15,13 @@
 Symplectic group Python interface
 """
 
+from math import prod
 from fractions import Fraction
 from functools import lru_cache
-from sympy import Symbol
+from sympy import Symbol, factorial, factor, fraction, simplify
 from sympy.combinatorics import Permutation
-from haarpy import get_conjugacy_class, murn_naka_rule, hyperoctahedral
+from sympy.utilities.iterables import partitions
+from haarpy import get_conjugacy_class,murn_naka_rule, hyperoctahedral, irrep_dimension, zonal_spherical_function
 
 
 @lru_cache
@@ -37,6 +39,12 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
     Raise:
         TypeError: If degree partition is not a tuple
         TypeError: If permutation argument is not a permutation.
+
+
+
+
+
+
     """
     if not isinstance(partition, tuple):
         raise TypeError
@@ -51,7 +59,7 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
     if degree != 2 * sum(partition):
         raise ValueError("Incompatible partition and permutation")
     
-    duplicate_partition = (part for part in partition for _ in range(2))
+    duplicate_partition = tuple(part for part in partition for _ in range(2))
     hyperocta = hyperoctahedral(degree // 2)
     numerator = sum(
         murn_naka_rule(
@@ -79,4 +87,62 @@ def weingarten_symplectic(
     Raise:
         ValueError : If the degree 2k of the symmetric group S_2k is not a factor of 2
     """
-    return
+    degree = permutation.size
+    if degree % 2:
+        raise ValueError("The degree of the symmetric group S_2k should be even")
+    half_degree = degree // 2
+
+    partition_tuple = tuple(
+        sum((value * (key,) for key, value in part.items()), ())
+        for part in partitions(half_degree)
+    )
+    duplicate_partition_tuple = tuple(
+        tuple(part for part in partition for _ in range(2)) for partition in partition_tuple
+    )
+    irrep_dimension_gen = (
+        irrep_dimension(partition) for partition in duplicate_partition_tuple
+    )
+    twisted_spherical_gen = (
+        twisted_spherical_function(permutation, partition)
+        for partition in partition_tuple
+    )
+    coefficient_gen = (
+        prod(
+            2 * symplectic_dimension - 2 * i + j
+            for i in range(len(partition))
+            for j in range(partition[i])
+        )
+        for partition in partition_tuple
+    )
+
+    if isinstance(symplectic_dimension, int):
+        weingarten = sum(
+            Fraction(
+                irrep_dim * zonal_spherical,
+                coefficient,
+            )
+            for irrep_dim, zonal_spherical, coefficient in zip(
+                irrep_dimension_gen, twisted_spherical_gen, coefficient_gen
+            )
+            if coefficient
+        ) * Fraction(
+            2**half_degree * factorial(half_degree),
+            factorial(degree),
+        )
+    else:
+        weingarten = (
+            sum(
+                irrep_dim * zonal_spherical / coefficient
+                for irrep_dim, zonal_spherical, coefficient in zip(
+                    irrep_dimension_gen, twisted_spherical_gen, coefficient_gen
+                )
+                if coefficient
+            )
+            * 2**half_degree
+            * factorial(half_degree)
+            / factorial(degree)
+        )
+        numerator, denominator = fraction(simplify(weingarten))
+        weingarten = simplify(factor(numerator) / factor(denominator))
+
+    return weingarten

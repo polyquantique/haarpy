@@ -39,6 +39,8 @@ Functions
     hyperoctahedral_transversal
     zonal_spherical_function
     weingarten_orthogonal
+    twisted_spherical_function
+    weingarten_symplectic
 
 Code details
 ------------
@@ -63,6 +65,11 @@ from .orthogonal import (
     weingarten_orthogonal,
 )
 
+from .symplectic import (
+    twisted_spherical_function,
+    weingarten_symplectic,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -80,6 +87,8 @@ __all__ = [
     "hyperoctahedral_transversal",
     "zonal_spherical_function",
     "weingarten_orthogonal",
+    "twisted_spherical_function",
+    "weingarten_symplectic",
 ]
 
 

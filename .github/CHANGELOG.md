@@ -2,6 +2,7 @@
 
 ### New features
 * Added a new module `orthogonal` allowing the calculation of the orthogonal Weingarten function [(#28)](https://github.com/polyquantique/haarpy/pull/28).
+* Added a new module `symplectic` allowing the calculation of the symplectic Weingarten function [(#29)](https://github.com/polyquantique/haarpy/pull/29).
 
 ### Breaking changes
 
