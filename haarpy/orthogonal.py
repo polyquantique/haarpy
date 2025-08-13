@@ -52,7 +52,7 @@ def hyperoctahedral(degree: int) -> PermutationGroup:
 
 
 def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, None]:
-    """Returns the partitions of a tuple in terms of pairs and singles.
+    """Returns the partitions of a tuple in terms of perfect matchings.
 
     Args:
         seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
