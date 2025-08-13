@@ -35,6 +35,10 @@ Functions
     weingarten_class
     weingarten_element
     haar_integral
+    hyperoctahedral
+    hyperoctahedral_transversal
+    zonal_spherical_function
+    weingarten_orthogonal
 
 Code details
 ------------
@@ -52,6 +56,13 @@ from .unitary import (
     haar_integral,
 )
 
+from .orthogonal import (
+    hyperoctahedral,
+    hyperoctahedral_transversal,
+    zonal_spherical_function,
+    weingarten_orthogonal,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -65,6 +76,10 @@ __all__ = [
     "weingarten_class",
     "weingarten_element",
     "haar_integral",
+    "hyperoctahedral",
+    "hyperoctahedral_transversal",
+    "zonal_spherical_function",
+    "weingarten_orthogonal",
 ]
 
 
