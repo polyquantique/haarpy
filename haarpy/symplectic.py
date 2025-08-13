@@ -15,9 +15,11 @@
 Symplectic group Python interface
 """
 
+from fractions import Fraction
 from functools import lru_cache
 from sympy import Symbol
 from sympy.combinatorics import Permutation
+from haarpy import get_conjugacy_class, murn_naka_rule, hyperoctahedral
 
 
 @lru_cache
@@ -26,7 +28,7 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
     as seen in Macdonald's "Symmetric Functions and Hall Polynomials" chapter VII
 
     Args:
-        perm (Permutation): A permutation of the symmetric group S_2k
+        permutation (Permutation): A permutation of the symmetric group S_2k
         partition (tuple[int]): A partition of k
 
     Returns:
@@ -36,6 +38,29 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
         TypeError: If degree partition is not a tuple
         TypeError: If permutation argument is not a permutation.
     """
+    if not isinstance(partition, tuple):
+        raise TypeError
+
+    if not isinstance(permutation, Permutation):
+        raise TypeError
+    
+    degree = permutation.size
+
+    if degree % 2:
+        raise ValueError("degree should be a factor of 2")
+    if degree != 2 * sum(partition):
+        raise ValueError("Incompatible partition and permutation")
+    
+    duplicate_partition = (part for part in partition for _ in range(2))
+    hyperocta = hyperoctahedral(degree // 2)
+    numerator = sum(
+        murn_naka_rule(
+            duplicate_partition, get_conjugacy_class(~zeta * permutation, degree)
+        )
+        * zeta.signature()
+        for zeta in hyperocta.generate()
+    )
+    return Fraction(numerator, hyperocta.order())
 
 
 @lru_cache
@@ -54,3 +79,4 @@ def weingarten_symplectic(
     Raise:
         ValueError : If the degree 2k of the symmetric group S_2k is not a factor of 2
     """
+    return
