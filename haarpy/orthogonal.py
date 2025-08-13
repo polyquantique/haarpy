@@ -1,4 +1,4 @@
-# Copyright 2024 Polyquantique
+# Copyright 2025 Polyquantique
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,7 +77,9 @@ def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, No
 
 
 def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
-    """Returns a generator with the permutations of the coset transversal of M_2k
+    """Returns a generator with the permutations of M_2k, the complete set of coset
+    representatives of S_2k/H_k as seen in Macdonald's "Symmetric Functions and Hall
+    Polynomials" chapter VII
 
     Args:
         degree (int): Degree 2k of the set M_2k
@@ -99,6 +101,7 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 @lru_cache
 def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) -> float:
     """Returns the zonal spherical function of the Gelfand pair (S_2k, H_k)
+    as seen in Macdonald's "Symmetric Functions and Hall Polynomials" chapter VII
 
     Args:
         perm (Permutation): A permutation of the symmetric group S_2k
