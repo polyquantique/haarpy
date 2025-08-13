@@ -104,15 +104,15 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
     as seen in Macdonald's "Symmetric Functions and Hall Polynomials" chapter VII
 
     Args:
-        perm (Permutation): A permutation of the symmetric group S_2k
+        permutation (Permutation): A permutation of the symmetric group S_2k
         partition (tuple[int]): A partition of k
 
     Returns:
         (float): The zonal spherical function of the given permutation
 
     Raise:
-        TypeError: If degree partition is not a tuple
-        TypeError: If permutation argument is not a permutation.
+        TypeError: If partition argument is not a tuple
+        TypeError: If permutation argument is not a permutation
     """
     if not isinstance(partition, tuple):
         raise TypeError
