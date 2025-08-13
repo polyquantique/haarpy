@@ -150,8 +150,36 @@ def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, part
     ]
 )
 def test_weingarten_symplectic(permutation, num, denum):
-    """Symbolic validation of orthogonal Weingarten function against results shown in
+    """Symbolic validation of symplectic Weingarten function against results shown in
     `Collins et al. Integration with Respect to the Haar Measure on Unitary, Orthogonal
     and Symplectic Group: <https://link.springer.com/article/10.1007/s00220-006-1554-3>`_
     """
     assert ap.weingarten_symplectic(permutation, -d) == num/denum
+
+
+@pytest.mark.parametrize(
+    "permutation",
+    [
+        (Permutation(1)),
+        (Permutation(3)),
+        (Permutation(0,1,2,3)),
+        (Permutation(5)),
+        (Permutation(2,3,4,5)),
+        (Permutation(0,1,2,3,4,5)),
+        (Permutation(0,1,2,3,4,5,6,7)),
+        (Permutation(0,1,2,3,4,7)(5,6)),
+        (Permutation(0,1,2,3)(4,5,6,7)),
+        (Permutation(4,5,6,7)),
+        (Permutation(7)),
+    ]
+)
+def test_weingarten_symplectic_orthogonal_relation(permutation):
+    """Symbolic validation of the relation between the symplectic and 
+    orthogonal Weingarten functions as seen in
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    <https://arxiv.org/abs/1301.5401>`_
+    """
+    assert ap.weingarten_symplectic(permutation, d) == (
+        (-1) ** permutation.size * permutation.signature() * ap.weingarten_orthogonal(permutation, -2*d)
+    )
+    

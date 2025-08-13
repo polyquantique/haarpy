@@ -39,12 +39,8 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
     Raise:
         TypeError: If degree partition is not a tuple
         TypeError: If permutation argument is not a permutation.
-
-
-
-
-
-
+        ValueError: If the degree of the permutation is not a factor of 2
+        ValueError: If the degree of the partition and the permutation are incompatible
     """
     if not isinstance(partition, tuple):
         raise TypeError
