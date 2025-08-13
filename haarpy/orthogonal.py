@@ -56,7 +56,7 @@ def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, No
 
     Args:
         seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
-            Note that it must hold that ``len(s) >= 3``.
+            Note that it must hold that ``len(s) >= 2``.
 
     Returns:
         generator: a generators that goes through all the single-double
@@ -146,7 +146,7 @@ def weingarten_orthogonal(
 
     Args:
         permutation (Permutation): A permutation of the symmetric group S_2k
-        orthogonal_dimension (int):
+        orthogonal_dimension (int): Dimension of the orthogonal group
 
     Returns:
         Symbol : The Weingarten function
