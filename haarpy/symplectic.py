@@ -21,7 +21,27 @@ from functools import lru_cache
 from sympy import Symbol, factorial, factor, fraction, simplify
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class,murn_naka_rule, hyperoctahedral, irrep_dimension, zonal_spherical_function
+from haarpy import get_conjugacy_class,murn_naka_rule, hyperoctahedral, irrep_dimension
+
+
+@lru_cache
+def coset_type(partition: tuple[int]) -> Permutation:
+    """Returns the permutation of S_2k associate with the input coset-type (ppartition of k)
+    as seen in Matsumoto's "Weingarten calculus for matrix ensembles associated with
+    compact symmetric spaces"
+
+    Args:
+        partition (tuple[int]): The coset-type (partition of k)
+
+    Returns:
+        (Permutation): The associated permutation of S_2k
+
+    Raise:
+        TypeError: If partition is not a tuple
+    """
+    if not isinstance(partition, tuple):
+        raise TypeError
+    return None
 
 
 @lru_cache
@@ -37,7 +57,7 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
         (float): The twisted spherical function of the given permutation
 
     Raise:
-        TypeError: If degree partition is not a tuple
+        TypeError: If partition is not a tuple
         TypeError: If permutation argument is not a permutation.
         ValueError: If the degree of the permutation is not a factor of 2
         ValueError: If the degree of the partition and the permutation are incompatible

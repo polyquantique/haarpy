@@ -24,6 +24,26 @@ import haarpy as ap
 
 d = Symbol('d')
 
+# test coset-type in M_2k
+# test result for identity partition
+# test coset-type error if wrong format input
+# assert partition in decreasing order
+# assert partition of integer value
+
+
+@pytest.mark.parametrize(
+        "partition",
+        [
+            ([1,2,3]),
+            ("test"),
+            (13),
+        ]
+)
+def test_coset_type_type_error(partition):
+    "Test TypeError for invalid permutation and partition"
+    with pytest.raises(TypeError):
+        ap.coset_type(partition)
+
 
 @pytest.mark.parametrize(
     "permutation, partition",

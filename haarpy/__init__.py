@@ -39,6 +39,7 @@ Functions
     hyperoctahedral_transversal
     zonal_spherical_function
     weingarten_orthogonal
+    coset_type
     twisted_spherical_function
     weingarten_symplectic
 
@@ -66,6 +67,7 @@ from .orthogonal import (
 )
 
 from .symplectic import (
+    coset_type,
     twisted_spherical_function,
     weingarten_symplectic,
 )
@@ -87,6 +89,7 @@ __all__ = [
     "hyperoctahedral_transversal",
     "zonal_spherical_function",
     "weingarten_orthogonal",
+    "coset_type",
     "twisted_spherical_function",
     "weingarten_symplectic",
 ]

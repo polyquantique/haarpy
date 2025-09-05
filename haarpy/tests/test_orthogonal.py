@@ -248,7 +248,7 @@ def test_zonal_spherical_partition_error(cycle_type, partition):
 
 
 @pytest.mark.parametrize(
-    "cycle_type, partition",
+    "permutation, partition",
     [
         (Permutation(3)(0, 1), 'a'),
         (Permutation(5)(0, 1, 2), [1,1]),
@@ -256,10 +256,10 @@ def test_zonal_spherical_partition_error(cycle_type, partition):
         ('a', (1, 1)),
     ],
 )
-def test_zonal_spherical_type_error(cycle_type, partition):
-    "Test ValueError for invalid cycle-type and partition"
+def test_zonal_spherical_type_error(permutation, partition):
+    "Test TypeError for invalid permutation and partition"
     with pytest.raises(TypeError):
-        ap.zonal_spherical_function(cycle_type, partition)
+        ap.zonal_spherical_function(permutation, partition)
 
 
 @pytest.mark.parametrize(
