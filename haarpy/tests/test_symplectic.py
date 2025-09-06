@@ -71,40 +71,39 @@ def test_coset_type_identity(half_degree):
     """
     assert ap.coset_type(half_degree * (1,)) == Permutation(2*half_degree - 1)
 
+
 @pytest.mark.parametrize(
-    "permutation, partition",
-    [
-        (Permutation(3), (1,1)),
-        (Permutation(3)(0,1), (1,1)),
-        (Permutation(0,1,2,3), (1,1)),
-        (Permutation(3)(0,1,2), (2,)),
-        (Permutation(0,1,2,3,4,5), (3,)),
-        (Permutation(5)(0,4), (3,)),
-        (Permutation(5)(0,1,4), (3,)),
-        (Permutation(5)(0,1,2,3,4), (3,)),
-        (Permutation(5)(0,1,2,3,4), (1,1,1)),
-        (Permutation(5), (1,1,1)),
-        (Permutation(5), (2,1)),
-        (Permutation(5), (2,1)),
-        (Permutation(7), (2,2)),
-        (Permutation(7)(0,1), (2,1,1)),
-    ],
+        "partition",
+        [
+            ((1,1)),
+            ((2,)),
+            ((1,1,1)),
+            ((2,1)),
+            ((3,)),
+            ((1,1,1,1)),
+            ((2,2)),
+            ((3,1,1)),
+        ]
 )
-def test_twisted_spherical_image(permutation, partition):
+def test_twisted_spherical_image(partition):
     """Validates that the twisted spherical function is the image of the zonal spherical function as seen in 
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
     <https://arxiv.org/abs/1301.5401>`_
     """
+    half_degree = sum(partition)
     conjugate_partition = tuple(
         sum(1 for i in partition if i > j) for j in range(partition[0])
     )
-    assert ap.twisted_spherical_function(
-        permutation,
-        partition,
-    ) == ap.zonal_spherical_function(
-        permutation,
-        conjugate_partition,
-    )
+    for coset_type in partitions(half_degree):
+        coset_type = tuple(key for key, value in coset_type.items() for _ in range(value))
+        coset_type_permutation = ap.coset_type(coset_type)
+        assert ap.twisted_spherical_function(
+            coset_type_permutation,
+            partition,
+        ) == ap.zonal_spherical_function(
+            coset_type_permutation,
+            conjugate_partition,
+        )
 
 
 @pytest.mark.parametrize(
