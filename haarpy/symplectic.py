@@ -21,12 +21,12 @@ from functools import lru_cache
 from sympy import Symbol, factorial, factor, fraction, simplify
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class,murn_naka_rule, hyperoctahedral, irrep_dimension
+from haarpy import get_conjugacy_class, murn_naka_rule, hyperoctahedral, irrep_dimension
 
 
 @lru_cache
 def coset_type(partition: tuple[int]) -> Permutation:
-    """Returns the permutation of S_2k associate with the input coset-type (ppartition of k)
+    """Returns the permutation of S_2k associate with the input coset-type (partition of k)
     as seen in Matsumoto's "Weingarten calculus for matrix ensembles associated with
     compact symmetric spaces"
 
@@ -41,11 +41,24 @@ def coset_type(partition: tuple[int]) -> Permutation:
     """
     if not isinstance(partition, tuple):
         raise TypeError
-    return None
+
+    half_degree = sum(partition)
+    degree = 2 * half_degree
+    permutation_list = degree * [None]
+    for r, _ in enumerate(partition):
+        partial_sum = sum(partition[:r])
+        permutation_list[2 * partial_sum] = 2 * partial_sum
+        permutation_list[2 * partial_sum + 1] = 2 * partial_sum + 2 * partition[r] - 1
+        for p in range(3, 2 * partition[r] + 1):
+            permutation_list[2 * partial_sum + p - 1] = 2 * partial_sum + p - 2
+
+    return Permutation(permutation_list)
 
 
 @lru_cache
-def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) -> float:
+def twisted_spherical_function(
+    permutation: Permutation, partition: tuple[int]
+) -> float:
     """Returns the twisted spherical function of the Gelfand pair (S_2k, H_k)
     as seen in Macdonald's "Symmetric Functions and Hall Polynomials" chapter VII
 
@@ -67,14 +80,14 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
 
     if not isinstance(permutation, Permutation):
         raise TypeError
-    
+
     degree = permutation.size
 
     if degree % 2:
         raise ValueError("degree should be a factor of 2")
     if degree != 2 * sum(partition):
         raise ValueError("Incompatible partition and permutation")
-    
+
     duplicate_partition = tuple(part for part in partition for _ in range(2))
     hyperocta = hyperoctahedral(degree // 2)
     numerator = sum(
@@ -113,7 +126,8 @@ def weingarten_symplectic(
         for part in partitions(half_degree)
     )
     duplicate_partition_tuple = tuple(
-        tuple(part for part in partition for _ in range(2)) for partition in partition_tuple
+        tuple(part for part in partition for _ in range(2))
+        for partition in partition_tuple
     )
     irrep_dimension_gen = (
         irrep_dimension(partition) for partition in duplicate_partition_tuple

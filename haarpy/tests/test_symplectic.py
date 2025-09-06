@@ -18,17 +18,12 @@ Symplectic tests
 from math import factorial
 from fractions import Fraction
 from sympy.combinatorics import Permutation
+from sympy.utilities.iterables import partitions
 import pytest
 from sympy import Symbol
 import haarpy as ap
 
 d = Symbol('d')
-
-# test coset-type in M_2k
-# test result for identity partition
-# test coset-type error if wrong format input
-# assert partition in decreasing order
-# assert partition of integer value
 
 
 @pytest.mark.parametrize(
@@ -44,6 +39,37 @@ def test_coset_type_type_error(partition):
     with pytest.raises(TypeError):
         ap.coset_type(partition)
 
+
+@pytest.mark.parametrize("half_degree", range(2,7))
+def test_coset_type_in_transversal(half_degree):
+    """assert that all coset-type permutations of integer partition are in M_2k as seen in 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    <https://arxiv.org/abs/1301.5401>`_
+    """
+    transversal = tuple(ap.hyperoctahedral_transversal(2*half_degree))
+    for partition in partitions(half_degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        assert ap.coset_type(partition) in transversal
+
+
+@pytest.mark.parametrize("half_degree", range(2,7))
+def test_coset_type_signature(half_degree):
+    """assert that all coset-type permutations of integer partition have signature of 1 as seen in 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    <https://arxiv.org/abs/1301.5401>`_
+    """
+    for partition in partitions(half_degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        assert ap.coset_type(partition).signature() == 1
+
+
+@pytest.mark.parametrize("half_degree", range(2,10))
+def test_coset_type_identity(half_degree):
+    """ asert that the coset-type permutation of the identity partition is the identity permutation as seen in 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    <https://arxiv.org/abs/1301.5401>`_
+    """
+    assert ap.coset_type(half_degree * (1,)) == Permutation(2*half_degree - 1)
 
 @pytest.mark.parametrize(
     "permutation, partition",
