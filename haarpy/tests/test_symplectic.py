@@ -20,7 +20,7 @@ from fractions import Fraction
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 import pytest
-from sympy import Symbol
+from sympy import Symbol, simplify
 import haarpy as ap
 
 d = Symbol('d')
@@ -224,7 +224,7 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
     <https://arxiv.org/abs/1301.5401>`_
     """
-    assert ap.weingarten_symplectic(permutation, d) == (
+    assert ap.weingarten_symplectic(permutation, d) == simplify(
         (-1) ** permutation.size * permutation.signature() * ap.weingarten_orthogonal(permutation, -2*d)
     )
     
