@@ -17,7 +17,7 @@ Symplectic tests
 
 from math import factorial
 from fractions import Fraction
-from sympy.combinatorics import Permutation
+from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 import pytest
 from sympy import Symbol, simplify
@@ -194,12 +194,33 @@ def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, part
         (Permutation(7), (d+3)*(d**2+6*d+1), d*(d-1)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
     ]
 )
-def test_weingarten_symplectic(permutation, num, denum):
+def test_weingarten_symplectic_orthogonal_results(permutation, num, denum):
     """Symbolic validation of symplectic Weingarten function against results shown in
     `Collins et al. Integration with Respect to the Haar Measure on Unitary, Orthogonal
     and Symplectic Group: <https://link.springer.com/article/10.1007/s00220-006-1554-3>`_
     """
     assert ap.weingarten_symplectic(permutation, -d) == num/denum
+
+
+@pytest.mark.parametrize("half_degree", range(1,3))
+def test_weingarten_symplectic_hyperoctahedral(half_degree):
+    """Symbolic validation of symplectic Weingarten function against results shown in
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    <https://arxiv.org/abs/1301.5401>`_
+    """
+    if half_degree == 1:
+        for permutation in SymmetricGroup(2*half_degree).generate():
+            assert ap.weingarten_symplectic(permutation, d) == (
+                permutation.signature()/(2*d)
+            )
+    else:
+        for permutation in SymmetricGroup(2*half_degree).generate():
+            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            coefficient = permutation.signature()/(4*d*(d-1)*(2*d+1))
+            assert ap.weingarten_symplectic(permutation, d) == (
+                simplify((2*d-1)*coefficient) if permutation in hyperoctahedral
+                else coefficient
+            )
 
 
 @pytest.mark.parametrize(
@@ -225,6 +246,6 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
     <https://arxiv.org/abs/1301.5401>`_
     """
     assert ap.weingarten_symplectic(permutation, d) == simplify(
-        (-1) ** permutation.size * permutation.signature() * ap.weingarten_orthogonal(permutation, -2*d)
+        (-1) ** (permutation.size//2) * permutation.signature() * ap.weingarten_orthogonal(permutation, -2*d)
     )
     
