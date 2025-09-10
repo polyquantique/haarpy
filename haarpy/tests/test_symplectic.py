@@ -17,10 +17,10 @@ Symplectic tests
 
 from math import factorial
 from fractions import Fraction
+from sympy import Symbol, simplify
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 import pytest
-from sympy import Symbol, simplify
 import haarpy as ap
 
 d = Symbol('d')
@@ -65,9 +65,9 @@ def test_coset_type_signature(half_degree):
 
 @pytest.mark.parametrize("half_degree", range(2,10))
 def test_coset_type_identity(half_degree):
-    """ asert that the coset-type permutation of the identity partition is the identity permutation as seen in 
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
-    <https://arxiv.org/abs/1301.5401>`_
+    """ asert that the coset-type permutation of the identity partition is the identity permutation
+    as seen in `Matsumoto. Weingarten calculus for matrix ensembles associated with compact 
+    symmetric spaces: <https://arxiv.org/abs/1301.5401>`_
     """
     assert ap.coset_type(half_degree * (1,)) == Permutation(2*half_degree - 1)
 
@@ -86,9 +86,9 @@ def test_coset_type_identity(half_degree):
         ]
 )
 def test_twisted_spherical_image(partition):
-    """Validates that the twisted spherical function is the image of the zonal spherical function as seen in 
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
-    <https://arxiv.org/abs/1301.5401>`_
+    """Validates that the twisted spherical function is the image of the zonal spherical function
+    as seen in `Matsumoto. Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces: <https://arxiv.org/abs/1301.5401>`_
     """
     half_degree = sum(partition)
     conjugate_partition = tuple(
@@ -246,6 +246,7 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
     <https://arxiv.org/abs/1301.5401>`_
     """
     assert ap.weingarten_symplectic(permutation, d) == simplify(
-        (-1) ** (permutation.size//2) * permutation.signature() * ap.weingarten_orthogonal(permutation, -2*d)
+        (-1) ** (permutation.size//2)
+        * permutation.signature()
+        * ap.weingarten_orthogonal(permutation, -2*d)
     )
-    
