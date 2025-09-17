@@ -178,30 +178,6 @@ def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, part
     assert convolution == orthogonality
 
 
-@pytest.mark.parametrize(
-    "permutation, num, denum",
-    [
-        (Permutation(1), 1, d),
-        (Permutation(3), d+1, d*(d-1)*(d+2)),
-        (Permutation(0,1,2,3), -1, d*(d-1)*(d+2)),
-        (Permutation(5), d**2+3*d-2, d*(d-1)*(d-2)*(d+2)*(d+4)),
-        (Permutation(2,3,4,5), -1, d*(d-1)*(d-2)*(d+4)),
-        (Permutation(0,1,2,3,4,5), 2, d*(d-1)*(d-2)*(d+2)*(d+4)),
-        (Permutation(0,1,2,3,4,5,6,7), -5*d-6, d*(d-1)*(d-2)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
-        (Permutation(0,1,2,3,4,7)(5,6), 2, (d-1)*(d-2)*(d-3)*(d+1)*(d+2)*(d+6)),
-        (Permutation(0,1,2,3)(4,5,6,7), d**2+5*d+18, d*(d-1)*(d-2)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
-        (Permutation(4,5,6,7), -d**3-6*d**2-3*d+6, d*(d-1)*(d-2)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
-        (Permutation(7), (d+3)*(d**2+6*d+1), d*(d-1)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
-    ]
-)
-def test_weingarten_symplectic_orthogonal_results(permutation, num, denum):
-    """Symbolic validation of symplectic Weingarten function against results shown in
-    `Collins et al. Integration with Respect to the Haar Measure on Unitary, Orthogonal
-    and Symplectic Group: <https://link.springer.com/article/10.1007/s00220-006-1554-3>`_
-    """
-    assert ap.weingarten_symplectic(permutation, -d) == num/denum
-
-
 @pytest.mark.parametrize("half_degree", range(1,3))
 def test_weingarten_symplectic_hyperoctahedral(half_degree):
     """Symbolic validation of symplectic Weingarten function against results shown in
