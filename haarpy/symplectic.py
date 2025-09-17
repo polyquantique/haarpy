@@ -26,7 +26,7 @@ from haarpy import get_conjugacy_class, murn_naka_rule, hyperoctahedral, irrep_d
 
 @lru_cache
 def coset_type(partition: tuple[int]) -> Permutation:
-    """Returns the permutation of S_2k associate with the input coset-type (partition of k)
+    """Returns the permutation of S_2k associated with the input coset-type (partition of k)
     as seen in Matsumoto's "Weingarten calculus for matrix ensembles associated with
     compact symmetric spaces"
 
