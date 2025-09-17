@@ -247,3 +247,47 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
         * permutation.signature()
         * ap.weingarten_orthogonal(permutation, -2*d)
     )
+
+
+@pytest.mark.parametrize(
+    "permutation, partition",
+    [
+        (Permutation(3,), [2,]),
+        ((3,1), (1,1)),
+        (Permutation(5,)(0,1), 'a'),
+        ('a', (3,)),
+        (Permutation(5,)(0,3,4), 7),
+        (7, (1,1,1)),
+    ],
+)
+def test_twisted_spherical_function_type_error(permutation, partition):
+    with pytest.raises(TypeError):
+        ap.twisted_spherical_function(permutation, partition)
+
+
+@pytest.mark.parametrize(
+    "permutation, partition",
+    [
+        (Permutation(3,), (2,2)),
+        (Permutation(3,), (1,1,1)),
+        (Permutation(4,), (2,1)),
+        (Permutation(4,), (1,1,1)),
+    ],
+)
+def test_twisted_spherical_function_degree_value_error(permutation, partition):
+    with pytest.raises(ValueError):
+        ap.twisted_spherical_function(permutation, partition)
+
+
+@pytest.mark.parametrize(
+    "permutation",
+    [
+        (Permutation(2)),
+        (Permutation(4)),
+        (Permutation(0,1,2,3,4)),
+        (Permutation(6)),
+    ]
+)
+def test_weingarten_symplectic_degree_value_error(permutation):
+    with pytest.raises(ValueError, match = "The degree of the symmetric group S_2k should be even"):
+        ap.weingarten_symplectic(permutation, d) 
