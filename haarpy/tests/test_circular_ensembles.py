@@ -15,9 +15,10 @@
 Circular ensembles tests
 """
 
-import pytest
+from fractions import Fraction
 from sympy import Symbol, simplify
 from sympy.combinatorics import SymmetricGroup
+import pytest
 import haarpy as ap
 
 d = Symbol('d')
@@ -48,7 +49,17 @@ def test_weingarten_circular_orthogonal_hyperoctahedral_numeric(half_degree):
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
     <https://arxiv.org/abs/1301.5401>`_
     """
-    assert False
+    if half_degree == 1:
+        for permutation in SymmetricGroup(2*half_degree).generate():
+            assert ap.weingarten_circular_orthogonal(permutation, 7) == 1/(7+1)
+    else:
+        for permutation in SymmetricGroup(2*half_degree).generate():
+            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            coefficient = Fraction(1,(7*(7+1)*(7+3)))
+            assert ap.weingarten_circular_orthogonal(permutation, 7) == (
+                simplify((7+2)*coefficient) if permutation in hyperoctahedral
+                else -coefficient
+            )
 
 
 @pytest.mark.parametrize("half_degree", range(1,3))
@@ -78,4 +89,17 @@ def test_weingarten_circular_symplectic_hyperoctahedral_numeric(half_degree):
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
     <https://arxiv.org/abs/1301.5401>`_
     """
-    assert False
+    if half_degree == 1:
+        for permutation in SymmetricGroup(2*half_degree).generate():
+            assert ap.weingarten_circular_symplectic(permutation, 7) == Fraction(
+                permutation.signature(),
+                (2*7-1),
+            )
+    else:
+        for permutation in SymmetricGroup(2*half_degree).generate():
+            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            coefficient = Fraction(permutation.signature(), (7*(2*7-1)*(2*7-3)))
+            assert ap.weingarten_circular_symplectic(permutation, 7) == (
+                simplify((7-1)*coefficient) if permutation in hyperoctahedral
+                else coefficient*Fraction(1,2)
+            )

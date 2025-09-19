@@ -51,5 +51,9 @@ def weingarten_circular_symplectic(
     Returns:
         Symbol : The Weingarten function
     """
-    return weingarten_symplectic(permutation, (2*cse_dimension -1)/2)
-    #return Fraction(2*cse_dimension-1, 2) if isinstance(cse_dimension, Symbol) else 1
+    symplectic_dimension = (
+        (2 * cse_dimension - 1) / 2
+        if isinstance(cse_dimension, Symbol)
+        else Fraction(2 * cse_dimension - 1, 2)
+    )
+    return weingarten_symplectic(permutation, symplectic_dimension)
