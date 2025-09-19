@@ -15,10 +15,14 @@
 Permutation matrices Python interface
 """
 
+
 def set_partition():
+    #https://github.com/yaniccd/montrealer/blob/main/montrealer/montrealer_original.py
     return
 
 
+#considerer only coding the partitial order function as a bool function
+#I believe this can be done easily with sets objects in Python!!!
 def zeta_function():
     return
 
@@ -31,8 +35,19 @@ def mobius_function():
 
 
 def weingarten_permutation():
+    #1. generate sigma^tau
+    #2. Generate set partitions of each idividual block
+    #3. Itertool product all block to find all partial order
+    return
+
+
+def weingarten_centered_random_permutation():
     return
 
 
 def haar_integral_permutation():
+    return
+
+
+def haar_integral_centered_random_permutation():
     return
