@@ -42,6 +42,8 @@ Functions
     coset_type
     twisted_spherical_function
     weingarten_symplectic
+    weingarten_circular_orthogonal
+    weingarten_circular_symplectic
 
 Code details
 ------------
@@ -72,6 +74,11 @@ from .symplectic import (
     weingarten_symplectic,
 )
 
+from .circular_ensembles import (
+    weingarten_circular_orthogonal,
+    weingarten_circular_symplectic,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -92,6 +99,8 @@ __all__ = [
     "coset_type",
     "twisted_spherical_function",
     "weingarten_symplectic",
+    "weingarten_circular_orthogonal",
+    "weingarten_circular_symplectic",
 ]
 
 
