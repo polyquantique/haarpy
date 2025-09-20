@@ -15,11 +15,11 @@
 Orthogonal tests
 """
 
-from math import factorial
+from math import factorial, prod
 from itertools import permutations
 from fractions import Fraction
 import pytest
-from sympy import Symbol
+from sympy import Symbol, factorial2
 from sympy.combinatorics import Permutation, SymmetricGroup
 import haarpy as ap
 
@@ -318,3 +318,33 @@ def test_weingarten_orthognal_degree_error(degree):
             ValueError, match=".*The degree of the symmetric group S_2k should be even*"
         ):
             ap.weingarten_orthogonal(conjugacy_class.pop(), d)
+
+
+@pytest.mark.parametrize(
+    "powert_tuple",
+    [
+        ((1,1),),
+        ((2,2),),
+        ((2,1),),
+        ((2,3),),
+        ((2,4),),
+        ((1,1,4)),
+        ((1,4)),
+        ((2,2,2),),
+        ((2,2,4),),
+        ((4,4),),
+    ]
+)
+def test_haar_integral_orthogonal(power_tuple):
+    seq_i = sum(power_tuple)*(1,)
+    seq_j = tuple(i for i in range(len(power_tuple)) for _ in range(power_tuple[i]))
+    if sum(power_tuple) % 2:
+        assert not ap.haar_integral_orthogonal((seq_i, seq_j), d)
+    else:
+        assert ap.haar_integral_orthogonal((seq_i, seq_j), d) == (
+            prod(factorial2(power-1) for power in power_tuple)
+            / prod((d-i) for i in range(0,sum(power_tuple), 2))
+        )
+
+
+# Do a integer test as well for the previous

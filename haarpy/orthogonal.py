@@ -18,6 +18,7 @@ Orthogonal group Python interface
 from typing import Generator
 from math import prod
 from fractions import Fraction
+from itertools import product
 from functools import lru_cache
 from sympy import Symbol, factorial, factor, fraction, simplify
 from sympy.combinatorics import Permutation, PermutationGroup
@@ -213,3 +214,56 @@ def weingarten_orthogonal(
         weingarten = simplify(factor(numerator) / factor(denominator))
 
     return weingarten
+
+
+@lru_cache
+def haar_integral_orthogonal(
+    sequences: tuple[tuple[int]], group_dimension: int
+) -> Symbol:
+    """Returns integral over orthogonal group polynomial sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple(tuple(int))) : Indices of matrix elements
+        orthogonal_dimension (int) : Dimension of the orthogonal group
+
+    Returns:
+        Symbol : Integral under the Haar measure
+
+    Raise:
+        ValueError : If sequences doesn't contain 2 tuples
+        ValueError : If tuples i and j are of different length
+    """
+    if len(sequences) != 2:
+        raise ValueError("Wrong tuple format")
+
+    seq_i, seq_j = sequences
+    degree = len(seq_i)
+
+    if degree != len(seq_j):
+        raise ValueError("Wrong tuple format")
+
+    if degree % 2:
+        return 0
+
+    permutation_i = (
+        perm
+        for perm in hyperoctahedral_transversal(degree)
+        if perm(seq_i)[::2] == perm(seq_i)[1::2]
+    )
+
+    permutation_j = (
+        perm
+        for perm in hyperoctahedral_transversal(degree)
+        if perm(seq_j)[::2] == perm(seq_j)[1::2]
+    )
+
+    integral = sum(
+        weingarten_orthogonal(cycle_j * ~cycle_i, group_dimension)
+        for cycle_i, cycle_j in product(permutation_i, permutation_j)
+    )
+
+    if isinstance(group_dimension, Symbol):
+        numerator, denominator = fraction(simplify(integral))
+        integral = factor(numerator) / factor(denominator)
+
+    return integral
