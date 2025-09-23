@@ -149,6 +149,8 @@ def weingarten_permutation(
     second_partition: tuple[tuple[int]],
     permutation_size: int,
 ):
+    """
+    """
     #1. generate sigma^tau
     #2. Generate set partitions of each idividual block
     #3. Itertool product all block to find all partial order
