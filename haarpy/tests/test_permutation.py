@@ -20,13 +20,13 @@ from sympy import bell
 import haarpy as ap
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_size(size):
     "Assert the number of partitions is given by the Bell number"
     assert sum(1 for _ in ap.set_partition(tuple(range(size)))) == bell(size)
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_maximum_partition(size):
     "Assert that there is a single maximum parition"
     assert sum(
@@ -36,7 +36,7 @@ def test_set_partition_maximum_partition(size):
     ) == 1
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_minimum_partition(size):
     "Assert that there is a single minimum partition"
     assert sum(
@@ -46,7 +46,7 @@ def test_set_partition_minimum_partition(size):
     ) == 1
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_unique(size):
     "Assert that all partitions are unique"
     partition_tuple = tuple(
@@ -73,28 +73,44 @@ def test_set_partition_type_error(collection):
         tuple(ap.set_partition(collection))
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_partial_order_maximum_partition_in(size):
     "All partitions are contained within the maximal partition"
-    assert True
+    maximum_partition = (tuple(range(size)),)
+    assert all(
+        ap.partial_order(partition, maximum_partition)
+        for partition in ap.set_partition(tuple(range(size)))
+    )
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_partial_order_maximum_partition_out(size):
     "The maximal partition is contained within no partition but itself"
-    assert True
+    maximum_partition = (tuple(range(size)),)
+    assert sum(
+        ap.partial_order(maximum_partition, partition)
+        for partition in ap.set_partition(tuple(range(size)))
+    ) == 1
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_partial_order_minimum_partition_out(size):
-    "Not partition but itself is contained within the minimmal partition"
-    assert True
+    "No partition but itself is contained within the minimmal partition"
+    minimum_partition = tuple((i,) for i in range(size))
+    assert sum(
+        ap.partial_order(partition, minimum_partition)
+        for partition in ap.set_partition(tuple(range(size)))
+    ) == 1
 
 
-@pytest.mark.parametrize("size", range(1, 5))
+@pytest.mark.parametrize("size", range(1, 7))
 def test_partial_order_minimum_partition_in(size):
     "The minimal partition is contained within all partitions"
-    assert True
+    minimum_partition = tuple((i,) for i in range(size))
+    assert all(
+        ap.partial_order(minimum_partition, partition)
+        for partition in ap.set_partition(tuple(range(size)))
+    )
 
 
 @pytest.mark.parametrize(
