@@ -25,6 +25,13 @@ Functions
 ---------
 
 .. autosummary::
+    weingarten_class
+    weingarten_element
+    weingarten_orthogonal
+    weingarten_symplectic
+    weingarten_circular_orthogonal
+    weingarten_circular_symplectic
+    haar_integral
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -32,16 +39,11 @@ Functions
     murn_naka_rule
     irrep_dimension
     representation_dimension
-    weingarten_class
-    weingarten_element
-    haar_integral
     hyperoctahedral
     hyperoctahedral_transversal
     zonal_spherical_function
-    weingarten_orthogonal
     coset_type
     twisted_spherical_function
-    weingarten_symplectic
 
 Code details
 ------------
@@ -72,9 +74,21 @@ from .symplectic import (
     weingarten_symplectic,
 )
 
+from .circular_ensembles import (
+    weingarten_circular_orthogonal,
+    weingarten_circular_symplectic,
+)
+
 from ._version import __version__
 
 __all__ = [
+    "weingarten_class",
+    "weingarten_element",
+    "weingarten_orthogonal",
+    "weingarten_symplectic",
+    "weingarten_circular_orthogonal",
+    "weingarten_circular_symplectic",
+    "haar_integral",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",
@@ -82,16 +96,11 @@ __all__ = [
     "murn_naka_rule",
     "irrep_dimension",
     "representation_dimension",
-    "weingarten_class",
-    "weingarten_element",
-    "haar_integral",
     "hyperoctahedral",
     "hyperoctahedral_transversal",
     "zonal_spherical_function",
-    "weingarten_orthogonal",
     "coset_type",
     "twisted_spherical_function",
-    "weingarten_symplectic",
 ]
 
 
