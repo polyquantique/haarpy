@@ -44,6 +44,7 @@ Functions
     zonal_spherical_function
     coset_type
     twisted_spherical_function
+    set_partition
 
 Code details
 ------------
@@ -79,6 +80,10 @@ from .circular_ensembles import (
     weingarten_circular_symplectic,
 )
 
+from .permutation import (
+    set_partition,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -101,6 +106,7 @@ __all__ = [
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
+    "set_partition",
 ]
 
 
