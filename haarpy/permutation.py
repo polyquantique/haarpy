@@ -28,6 +28,10 @@ def set_partition(collection: tuple) -> Generator[tuple[tuple], None, None]:
     Returns:
         generator(tuple): all partitions of the input collection 
     """
+    if not (isinstance(collection, tuple) or isinstance(collection, list)):
+        raise ValueError
+    
+    
     if len(collection) == 1:
         yield (collection,)
         return
@@ -37,6 +41,10 @@ def set_partition(collection: tuple) -> Generator[tuple[tuple], None, None]:
         for index, subset in enumerate(smaller):
             yield smaller[:index] + ((first,) + subset,) + smaller[index + 1:]
         yield ((first,),) + smaller
+
+
+def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
+    return 
 
 
 #considerer only coding the partitial order function as a bool function
