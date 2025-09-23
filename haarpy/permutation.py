@@ -17,6 +17,7 @@ Permutation matrices Python interface
 
 from typing import Generator
 from collections.abc import Sequence
+from math import factorial, prod
 
 def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
     """Returns the partitionning of a given collection (set) of objects
@@ -72,17 +73,44 @@ def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
     return True
 
 
-#considerer only coding the partitial order function as a bool function
-#I believe this can be done easily with sets objects in Python!!!
-def zeta_function():
-    return
-
-
-def mobius_function():
-    """as seen in Collin & Nagatsu "Weingarten calculus for centered
-    random permutation matrices"
+def partition_intersection(
+    partition_1: tuple[tuple], partition_2: tuple[tuple]
+) -> Generator[int, None, None]:
     """
-    return
+    """
+    flatten_partitions = (
+        tuple(i for j in partition for i in j)
+        for partition in (partition_1, partition_2)
+    )
+    if any(len(flatten) != len(set(flatten)) for flatten in flatten_partitions):
+        raise ValueError("The partitions must be composed of unique elements")
+    
+    partition_set_1 = tuple(set(block) for block in partition_1)
+    partition_set_2 = tuple(set(block) for block in partition_2)
+
+    return tuple(
+        sum(1 for block_1 in partition_set_1 if block_1 & block_2)
+        for block_2 in partition_set_2
+    )
+
+
+def mobius_function(
+    partition_1: tuple[tuple], partition_2: tuple[tuple]
+) -> int:
+    """Return the Möbius function as seen in Collin & Nagatsu's
+    "Weingarten calculus for centered random permutation matrices"
+
+    Args:
+        partition_1 (tuple(tuple)): The intersected partition
+        partition_2 (tuple(tuple)): The partition summed over
+
+    Returns:
+        int: The value of the Möbius function
+    """
+    return prod(
+        (-1)**(block_count -1) * factorial(block_count - 1)
+        for block_count in partition_intersection(partition_1, partition_2)
+    )
 
 
 def weingarten_permutation():
