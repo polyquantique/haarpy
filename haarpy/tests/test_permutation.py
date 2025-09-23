@@ -116,25 +116,48 @@ def test_partial_order_minimum_partition_in(size):
 @pytest.mark.parametrize(
     "partition1, partition2",
     [
-        (1,1),
+        (((1,2),(3,4,5)), ((1,2),(3,4,5))),
+        (((1,),(2,),(3,4,5)), ((1,2),(3,4,5))),
+        (((1,2),(3,),(4,5)), ((1,2),(3,4,5))),
+        (((3,2,1),(5,4),(8,),(9,7)), ((4,5,2,3,1,8),(7,9))),
     ]
 )
 def test_partial_order_true(partition1, partition2):
-    "Partial orders  such that partition1 <= partition2"
-    assert True
+    "Partial orders such that partition1 <= partition2 is True"
+    assert ap.partial_order(partition1, partition2)
 
 
 @pytest.mark.parametrize(
     "partition1, partition2",
     [
-        (1,1),
+        (((1,2,3),(4,5)), ((1,2),(3,4,5))),
+        (((1,),(2,3),(4,5)), ((1,2),(3,4,5))),
+        (((1,3),(2,4,5)), ((1,2),(3,4,5))),
+        (((1,2),(3,4,5)), ((1,2),(3,),(4,5))),
+        (((3,2,1),(5,4),(8,),(9,7)), ((5,2,3,1,8),(4,),(7,9))),
     ]
 )
-def test_partial_order_true(partition1, partition2):
-    "Partial orders  such that partition1 <= partition2"
-    assert True
+def test_partial_order_false(partition1, partition2):
+    "Partial orders such that partition1 <= partition2 is False"
+    assert not ap.partial_order(partition1, partition2)
 
 
+@pytest.mark.parametrize(
+    "partition1, partition2",
+    [
+        (((1,1),(3,4,5)), ((1,1),(3,4,5))),
+        (((1,),(2,),(3,2,5)), ((1,2),(3,2,5))),
+        (((1,2),(3,),(4,4)), ((1,2),(3,5,5))),
+        (((3,2,1),(5,4),(8,),(9,7)), ((4,5,2,3,1,1),(7,9))),
+    ]
+)
+def test_partial_order_value_error(partition1, partition2):
+    "Partial orders value error for repetition"
+    with pytest.raises(
+        ValueError,
+        match = "The partitions must be composed of unique elements",
+    ):
+        ap.partial_order(partition1, partition2)
 
 #test trivial case for mobius function on page 4
 
