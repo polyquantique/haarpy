@@ -46,14 +46,24 @@ def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
 
 
 def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
-    """
+    """Returns True if parition_1 <= partition_2 in terms of partial order
+
+    Args:
+        partition_1 (tuple(tuple)): The partition of lower order
+        partition_2 (tuple(tuple)): The partition of higher order
+
+    Returns:
+        bool: True if parition_1 <= partition_2
+
+    Raise:
+        ValueError: If both partitions are not composed of unique elements
     """
     flatten_partitions = (
         tuple(i for j in partition for i in j)
         for partition in (partition_1, partition_2)
     )
     if any(len(flatten) != len(set(flatten)) for flatten in flatten_partitions):
-        raise ValueError("The partitions must be composed of unique elements.")
+        raise ValueError("The partitions must be composed of unique elements")
     
     for part in partition_1:
         if not any(set(part).issubset(bigger_part) for bigger_part in partition_2):
