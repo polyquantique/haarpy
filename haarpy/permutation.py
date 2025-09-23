@@ -94,9 +94,10 @@ def join_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
 
     joined_list = []
     for block_1 in partition_1:
-        intersection = block_1
+        intersection = {i for i in block_1}
         for block_2 in partition_2:
-            intersection.update(block_2)
+            if block_1 & block_2:
+                intersection.update(block_2)
             joined = False
             for index, block in enumerate(joined_list):
                 if intersection & block:
