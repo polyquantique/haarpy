@@ -31,7 +31,7 @@ def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
     Raise:
         ValueError: if the collection not an indexable iterable
     """
-    if not isinstance(collection, Sequence):# or isinstance(collection, range):
+    if not isinstance(collection, Sequence) or isinstance(collection, range):
         raise TypeError('collection must be an indexable iterable')
 
     if len(collection) == 1:

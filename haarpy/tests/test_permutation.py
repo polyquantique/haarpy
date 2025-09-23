@@ -58,16 +58,19 @@ def test_set_partition_unique(size):
 @pytest.mark.parametrize(
         "collection",
         [
-            (range(4),),
-            (set(),),
-            (11,),
-            (dict(),),
+            (set()),
+            (dict()),
+            (range(7)),
+            (11),
         ]
 )
 def test_set_partition_type_error(collection):
     "Raise TypeError for wrong type input"
-    with pytest.raises(TypeError, match="collection must be an indexable iterable"):
-        ap.set_partition(collection)
+    with pytest.raises(
+        TypeError,
+        match = 'collection must be an indexable iterable'
+    ):
+        tuple(ap.set_partition(collection))
 
 
 @pytest.mark.parametrize("size", range(1, 5))
