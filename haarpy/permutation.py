@@ -16,22 +16,24 @@ Permutation matrices Python interface
 """
 
 from typing import Generator
+from collections.abc import Sequence
 
-
-def set_partition(collection: tuple) -> Generator[tuple[tuple], None, None]:
+def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
     """Returns the partitionning of a given collection (set) of objects
     into non-empty subsets.
 
     Args:
-        collection (tuple): The collection (set) to be partitionned
+        collection (Sequence): An indexable iterable to be partitionned
 
     Returns:
-        generator(tuple): all partitions of the input collection 
+        generator(tuple(tuple)): all partitions of the input collection
+
+    Raise:
+        ValueError: if the collection not an indexable iterable
     """
-    if not (isinstance(collection, tuple) or isinstance(collection, list)):
-        raise ValueError
-    
-    
+    if not isinstance(collection, Sequence):# or isinstance(collection, range):
+        raise TypeError('collection must be an indexable iterable')
+
     if len(collection) == 1:
         yield (collection,)
         return
@@ -44,7 +46,20 @@ def set_partition(collection: tuple) -> Generator[tuple[tuple], None, None]:
 
 
 def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
-    return 
+    """
+    """
+    flatten_partitions = (
+        tuple(i for j in partition for i in j)
+        for partition in (partition_1, partition_2)
+    )
+    if any(len(flatten) != len(set(flatten)) for flatten in flatten_partitions):
+        raise ValueError("The partitions must be composed of unique elements.")
+    
+    for part in partition_1:
+        if not any(set(part).issubset(bigger_part) for bigger_part in partition_2):
+            return False
+    
+    return True
 
 
 #considerer only coding the partitial order function as a bool function

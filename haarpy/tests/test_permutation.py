@@ -37,7 +37,7 @@ def test_set_partition_maximum_partition(size):
 
 
 @pytest.mark.parametrize("size", range(1, 5))
-def test_set_partition_trivial_set(size):
+def test_set_partition_minimum_partition(size):
     "Assert that there is a single minimum partition"
     assert sum(
         1 for partition in ap.set_partition(tuple(range(size)))
@@ -46,9 +46,76 @@ def test_set_partition_trivial_set(size):
     ) == 1
 
 
-#test the total number of partition
-#test that they are all unique with a set
-#test that there is only 1 trivial and 1 full
+@pytest.mark.parametrize("size", range(1, 5))
+def test_set_partition_unique(size):
+    "Assert that all partitions are unique"
+    partition_tuple = tuple(
+        partition for partition in ap.set_partition(tuple(range(size)))
+    )
+    assert len(partition_tuple) == len(set(partition_tuple))
+
+
+@pytest.mark.parametrize(
+        "collection",
+        [
+            (range(4),),
+            (set(),),
+            (11,),
+            (dict(),),
+        ]
+)
+def test_set_partition_type_error(collection):
+    "Raise TypeError for wrong type input"
+    with pytest.raises(TypeError, match="collection must be an indexable iterable"):
+        ap.set_partition(collection)
+
+
+@pytest.mark.parametrize("size", range(1, 5))
+def test_partial_order_maximum_partition_in(size):
+    "All partitions are contained within the maximal partition"
+    assert True
+
+
+@pytest.mark.parametrize("size", range(1, 5))
+def test_partial_order_maximum_partition_out(size):
+    "The maximal partition is contained within no partition but itself"
+    assert True
+
+
+@pytest.mark.parametrize("size", range(1, 5))
+def test_partial_order_minimum_partition_out(size):
+    "Not partition but itself is contained within the minimmal partition"
+    assert True
+
+
+@pytest.mark.parametrize("size", range(1, 5))
+def test_partial_order_minimum_partition_in(size):
+    "The minimal partition is contained within all partitions"
+    assert True
+
+
+@pytest.mark.parametrize(
+    "partition1, partition2",
+    [
+        (1,1),
+    ]
+)
+def test_partial_order_true(partition1, partition2):
+    "Partial orders  such that partition1 <= partition2"
+    assert True
+
+
+@pytest.mark.parametrize(
+    "partition1, partition2",
+    [
+        (1,1),
+    ]
+)
+def test_partial_order_true(partition1, partition2):
+    "Partial orders  such that partition1 <= partition2"
+    assert True
+
+
 
 #test trivial case for mobius function on page 4
 

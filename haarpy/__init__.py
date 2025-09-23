@@ -45,6 +45,7 @@ Functions
     coset_type
     twisted_spherical_function
     set_partition
+    partial_order
 
 Code details
 ------------
@@ -82,6 +83,7 @@ from .circular_ensembles import (
 
 from .permutation import (
     set_partition,
+    partial_order,
 )
 
 from ._version import __version__
@@ -107,6 +109,7 @@ __all__ = [
     "coset_type",
     "twisted_spherical_function",
     "set_partition",
+    "partial_order",
 ]
 
 
