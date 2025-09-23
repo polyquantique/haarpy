@@ -27,8 +27,8 @@ def test_set_partition_size(size):
 
 
 @pytest.mark.parametrize("size", range(1, 5))
-def test_set_partition_trivial_set(size):
-    "Assert that there is a single trivial trivial parition"
+def test_set_partition_maximum_partition(size):
+    "Assert that there is a single maximum parition"
     assert sum(
         1 for partition in ap.set_partition(tuple(range(size)))
         if len(partition) == 1
@@ -38,7 +38,7 @@ def test_set_partition_trivial_set(size):
 
 @pytest.mark.parametrize("size", range(1, 5))
 def test_set_partition_trivial_set(size):
-    "Assert that there is a single trivial discret partition"
+    "Assert that there is a single minimum partition"
     assert sum(
         1 for partition in ap.set_partition(tuple(range(size)))
         if len(partition) == size
