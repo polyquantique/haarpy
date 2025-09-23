@@ -15,10 +15,28 @@
 Permutation matrices Python interface
 """
 
+from typing import Generator
 
-def set_partition():
-    #https://github.com/yaniccd/montrealer/blob/main/montrealer/montrealer_original.py
-    return
+
+def set_partition(collection: tuple) -> Generator[tuple[tuple], None, None]:
+    """Returns the partitionning of a given collection (set) of objects
+    into non-empty subsets.
+
+    Args:
+        collection (tuple): The collection (set) to be partitionned
+
+    Returns:
+        generator(tuple): all partitions of the input collection 
+    """
+    if len(collection) == 1:
+        yield (collection,)
+        return
+    
+    first = collection[0]
+    for smaller in set_partition(collection[1:]):
+        for index, subset in enumerate(smaller):
+            yield smaller[:index] + ((first,) + subset,) + smaller[index + 1:]
+        yield ((first,),) + smaller
 
 
 #considerer only coding the partitial order function as a bool function

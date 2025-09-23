@@ -16,8 +16,39 @@ Unitary tests
 """
 
 import pytest
+from sympy import bell
 import haarpy as ap
 
+
+@pytest.mark.parametrize("size", range(1, 5))
+def test_set_partition_size(size):
+    "Assert the number of partitions is given by the Bell number"
+    assert sum(1 for _ in ap.set_partition(tuple(range(size)))) == bell(size)
+
+
+@pytest.mark.parametrize("size", range(1, 5))
+def test_set_partition_trivial_set(size):
+    "Assert that there is a single trivial trivial parition"
+    assert sum(
+        1 for partition in ap.set_partition(tuple(range(size)))
+        if len(partition) == 1
+        and len(partition[0]) == size
+    ) == 1
+
+
+@pytest.mark.parametrize("size", range(1, 5))
+def test_set_partition_trivial_set(size):
+    "Assert that there is a single trivial discret partition"
+    assert sum(
+        1 for partition in ap.set_partition(tuple(range(size)))
+        if len(partition) == size
+        and all(len(part) == 1 for part in partition)
+    ) == 1
+
+
+#test the total number of partition
+#test that they are all unique with a set
+#test that there is only 1 trivial and 1 full
 
 #test trivial case for mobius function on page 4
 
