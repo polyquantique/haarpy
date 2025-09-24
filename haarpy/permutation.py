@@ -91,6 +91,7 @@ def meet_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
         for block_2 in partition_2:
             if block_1 & block_2:
                 meet_list.append(block_1 & block_2)
+                
     return tuple(tuple(block) for block in meet_list)
 
 
