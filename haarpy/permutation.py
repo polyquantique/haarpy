@@ -83,7 +83,15 @@ def meet_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
     Return:   
     """
     #RAISE VALUE ERROR IF NOT SAME PARTITION K
-    return
+    partition_1 = tuple(set(part) for part in partition_1)
+    partition_2 = tuple(set(part) for part in partition_2)
+
+    meet_list = []
+    for block_1 in partition_1:
+        for block_2 in partition_2:
+            if block_1 & block_2:
+                meet_list.append(block_1 & block_2)
+    return tuple(tuple(block) for block in meet_list)
 
 
 def join_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tuple[tuple]:
@@ -94,18 +102,17 @@ def join_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
 
     joined_list = []
     for block_1 in partition_1:
-        intersection = {i for i in block_1}
         for block_2 in partition_2:
             if block_1 & block_2:
-                intersection.update(block_2)
+                block_1.update(block_2)
             joined = False
             for index, block in enumerate(joined_list):
-                if intersection & block:
-                    joined_list[index].update(intersection)
+                if block_1 & block:
+                    joined_list[index].update(block_1)
                     joined = True
                     break
             if not joined:
-                joined_list.add(intersection)
+                joined_list.append(block_1)
 
     return tuple(tuple(block) for block in joined_list)
 
@@ -141,6 +148,16 @@ def mobius_function(
     return prod(
         (-1)**(block_count -1) * factorial(block_count - 1)
         for block_count in partition_intersection
+    )
+
+
+def sequence_to_partition(sequence: tuple) -> tuple[tuple[int]]:
+    """
+    """
+    #put in weingarten
+    return tuple(
+        tuple(index for index, value in enumerate(sequence) if value == unique)
+        for unique in set(sequence)
     )
 
 
