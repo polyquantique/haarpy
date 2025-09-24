@@ -91,7 +91,7 @@ def meet_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
         for block_2 in partition_2:
             if block_1 & block_2:
                 meet_list.append(block_1 & block_2)
-                
+
     return tuple(tuple(block) for block in meet_list)
 
 
@@ -99,13 +99,14 @@ def join_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
     """
     """
     partition_1 = tuple(set(part) for part in partition_1)
-    partition_2 = tuple(set(part) for part in partition_2)
+    partition_2 = list(set(part) for part in partition_2)
 
     joined_list = []
     for block_1 in partition_1:
-        for block_2 in partition_2:
+        for index_2, block_2 in enumerate(partition_2):
             if block_1 & block_2:
                 block_1.update(block_2)
+                partition_2.pop(index_2)
             joined = False
             for index, block in enumerate(joined_list):
                 if block_1 & block:
