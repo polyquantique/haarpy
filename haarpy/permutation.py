@@ -219,23 +219,38 @@ def weingarten_permutation(
     )
 
 
-def sequence_to_partition(sequence: tuple) -> tuple[tuple[int]]:
+def weingarten_centered_random_permutation():
     """
     """
-    #put in integral
-    return tuple(
-        tuple(index for index, value in enumerate(sequence) if value == unique)
-        for unique in set(sequence)
+    return
+
+
+def haar_integral_permutation(
+    sequence_i: tuple[int],
+    sequence_j: tuple[int],
+    permutation_size: Symbol,
+) -> Symbol:
+    """
+    """
+    def sequence_to_partition(sequence: tuple) -> tuple[tuple[int]]:
+        return sorted(
+            sorted(index for index, value in enumerate(sequence) if value == unique)
+            for unique in set(sequence)
+        )
+    
+    partition_i = sequence_to_partition(sequence_i)
+    partition_j = sequence_to_partition(sequence_j)
+
+    return (
+        prod(permutation_size - i for i, _ in enumerate(partition_i))
+        if partition_i == partition_j
+        else 0
     )
 
 
-def weingarten_centered_random_permutation():
-    return
-
-
-def haar_integral_permutation():
-    return
 
 
 def haar_integral_centered_random_permutation():
+    """
+    """
     return

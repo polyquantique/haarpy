@@ -164,6 +164,8 @@ def test_partial_order_value_error(partition1, partition2):
 
 #test_mobuis_function_orthgonality Eq(2.1)
 
+#test Eq(2.4) against Eq(2.2)
+
 #Use corollary 2.2 to test_weingarten_permutation
 
 #Use corollary 2.3 to test_weingarten_permutation
