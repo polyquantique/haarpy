@@ -16,8 +16,10 @@ Permutation matrices Python interface
 """
 
 from typing import Generator
+from itertools import product
 from collections.abc import Sequence
 from math import factorial, prod
+from sympy import Symbol, simplify
 
 def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
     """Returns the partitionning of a given collection (set) of objects
@@ -74,15 +76,21 @@ def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
 
 
 def meet_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tuple[tuple]:
-    """Meet operation of two partitions
+    """Returns the greatest lower bound of the two input partitions
 
     Args:
-        partition_1 (tuple(tuple)): A partition of a set
-        partition_2 (tuple(tuple)): A partition of a set
+        partition_1 (tuple(tuple)): partition of a set
+        partition_2 (tuple(tuple)): partition of a set
 
-    Return:   
+    Return:
+        tuple(tuple): Greatest lower bound
     """
-    #RAISE VALUE ERROR IF NOT SAME PARTITION K
+    flatten_1 = (i for block in partition_1 for i in block)
+    flatten_2 = (i for block in partition_2 for i in block)
+
+    if flatten_1 != flatten_2:
+        raise ValueError("Inputs should be partitions of the same integer")
+    
     partition_1 = tuple(set(part) for part in partition_1)
     partition_2 = tuple(set(part) for part in partition_2)
 
@@ -96,8 +104,21 @@ def meet_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
 
 
 def join_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tuple[tuple]:
+    """Returns the least upper bound of the two input partitions
+
+    Args:
+        partition_1 (tuple(tuple)): partition of a set
+        partition_2 (tuple(tuple)): partition of a set
+
+    Return:
+        tuple(tuple): Least upper bound
     """
-    """
+    flatten_1 = (i for block in partition_1 for i in block)
+    flatten_2 = (i for block in partition_2 for i in block)
+
+    if flatten_1 != flatten_2:
+        raise ValueError("Inputs should be partitions of the same integer")
+    
     partition_1 = tuple(set(part) for part in partition_1)
     partition_2 = list(set(part) for part in partition_2)
 
@@ -153,27 +174,59 @@ def mobius_function(
     )
 
 
+def weingarten_permutation(
+    first_partition: tuple[tuple[int]],
+    second_partition: tuple[tuple[int]],
+    permutation_size: Symbol,
+) -> Symbol:
+    """Returns the Weingarten function for random permutation matrices
+    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
+
+    Args:
+        first_partition (tuple(tuple(int))): a set partition of integer k
+        second_partition (tuple(tuple(int))): a set partition of integer k
+        permutation_size (Symbol): Dimension of the random permutation matrices
+
+    Returns:
+        Symbol : The Weingarten function
+    """
+    disjoint_partition_tuple = tuple(
+        (partition for partition in set_partition(block))
+        for block in meet_operation(first_partition, second_partition)
+    )
+
+    inferieur_partition_tuple = (
+        tuple(
+            block
+            for partition in partition_tuple
+            for block in partition
+        )
+        for partition_tuple in product(*disjoint_partition_tuple)
+    )
+
+    weingarten = sum(
+        mobius_function(partition, first_partition)
+        * mobius_function(partition, second_partition)
+        * prod(permutation_size - i for i, _ in enumerate(partition))
+        for partition in inferieur_partition_tuple
+    )
+
+    return (
+        weingarten
+        if isinstance(permutation_size, int)
+        else simplify(weingarten)
+    )
+
+
 def sequence_to_partition(sequence: tuple) -> tuple[tuple[int]]:
     """
     """
-    #put in weingarten
+    #put in integral
     return tuple(
         tuple(index for index, value in enumerate(sequence) if value == unique)
         for unique in set(sequence)
     )
-
-
-def weingarten_permutation(
-    first_partition: tuple[tuple[int]],
-    second_partition: tuple[tuple[int]],
-    permutation_size: int,
-):
-    """
-    """
-    #1. generate sigma^tau
-    #2. Generate set partitions of each idividual block
-    #3. Itertool product all block to find all partial order
-    return
 
 
 def weingarten_centered_random_permutation():

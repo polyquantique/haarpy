@@ -159,6 +159,7 @@ def test_partial_order_value_error(partition1, partition2):
     ):
         ap.partial_order(partition1, partition2)
 
+
 #test trivial case for mobius function on page 4
 
 #test_mobuis_function_orthgonality Eq(2.1)
