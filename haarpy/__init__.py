@@ -46,6 +46,9 @@ Functions
     twisted_spherical_function
     set_partition
     partial_order
+    meet_operation
+    join_operation
+    mobius_function
 
 Code details
 ------------
@@ -84,6 +87,9 @@ from .circular_ensembles import (
 from .permutation import (
     set_partition,
     partial_order,
+    meet_operation,
+    join_operation,
+    mobius_function,
 )
 
 from ._version import __version__
@@ -110,6 +116,9 @@ __all__ = [
     "twisted_spherical_function",
     "set_partition",
     "partial_order",
+    "meet_operation",
+    "join_operation",
+    "mobius_function",
 ]
 
 

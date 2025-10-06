@@ -16,6 +16,9 @@ Permutation matrices tests
 """
 
 import pytest
+from math import factorial
+from collections import Counter
+from itertools import product
 from sympy import bell
 import haarpy as ap
 
@@ -158,6 +161,141 @@ def test_partial_order_value_error(partition1, partition2):
         match = "The partitions must be composed of unique elements",
     ):
         ap.partial_order(partition1, partition2)
+
+
+@pytest.mark.parametrize("size" , range(1,7))
+def test_meet_operation_minimum_partition(size):
+    "Meet operation with minimum partition returns minimum partition"
+    minimum_partition = tuple((i,) for i in range(size))
+    minimum_counter = Counter(minimum_partition)
+    for partition in ap.set_partition(tuple(range(size))):
+        assert (
+            Counter(ap.meet_operation(partition, minimum_partition))
+            == minimum_counter
+        )
+
+
+@pytest.mark.parametrize("size" , range(1,7))
+def test_meet_operation_maximum_partition(size):
+    "Meet operation with maximum partition returns the same partition"
+    maximum_partition = (tuple(range(size)),)
+    for partition in ap.set_partition(tuple(range(size))):
+        assert (
+            ap.meet_operation(partition, maximum_partition)
+            == partition
+        )
+
+
+@pytest.mark.parametrize(
+    "partition1, partition2, expected_result",
+    [
+        (((0,1,3), (2,4,5), (6,)), ((0,1), (2,3,4), (5,6)), ((0,1), (2,4), (3,), (5,), (6,))),
+        (((0,4,5), (1,3,2), (6,7)), ((2,1,3,4), (0,5,6,7)), ((0,5), (1,2,3), (4,), (6,7))),
+    ]
+)
+def test_meet_operation_additional(partition1, partition2, expected_result):
+    "additional tests for the meet operation"
+    meet_partition = Counter(
+        tuple(sorted(block))
+        for block in ap.meet_operation(partition1, partition2)
+    )
+    meet_expected = Counter(
+        tuple(sorted(block))
+        for block in expected_result
+    )
+    assert meet_partition == meet_expected
+
+
+@pytest.mark.parametrize("size" , range(1,7))
+def test_join_operation_minimum_partition(size):
+    "Join operation with minimum partition returns same partition"
+    minimum_partition = tuple((i,) for i in range(size))
+    for partition in ap.set_partition(tuple(range(size))):
+        assert (
+            ap.join_operation(partition, minimum_partition)
+            == partition
+        )
+
+
+@pytest.mark.parametrize("size" , range(1,7))
+def test_join_operation_maximum_partition(size):
+    "Join operation with maximum partition returns maximum partition"
+    maximum_partition = (tuple(range(size)),)
+    for partition in ap.set_partition(tuple(range(size))):
+        assert (
+            ap.join_operation(partition, maximum_partition)
+            == maximum_partition
+        )
+
+
+@pytest.mark.parametrize(
+    "partition1, partition2, expected_result",
+    [
+        (((0,1,3), (2,4,5), (6,)), ((0,1), (2,3,4), (5,6)), ((0,1), (2,4), (3,), (5,), (6,))),
+        (((0,4,5), (1,3,2), (6,7)), ((2,1,3,4), (0,5,6,7)), ((0,5), (1,2,3), (4,), (6,7))),
+    ]
+)
+def test_meet_operation_additional(partition1, partition2, expected_result):
+    "additional tests for the meet operation"
+    join_partition = Counter(
+        tuple(sorted(block))
+        for block in ap.join0_operation(partition1, partition2)
+    )
+    join_expected = Counter(
+        tuple(sorted(block))
+        for block in expected_result
+    )
+    assert join_partition == join_expected
+
+
+@pytest.mark.parametrize("size", range(1,7))
+def test_mobius_function_trivial(size):
+    """Test the first trivial relation for the Mobius funciton as seen
+    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
+    """
+    minimum_partition = tuple((i,) for i in range(size))
+    maximum_partition = (tuple(range(size)),)
+    assert (
+        ap.mobius_function(
+            minimum_partition,
+            maximum_partition,
+        )
+        == (-1)**(size-1) * factorial(size-1)
+    )
+    
+
+@pytest.mark.parametrize("size", range(1,7))
+def test_mobius_inversion_formula(size):
+    """Test Mobius inversion formula
+    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
+    """
+    collection = tuple(range(size))
+    for partition_1, partition_2 in product(
+        ap.set_partition(collection),
+        ap.set_partition(collection),
+    ):
+        kronecker = int(partition_1 == partition_2)
+        convolution = sum(
+            ap.mobius_function(
+                partition_1,
+                partition_3,
+            )
+            * int(
+                ap.partial_order(
+                    partition_3,
+                    partition_2
+                )
+            )
+            for partition_3 in ap.set_partition(collection)
+            if (
+                ap.partial_order(partition_1, partition_3)
+                and ap.partial_order(partition_3, partition_2)
+            )
+        )
+        
+        assert convolution == kronecker
 
 
 #test trivial case for mobius function on page 4

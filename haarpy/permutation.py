@@ -21,6 +21,7 @@ from collections.abc import Sequence
 from math import factorial, prod
 from sympy import Symbol, simplify
 
+
 def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
     """Returns the partitionning of a given collection (set) of objects
     into non-empty subsets.
@@ -69,7 +70,7 @@ def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
         raise ValueError("The partitions must be composed of unique elements")
     
     for part in partition_1:
-        if not any(set(part).issubset(bigger_part) for bigger_part in partition_2):
+        if all(not set(part).issubset(bigger_part) for bigger_part in partition_2):
             return False
     
     return True
@@ -85,12 +86,6 @@ def meet_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
     Return:
         tuple(tuple): Greatest lower bound
     """
-    flatten_1 = (i for block in partition_1 for i in block)
-    flatten_2 = (i for block in partition_2 for i in block)
-
-    if flatten_1 != flatten_2:
-        raise ValueError("Inputs should be partitions of the same integer")
-    
     partition_1 = tuple(set(part) for part in partition_1)
     partition_2 = tuple(set(part) for part in partition_2)
 
@@ -113,12 +108,6 @@ def join_operation(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> tupl
     Return:
         tuple(tuple): Least upper bound
     """
-    flatten_1 = (i for block in partition_1 for i in block)
-    flatten_2 = (i for block in partition_2 for i in block)
-
-    if flatten_1 != flatten_2:
-        raise ValueError("Inputs should be partitions of the same integer")
-    
     partition_1 = tuple(set(part) for part in partition_1)
     partition_2 = list(set(part) for part in partition_2)
 
