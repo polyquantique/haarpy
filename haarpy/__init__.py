@@ -32,6 +32,7 @@ Functions
     weingarten_circular_orthogonal
     weingarten_circular_symplectic
     haar_integral
+    haar_integral_orthogonal
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -66,6 +67,7 @@ from .orthogonal import (
     hyperoctahedral_transversal,
     zonal_spherical_function,
     weingarten_orthogonal,
+    haar_integral_orthogonal,
 )
 
 from .symplectic import (
@@ -89,6 +91,7 @@ __all__ = [
     "weingarten_circular_orthogonal",
     "weingarten_circular_symplectic",
     "haar_integral",
+    "haar_integral_orthogonal",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",
