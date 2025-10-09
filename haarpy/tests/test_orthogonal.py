@@ -335,7 +335,8 @@ def test_weingarten_orthognal_degree_error(degree):
         ((4,4),),
     ]
 )
-def test_haar_integral_orthogonal(power_tuple):
+def test_haar_integral_orthogonal_column_symbolic(power_tuple):
+    "Test based on the column integral of an orthogonal Haar-random matrix (symbolic)"
     seq_i = sum(power_tuple)*(1,)
     seq_j = tuple(i for i in range(len(power_tuple)) for _ in range(power_tuple[i]))
     if sum(power_tuple) % 2:
@@ -347,4 +348,31 @@ def test_haar_integral_orthogonal(power_tuple):
         )
 
 
-# Do a integer test as well for the previous
+@pytest.mark.parametrize(
+    "powert_tuple",
+    [
+        ((1,1),),
+        ((2,2),),
+        ((2,1),),
+        ((2,3),),
+        ((2,4),),
+        ((1,1,4)),
+        ((1,4)),
+        ((2,2,2),),
+        ((2,2,4),),
+        ((4,4),),
+    ]
+)
+def test_haar_integral_orthogonal_column_numeric(power_tuple):
+    "Test based on the column integral of an orthogonal Haar-random matrix (numeric)"
+    # Do a integer test as well for the previous
+    #dimension = random()
+    seq_i = sum(power_tuple)*(1,)
+    seq_j = tuple(i for i in range(len(power_tuple)) for _ in range(power_tuple[i]))
+    if sum(power_tuple) % 2:
+        assert not ap.haar_integral_orthogonal((seq_i, seq_j), dimension)
+    else:
+        assert ap.haar_integral_orthogonal((seq_i, seq_j), dimension) == (
+            prod(factorial2(power-1) for power in power_tuple)
+            / prod((dimension-i) for i in range(0,sum(power_tuple), 2))
+        )
