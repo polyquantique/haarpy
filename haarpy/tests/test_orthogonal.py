@@ -80,6 +80,7 @@ def test_hyperoctahedral_transversal_value_error(degree):
 
 @pytest.mark.parametrize("size", range(2,14,2))
 def test_perfect_matchings_order(size):
+    "test size of perfect matchings"
     assert (
         sum(1 for _ in ap.perfect_matchings(tuple(range(size))))
         == factorial2(size-1)
