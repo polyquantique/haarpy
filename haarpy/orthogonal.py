@@ -64,7 +64,7 @@ def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, No
         partitions of the tuple
     """
     if len(seed) == 2:
-        yield seed
+        yield (seed,)
 
     for idx1 in range(1, len(seed)):
         item_partition = (seed[0], seed[idx1])

@@ -42,6 +42,7 @@ Functions
     representation_dimension
     hyperoctahedral
     hyperoctahedral_transversal
+    perfect_matchings
     zonal_spherical_function
     coset_type
     twisted_spherical_function
@@ -65,6 +66,7 @@ from .unitary import (
 from .orthogonal import (
     hyperoctahedral,
     hyperoctahedral_transversal,
+    perfect_matchings,
     zonal_spherical_function,
     weingarten_orthogonal,
     haar_integral_orthogonal,
@@ -101,6 +103,7 @@ __all__ = [
     "representation_dimension",
     "hyperoctahedral",
     "hyperoctahedral_transversal",
+    "perfect_matchings",
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
