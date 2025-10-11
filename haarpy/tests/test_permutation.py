@@ -312,6 +312,17 @@ def test_weingarten_permutation_hand_calculated(partition1, partition2):
 
 
 @pytest.mark.parametrize(
+        "partition1, partition2",
+        [
+            (((0,1),(2,3)), ((0,2),(1,3))),
+        ]
+)
+def test_weingarten_centered_permutation_hand_calculated(partition1, partition2):
+    "Test Weingarten centered permutation function against hand calculated cases"
+    assert False
+
+
+@pytest.mark.parametrize(
     "row_indices, column_indices",
     [
         ((1,2,3,4),(1,2,3,4)),
@@ -324,9 +335,9 @@ def test_weingarten_permutation_hand_calculated(partition1, partition2):
     ]
 )
 def test_haar_integral_permutation_weingarten(row_indices, column_indices):
-    """Test haar integral against the Weingarten sum as seen in Eq.(2.2)
-    and (2.4) of `Collins and Nagatsu. Weingarten Calculus for Centered Random
-    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
+    """Test haar integral for permutation matrices against the Weingarten
+    sum as seen in Eq.(2.2) and (2.4) of `Collins and Nagatsu. Weingarten
+    Calculus for Centered Random Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
     """
     partition_row = tuple(
         tuple(index for index, value in enumerate(row_indices) if value == unique)
@@ -358,3 +369,24 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
         ap.haar_integral_permutation(row_indices, column_indices, d)
         == weingarten_integral
     )
+
+
+@pytest.mark.parametrize(
+    "row_indices, column_indices",
+    [
+        ((1,2,3,4),(1,2,3,4)),
+        ((3,2,2,1),(2,2,1,3)),
+        ((3,2,2,1),(3,2,2,1)),
+        ((3,2,2,1,2),(3,2,2,1,2)),
+        ((3,3,2,2,1,2),(3,3,2,2,1,2)),
+        ((3,3,2,2,3,2),(3,3,2,2,3,2)),
+        ((3,3,2,2,3,2),(3,3,2,2,1,2)),
+    ]
+)
+def test_haar_integral_centered_permutation_weingarten(row_indices, column_indices):
+    """Test haar integral for centered permutation matrices
+    against the Weingarten sum as seen in Eq.(2.2)
+    and (2.4) of `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
+    """
+    assert False
