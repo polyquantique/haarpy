@@ -194,7 +194,7 @@ def test_meet_operation_maximum_partition(size):
     ]
 )
 def test_meet_operation_additional(partition1, partition2, expected_result):
-    "additional tests for the meet operation"
+    "additional hand calculated tests for the meet operation"
     meet_partition = Counter(
         tuple(sorted(block))
         for block in ap.meet_operation(partition1, partition2)
@@ -231,15 +231,15 @@ def test_join_operation_maximum_partition(size):
 @pytest.mark.parametrize(
     "partition1, partition2, expected_result",
     [
-        (((0,1,3), (2,4,5), (6,)), ((0,1), (2,3,4), (5,6)), ((0,1), (2,4), (3,), (5,), (6,))),
-        (((0,4,5), (1,3,2), (6,7)), ((2,1,3,4), (0,5,6,7)), ((0,5), (1,2,3), (4,), (6,7))),
+        (((0,1), (3,), (2,4), (5,), (6,)), ((0,), (1,5), (2,3), (4,6)), ((0,1,5),(2,3,4,6))),
+        (((1,2), (0,4,5), (3,)), ((5,), (4,3), (1,2), (0,)), ((0,3,4,5), (1,2))),
     ]
 )
-def test_meet_operation_additional(partition1, partition2, expected_result):
-    "additional tests for the meet operation"
+def test_join_operation_additional(partition1, partition2, expected_result):
+    "additional hand calculated tests for the join operation"
     join_partition = Counter(
         tuple(sorted(block))
-        for block in ap.join0_operation(partition1, partition2)
+        for block in ap.join_operation(partition1, partition2)
     )
     join_expected = Counter(
         tuple(sorted(block))

@@ -45,7 +45,7 @@ def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
     first = collection[0]
     for smaller in set_partition(collection[1:]):
         for index, subset in enumerate(smaller):
-            yield smaller[:index] + ((first,) + subset,) + smaller[index + 1:]
+            yield ((first,) + subset,) + smaller[:index] + smaller[index + 1:]
         yield ((first,),) + smaller
 
 
@@ -235,8 +235,6 @@ def haar_integral_permutation(
         if partition_i == partition_j
         else 0
     )
-
-
 
 
 def haar_integral_centered_random_permutation():
