@@ -197,7 +197,7 @@ def weingarten_permutation(
     weingarten = sum(
         mobius_function(partition, first_partition)
         * mobius_function(partition, second_partition)
-        * prod(permutation_size - i for i, _ in enumerate(partition))
+        / prod(permutation_size - i for i, _ in enumerate(partition))
         for partition in inferieur_partition_tuple
     )
 
@@ -229,9 +229,9 @@ def haar_integral_permutation(
     
     partition_i = sequence_to_partition(sequence_i)
     partition_j = sequence_to_partition(sequence_j)
-
+    
     return (
-        prod(permutation_size - i for i, _ in enumerate(partition_i))
+        1 / prod(permutation_size - i for i, _ in enumerate(partition_i))
         if partition_i == partition_j
         else 0
     )

@@ -31,7 +31,9 @@ Functions
     weingarten_symplectic
     weingarten_circular_orthogonal
     weingarten_circular_symplectic
+    weingarten_permutation
     haar_integral
+    haar_integral_permutation
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -90,6 +92,8 @@ from .permutation import (
     meet_operation,
     join_operation,
     mobius_function,
+    weingarten_permutation,
+    haar_integral_permutation,
 )
 
 from ._version import __version__
@@ -101,7 +105,9 @@ __all__ = [
     "weingarten_symplectic",
     "weingarten_circular_orthogonal",
     "weingarten_circular_symplectic",
+    "weingarten_permutation",
     "haar_integral",
+    "haar_integral_permutation",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",

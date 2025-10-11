@@ -19,8 +19,10 @@ import pytest
 from math import factorial
 from collections import Counter
 from itertools import product
-from sympy import bell
+from sympy import bell, Symbol, simplify, factor, fraction
 import haarpy as ap
+
+d = Symbol('d')
 
 
 @pytest.mark.parametrize("size", range(1, 7))
@@ -31,7 +33,7 @@ def test_set_partition_size(size):
 
 @pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_maximum_partition(size):
-    "Assert that there is a single maximum parition"
+    "Assert that there is a single maximum partition"
     assert sum(
         1 for partition in ap.set_partition(tuple(range(size)))
         if len(partition) == 1
@@ -298,12 +300,61 @@ def test_mobius_inversion_formula(size):
         assert convolution == kronecker
 
 
-#test trivial case for mobius function on page 4
+@pytest.mark.parametrize(
+        "partition1, partition2",
+        [
+            (((0,1),(2,3)), ((0,2),(1,3))),
+        ]
+)
+def test_weingarten_permutation_hand_calculated(partition1, partition2):
+    "Test Weingarten permutation function against hand calculated cases"
+    assert False
 
-#test_mobuis_function_orthgonality Eq(2.1)
 
-#test Eq(2.4) against Eq(2.2)
+@pytest.mark.parametrize(
+    "row_indices, column_indices",
+    [
+        ((1,2,3,4),(1,2,3,4)),
+        ((3,2,2,1),(2,2,1,3)),
+        ((3,2,2,1),(3,2,2,1)),
+        ((3,2,2,1,2),(3,2,2,1,2)),
+        ((3,3,2,2,1,2),(3,3,2,2,1,2)),
+        ((3,3,2,2,3,2),(3,3,2,2,3,2)),
+        ((3,3,2,2,3,2),(3,3,2,2,1,2)),
+    ]
+)
+def test_haar_integral_permutation_weingarten(row_indices, column_indices):
+    """Test haar integral against the Weingarten sum as seen in Eq.(2.2)
+    and (2.4) of `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
+    """
+    partition_row = tuple(
+        tuple(index for index, value in enumerate(row_indices) if value == unique)
+        for unique in set(row_indices)
+    )
+    partition_column = tuple(
+        tuple(index for index, value in enumerate(column_indices) if value == unique)
+        for unique in set(column_indices)
+    )
 
-#Use corollary 2.2 to test_weingarten_permutation
+    weingarten_integral = sum(
+        ap.weingarten_permutation(
+            partition_sigma,
+            partition_tau,
+            d,
+        )
+        for partition_sigma, partition_tau in product(
+            ap.set_partition(tuple(i for i, _ in enumerate(row_indices))),
+            ap.set_partition(tuple(i for i, _ in enumerate(column_indices))),
+        )
+        if ap.partial_order(partition_sigma, partition_row)
+        and ap.partial_order(partition_tau, partition_column)
+    )
 
-#Use corollary 2.3 to test_weingarten_permutation
+    num, denum = fraction(simplify(weingarten_integral))
+    weingarten_integral = factor(num)/factor(denum)
+
+    assert (
+        ap.haar_integral_permutation(row_indices, column_indices, d)
+        == weingarten_integral
+    )
