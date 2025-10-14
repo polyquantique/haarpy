@@ -392,11 +392,12 @@ def test_haar_integral_orthogonal_column_numeric(power_tuple):
 )
 def test_haar_integral_trace(dimension, half_power):
     "Test based on the integral of the power of the trace"
-    integral = sum(
-        ap.haar_integral_orthogonal(
-            (seq_i, seq_i),
-            dimension
+    for half_power in range(1,min(dimension+1, 4)):
+        integral = sum(
+            ap.haar_integral_orthogonal(
+                (seq_i, seq_i),
+                dimension
+            )
+            for seq_i in product(range(dimension), repeat=2*half_power)
         )
-        for seq_i in product(range(dimension), repeat=2*half_power)
-    )
-    assert integral == factorial2(2*half_power - 1)
+        assert integral == factorial2(2*half_power - 1)
