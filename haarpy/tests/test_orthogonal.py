@@ -15,14 +15,16 @@
 Orthogonal tests
 """
 
-from math import factorial
-from itertools import permutations
+from math import factorial, prod
+from itertools import permutations, product
 from fractions import Fraction
+from random import seed, randint
 import pytest
-from sympy import Symbol
+from sympy import Symbol, factorial2
 from sympy.combinatorics import Permutation, SymmetricGroup
 import haarpy as ap
 
+seed(137)
 d = Symbol('d')
 
 
@@ -74,6 +76,15 @@ def test_hyperoctahedral_transversal_value_error(degree):
     "Test ValueError for odd degree"
     with pytest.raises(ValueError, match=".*degree should be a factor of 2*"):
         ap.hyperoctahedral_transversal(degree)
+
+
+@pytest.mark.parametrize("size", range(2,14,2))
+def test_perfect_matchings_order(size):
+    "test size of perfect matchings"
+    assert (
+        sum(1 for _ in ap.perfect_matchings(tuple(range(size))))
+        == factorial2(size-1)
+    )
 
 
 @pytest.mark.parametrize(
@@ -318,3 +329,92 @@ def test_weingarten_orthognal_degree_error(degree):
             ValueError, match=".*The degree of the symmetric group S_2k should be even*"
         ):
             ap.weingarten_orthogonal(conjugacy_class.pop(), d)
+
+
+@pytest.mark.parametrize(
+    "power_tuple",
+    [
+        (1,1),
+        (2,2),
+        (2,1),
+        (2,3),
+        (2,4),
+        (3,3),
+        (1,1,4),
+        (1,4),
+        (2,2,2),
+        (2,2,4),
+    ]
+)
+def test_haar_integral_orthogonal_column_symbolic(power_tuple):
+    "Test based on the column integral of an orthogonal Haar-random matrix (symbolic)"
+    seq_i = sum(power_tuple)*(1,)
+    seq_j = tuple(i for i in range(len(power_tuple)) for _ in range(power_tuple[i]))
+    if any(power % 2 for power in power_tuple):
+        assert not ap.haar_integral_orthogonal((seq_i, seq_j), d)
+    else:
+        assert ap.haar_integral_orthogonal((seq_i, seq_j), d) == (
+            prod(factorial2(power-1) for power in power_tuple)
+            / prod((d+i) for i in range(0,sum(power_tuple), 2))
+        )
+
+
+@pytest.mark.parametrize(
+    "power_tuple",
+    [
+        (1,1),
+        (2,2),
+        (2,1),
+        (2,3),
+        (2,4),
+        (3,3),
+        (1,1,4),
+        (1,4),
+    ]
+)
+def test_haar_integral_orthogonal_column_numeric(power_tuple):
+    "Test based on the column integral of an orthogonal Haar-random matrix (numeric)"
+    dimension = randint(5,15)
+    seq_i = sum(power_tuple)*(1,)
+    seq_j = tuple(i for i in range(len(power_tuple)) for _ in range(power_tuple[i]))
+    if any(power % 2 for power in power_tuple):
+        assert not ap.haar_integral_orthogonal((seq_i, seq_j), dimension)
+    else:
+        assert ap.haar_integral_orthogonal((seq_i, seq_j), dimension) == (
+            prod(factorial2(power-1) for power in power_tuple)
+            / prod((dimension+i) for i in range(0,sum(power_tuple), 2))
+        )
+
+
+@pytest.mark.parametrize(
+        "dimension, half_power",
+        product(range(2,5), range(1,4))
+)
+def test_haar_integral_trace(dimension, half_power):
+    "Test based on the integral of the power of the trace"
+    for half_power in range(1,min(dimension+1, 4)):
+        integral = sum(
+            ap.haar_integral_orthogonal(
+                (seq_i, seq_i),
+                dimension
+            )
+            for seq_i in product(range(dimension), repeat=2*half_power)
+        )
+        assert integral == factorial2(2*half_power - 1)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,),),
+        ((1,2,3),),
+        ((1,2),(3,4),(4,5)),
+        "str",
+        ((1,2),(3,4,5)),
+        ((1,2,3),(3,4,5,6)),
+    ]
+)
+def test_haar_integral_value_error(sequences):
+    "Test haar integral value error"
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral_orthogonal(sequences, d)
