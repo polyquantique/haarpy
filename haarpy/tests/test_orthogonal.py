@@ -401,3 +401,20 @@ def test_haar_integral_trace(dimension, half_power):
             for seq_i in product(range(dimension), repeat=2*half_power)
         )
         assert integral == factorial2(2*half_power - 1)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,),),
+        ((1,2,3),),
+        ((1,2),(3,4),(4,5)),
+        "str",
+        ((1,2),(3,4,5)),
+        ((1,2,3),(3,4,5,6)),
+    ]
+)
+def test_haar_integral_value_error(sequences):
+    "Test haar integral value error"
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral_orthogonal(sequences, d)
