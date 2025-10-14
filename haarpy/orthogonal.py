@@ -71,10 +71,7 @@ def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, No
         rest = seed[1:idx1] + seed[idx1 + 1 :]
         rest_partitions = perfect_matchings(rest)
         for p in rest_partitions:
-            if isinstance(p[0], tuple):
-                yield ((item_partition),) + p
-            else:
-                yield (item_partition, p)
+            yield ((item_partition),) + p
 
 
 def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
