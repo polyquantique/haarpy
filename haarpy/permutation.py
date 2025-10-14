@@ -101,7 +101,8 @@ def meet_operation(
 
 
 def join_operation(
-    partition_1: tuple[tuple], partition_2: tuple[tuple]
+    partition_1: tuple[tuple],
+    partition_2: tuple[tuple]
 ) -> tuple[tuple]:
     """Returns the least upper bound of the two input partitions
 
@@ -112,25 +113,38 @@ def join_operation(
     Return:
         tuple(tuple): Least upper bound
     """
-    partition_1 = tuple(set(part) for part in partition_1)
-    partition_2 = list(set(part) for part in partition_2)
+    parent = [
+        {
+            index 
+            for value in block1
+            for index, block2 in enumerate(partition_2)
+            if value in block2
+        }
+        for block1 in partition_1
+    ]
 
-    joined_list = []
-    for block_1 in partition_1:
-        for index_2, block_2 in enumerate(partition_2):
-            if block_1 & block_2:
-                block_1.update(block_2)
-                partition_2.pop(index_2)
-            joined = False
-            for index, block in enumerate(joined_list):
-                if block_1 & block:
-                    joined_list[index].update(block_1)
-                    joined = True
-                    break
-            if not joined:
-                joined_list.append(block_1)
+    merged = [
+        {
+            index
+            for index_set2 in parent
+            for index in index_set2
+            if index_set1 & index_set2
+        }
+        for index_set1 in parent
+    ]
 
-    return tuple(tuple(block) for block in joined_list)
+    block_indices = {
+        tuple(index_set) for index_set in merged
+    }
+
+    return tuple(sorted(
+        tuple(sorted(
+            value
+            for index in block
+            for value in partition_2[index]
+        ))
+        for block in block_indices
+    ))
 
 
 def mobius_function(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> int:
