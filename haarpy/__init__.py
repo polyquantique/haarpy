@@ -32,6 +32,7 @@ Functions
     weingarten_circular_orthogonal
     weingarten_circular_symplectic
     haar_integral
+    haar_integral_orthogonal
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -41,6 +42,7 @@ Functions
     representation_dimension
     hyperoctahedral
     hyperoctahedral_transversal
+    perfect_matchings
     zonal_spherical_function
     coset_type
     twisted_spherical_function
@@ -64,8 +66,10 @@ from .unitary import (
 from .orthogonal import (
     hyperoctahedral,
     hyperoctahedral_transversal,
+    perfect_matchings,
     zonal_spherical_function,
     weingarten_orthogonal,
+    haar_integral_orthogonal,
 )
 
 from .symplectic import (
@@ -89,6 +93,7 @@ __all__ = [
     "weingarten_circular_orthogonal",
     "weingarten_circular_symplectic",
     "haar_integral",
+    "haar_integral_orthogonal",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",
@@ -98,6 +103,7 @@ __all__ = [
     "representation_dimension",
     "hyperoctahedral",
     "hyperoctahedral_transversal",
+    "perfect_matchings",
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
