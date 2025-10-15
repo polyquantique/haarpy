@@ -15,8 +15,12 @@
 Symmetric tests
 """
 
+from math import factorial
+from itertools import permutations
 import pytest
+from sympy import factorial2
 from sympy.combinatorics import Permutation
+from sympy.utilities.iterables import partitions
 import haarpy as ap
 
 
@@ -277,3 +281,108 @@ def test_irrep_dimension_murn_naka_rule(partition):
     "Reconcil irrep_dimension and murn_naka_rule for the identity conjugacy class"
     conjugacy_identity = sum(partition) * (1,)
     assert ap.irrep_dimension(partition) == ap.murn_naka_rule(partition, conjugacy_identity)
+
+
+@pytest.mark.parametrize("degree", range(1, 8))
+def test_hyperoctahedral_order(degree):
+    "Hyperoctahedral order test"
+    assert ap.hyperoctahedral(degree).order() == 2**degree * factorial(degree)
+
+
+@pytest.mark.parametrize(
+    "degree",
+    [
+        ("a",),
+        ("str",),
+        (0.1,),
+        ((0, 1),),
+    ],
+)
+def test_hyperoctahedral_type_error(degree):
+    "Hyperoctahedral TypeError for wrong degree type"
+    with pytest.raises(TypeError):
+        ap.hyperoctahedral(degree)
+
+
+@pytest.mark.parametrize("degree", range(2, 12, 2))
+def test_hyperoctahedral_transversal_size(degree):
+    "Test the size of the hyperoctahedral transversal set"
+    size = sum(1 for _ in ap.hyperoctahedral_transversal(degree))
+    assert size == factorial(degree)/2**(degree//2)/factorial(degree//2)
+
+
+@pytest.mark.parametrize("degree", range(2, 12, 2))
+def test_hyperoctahedral_transversal_brute_force(degree):
+    "Compare permutations of the transversal set with brute force method"
+    brute_force_permutations = set()
+    for permutation in permutations(range(degree)):
+        if not all(permutation[2*i] < permutation[2*i+1] for i in range(degree//2)):
+            continue
+        if not all(permutation[2*i] < permutation[2*i+2] for i in range(degree//2-1)):
+            continue
+        brute_force_permutations.add(Permutation(permutation))
+
+    transversal = set(ap.hyperoctahedral_transversal(degree))
+    assert transversal == brute_force_permutations
+
+
+@pytest.mark.parametrize("degree", range(3, 12, 2))
+def test_hyperoctahedral_transversal_value_error(degree):
+    "Test ValueError for odd degree"
+    with pytest.raises(ValueError, match=".*degree should be a factor of 2*"):
+        ap.hyperoctahedral_transversal(degree)
+
+
+@pytest.mark.parametrize("size", range(2,14,2))
+def test_perfect_matchings_order(size):
+    "test size of perfect matchings"
+    assert (
+        sum(1 for _ in ap.perfect_matchings(tuple(range(size))))
+        == factorial2(size-1)
+    )
+
+
+@pytest.mark.parametrize(
+        "partition",
+        [
+            ([1,2,3]),
+            ("test"),
+            (13),
+        ]
+)
+def test_coset_type_type_error(partition):
+    "Test TypeError for invalid permutation and partition"
+    with pytest.raises(TypeError):
+        ap.coset_type(partition)
+
+
+@pytest.mark.parametrize("half_degree", range(2,7))
+def test_coset_type_in_transversal(half_degree):
+    """assert that all coset-type permutations of integer partition are in M_2k as seen in 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    <https://arxiv.org/abs/1301.5401>`_
+    """
+    transversal = tuple(ap.hyperoctahedral_transversal(2*half_degree))
+    for partition in partitions(half_degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        assert ap.coset_type(partition) in transversal
+
+
+@pytest.mark.parametrize("half_degree", range(2,7))
+def test_coset_type_signature(half_degree):
+    """assert that all coset-type permutations of integer partition have signature of 1 as seen in 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    <https://arxiv.org/abs/1301.5401>`_
+    """
+    for partition in partitions(half_degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        assert ap.coset_type(partition).signature() == 1
+
+
+@pytest.mark.parametrize("half_degree", range(2,10))
+def test_coset_type_identity(half_degree):
+    """ asert that the coset-type permutation of the identity partition is the identity permutation
+    as seen in `Matsumoto. Weingarten calculus for matrix ensembles associated with compact 
+    symmetric spaces: <https://arxiv.org/abs/1301.5401>`_
+    """
+    assert ap.coset_type(half_degree * (1,)) == Permutation(2*half_degree - 1)

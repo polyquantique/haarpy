@@ -57,6 +57,10 @@ from .symmetric import (
     proper_border_strip,
     murn_naka_rule,
     irrep_dimension,
+    hyperoctahedral,
+    hyperoctahedral_transversal,
+    perfect_matchings,
+    coset_type,
 )
 
 from .unitary import (
@@ -67,16 +71,12 @@ from .unitary import (
 )
 
 from .orthogonal import (
-    hyperoctahedral,
-    hyperoctahedral_transversal,
-    perfect_matchings,
     zonal_spherical_function,
     weingarten_orthogonal,
     haar_integral_orthogonal,
 )
 
 from .symplectic import (
-    coset_type,
     twisted_spherical_function,
     weingarten_symplectic,
 )

@@ -7,6 +7,11 @@
 
 ### Breaking changes
 
+* Certain functions have been renamed to improve clarity:
+    * `haar_integral()` -> `haar_integral_unitary()`
+    * `weingarten_element()` -> `weingarten_unitary()`
+    * `weingarten_class()` -> `weingarten_unitary()`
+
 ### Improvements
 
 ### Bug fixes
