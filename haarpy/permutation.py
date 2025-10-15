@@ -216,7 +216,7 @@ def weingarten_permutation(
     return weingarten if isinstance(dimension, int) else simplify(weingarten)
 
 
-def weingarten_centered_random_permutation(
+def weingarten_centered_permutation(
     first_partition: tuple[tuple[int]],
     second_partition: tuple[tuple[int]],
     dimension: Symbol,
@@ -292,7 +292,7 @@ def haar_integral_permutation(
     )
 
 
-def haar_integral_centered_random_permutation(
+def haar_integral_centered_permutation(
     row_indices: tuple[int],
     column_indices: tuple[int],
     dimension: Symbol,
@@ -309,7 +309,7 @@ def haar_integral_centered_random_permutation(
     )
 
     integral = sum(
-        weingarten_centered_random_permutation(
+        weingarten_centered_permutation(
             partition_sigma,
             partition_tau,
             dimension,
