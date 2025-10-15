@@ -31,7 +31,7 @@ Functions
     weingarten_symplectic
     weingarten_circular_orthogonal
     weingarten_circular_symplectic
-    haar_integral
+    haar_integral_unitary
     haar_integral_orthogonal
     get_conjugacy_class
     derivative_tableaux
@@ -50,17 +50,20 @@ Functions
 Code details
 ------------
 """
-from .unitary import (
+from .symmetric import (
     get_conjugacy_class,
     derivative_tableaux,
     semi_standard_young_tableaux,
     proper_border_strip,
     murn_naka_rule,
     irrep_dimension,
+)
+
+from .unitary import (
     representation_dimension,
     weingarten_class,
     weingarten_element,
-    haar_integral,
+    haar_integral_unitary,
 )
 
 from .orthogonal import (
@@ -92,7 +95,7 @@ __all__ = [
     "weingarten_symplectic",
     "weingarten_circular_orthogonal",
     "weingarten_circular_symplectic",
-    "haar_integral",
+    "haar_integral_unitary",
     "haar_integral_orthogonal",
     "get_conjugacy_class",
     "derivative_tableaux",
