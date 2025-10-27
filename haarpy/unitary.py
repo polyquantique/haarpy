@@ -132,27 +132,27 @@ def haar_integral_unitary(sequences: tuple[tuple[int]], group_dimension: int) ->
     if len(sequences) != 4:
         raise ValueError("Wrong tuple format")
 
-    str_i, str_j, str_i_prime, str_j_prime = sequences
+    seq_i, seq_j, seq_i_prime, seq_j_prime = sequences
 
-    if len(str_i) != len(str_j) or len(str_i_prime) != len(str_j_prime):
+    if len(seq_i) != len(seq_j) or len(seq_i_prime) != len(seq_j_prime):
         raise ValueError("Wrong tuple format")
 
-    if sorted(str_i) != sorted(str_i_prime) or sorted(str_j) != sorted(str_j_prime):
+    if sorted(seq_i) != sorted(seq_i_prime) or sorted(seq_j) != sorted(seq_j_prime):
         return 0
 
-    degree = len(str_i)
-    str_i, str_j = list(str_i), list(str_j)
+    degree = len(seq_i)
+    seq_i, seq_j = list(seq_i), list(seq_j)
 
     permutation_i = (
         perm
         for perm in SymmetricGroup(degree).generate_schreier_sims()
-        if perm(str_i_prime) == str_i
+        if perm(seq_i_prime) == seq_i
     )
 
     permutation_j = (
         perm
         for perm in SymmetricGroup(degree).generate_schreier_sims()
-        if perm(str_j_prime) == str_j
+        if perm(seq_j_prime) == seq_j
     )
 
     class_mapping = dict(
