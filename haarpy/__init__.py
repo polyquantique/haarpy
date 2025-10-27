@@ -25,8 +25,7 @@ Functions
 ---------
 
 .. autosummary::
-    weingarten_class
-    weingarten_element
+    weingarten_unitary
     weingarten_orthogonal
     weingarten_symplectic
     weingarten_circular_orthogonal
@@ -65,8 +64,7 @@ from .symmetric import (
 
 from .unitary import (
     representation_dimension,
-    weingarten_class,
-    weingarten_element,
+    weingarten_unitary,
     haar_integral_unitary,
 )
 
@@ -89,8 +87,7 @@ from .circular_ensembles import (
 from ._version import __version__
 
 __all__ = [
-    "weingarten_class",
-    "weingarten_element",
+    "weingarten_unitary",
     "weingarten_orthogonal",
     "weingarten_symplectic",
     "weingarten_circular_orthogonal",

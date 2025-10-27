@@ -17,6 +17,7 @@ Unitary group Python interface
 
 from math import factorial, prod
 from functools import lru_cache
+from typing import Union
 from itertools import product
 from collections import Counter
 from fractions import Fraction
@@ -62,23 +63,28 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
 
 
 @lru_cache
-def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> Symbol:
+def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol) -> Symbol:
     """Returns the Weingarten function
 
     Args:
-        conjugacy_class (tuple[int]) : A conjugacy class, in partition form, of Sp
-        unitary_dimension (Symbol) : Dimension d of the unitary group
+        cycle (Permutation, tuple(int)) : Permutation cycle from the symmetric group or its cycle-type
+        unitary_dimension (Symbol) : Dimension d of the unitary matrix U
 
     Returns:
         Symbol : The Weingarten function
-
-    Raise:
-        TypeError : unitary_dimension must be an instance of int or sympy.Symbol
     """
     if not isinstance(unitary_dimension, (Symbol, int)):
         raise TypeError("unitary_dimension must be an instance of int or sympy.Symbol")
+    
+    if isinstance(cycle, Permutation):
+        degree = cycle.size
+        conjugacy_class = get_conjugacy_class(cycle, degree)
+    elif isinstance(cycle, (tuple,list)) and all(isinstance(value, int) for value in cycle):
+        degree = sum(cycle)
+        conjugacy_class = tuple(cycle)
+    else:
+        raise TypeError
 
-    degree = sum(conjugacy_class)
     partition_tuple = tuple(
         sum((value * (key,) for key, value in part.items()), ()) for part in partitions(degree)
     )
@@ -106,22 +112,6 @@ def weingarten_class(conjugacy_class: tuple[int], unitary_dimension: Symbol) -> 
         weingarten = factor(numerator) / factor(denominator)
 
     return weingarten
-
-
-@lru_cache
-def weingarten_element(cycle: Permutation, degree: int, unitary_dimension: Symbol) -> Symbol:
-    """Returns the Weingarten function
-
-    Args:
-        cycle (Permutation) : Permutation cycle from the symmetric group
-        degree (int) : Degree p of the symmetric group Sp
-        unitary_dimension (Symbol) : Dimension d of the unitary matrix U
-
-    Returns:
-        Symbol : The Weingarten function
-    """
-    conjugacy_class = get_conjugacy_class(cycle, degree)
-    return weingarten_class(conjugacy_class, unitary_dimension)
 
 
 @lru_cache
@@ -172,7 +162,7 @@ def haar_integral_unitary(sequences: tuple[tuple[int]], group_dimension: int) ->
         )
     )
     integral = sum(
-        count * weingarten_class(conjugacy, group_dimension)
+        count * weingarten_unitary(conjugacy, group_dimension)
         for conjugacy, count in class_mapping.items()
     )
 
