@@ -12,37 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Integer partition Python interface
+Partition Python interface
 """
 
 from typing import Generator
 from collections.abc import Sequence
-from sympy.combinatorics.partitions import Partition
-from sympy.utilities.iterables import multiset_partitions
-
-def set_partition(size: int) -> Generator[Partition, None, None]:
-    """Returns the set of partitions of the set of a given integer [k]
-
-    Args:
-        size (int): An integer k such that the partition of set [k] is returned
-
-    Returns:
-        generator(Partition): all partitions of the input collection
-
-    Raise:
-        ValueError: if the collection not an indexable iterable
-    """
-    if not isinstance(size, int):
-        raise TypeError
-    
-    return (Partition(*multiset) for multiset in multiset_partitions(range(size)))
 
 
-##############################################################################
-############   PRE SYMPY FUNCTIONS ###########################################
-##############################################################################
-
-def set_partition_old(collection: Sequence) -> Generator[tuple[tuple], None, None]:
+def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
     """Returns the partitionning of a given collection (set) of objects
     into non-empty subsets.
 
@@ -69,7 +46,7 @@ def set_partition_old(collection: Sequence) -> Generator[tuple[tuple], None, Non
         yield ((first,),) + smaller
 
 
-def partial_order_old(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
+def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
     """Returns True if parition_1 <= partition_2 in terms of partial order
 
     Args:
@@ -96,7 +73,7 @@ def partial_order_old(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> b
     return True
 
 
-def meet_operation_old(
+def meet_operation(
     partition_1: tuple[tuple], partition_2: tuple[tuple]
 ) -> tuple[tuple]:
     """Returns the greatest lower bound of the two input partitions
@@ -117,10 +94,10 @@ def meet_operation_old(
             if block_1 & block_2:
                 meet_list.append(block_1 & block_2)
 
-    return tuple(tuple(block) for block in meet_list)
+    return tuple(sorted(tuple(block) for block in meet_list))
 
 
-def join_operation_old(
+def join_operation(
     partition_1: tuple[tuple],
     partition_2: tuple[tuple]
 ) -> tuple[tuple]:
@@ -165,12 +142,3 @@ def join_operation_old(
         ))
         for block in block_indices
     ))
-
-
-def main():
-    return
-
-
-if __name__ == "__main__":
-    import sys
-
