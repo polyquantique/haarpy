@@ -117,7 +117,7 @@ def weingarten_centered_permutation(
         for block in meet_operation(first_partition, second_partition)
     )
 
-    inferieur_partition_tuple = (
+    inferieur_partition_tuple = tuple(
         tuple(block for partition in partition_tuple for block in partition)
         for partition_tuple in product(*disjoint_partition_tuple)
     )
