@@ -15,85 +15,20 @@
 Orthogonal group Python interface
 """
 
-from typing import Generator
 from math import prod
 from fractions import Fraction
 from itertools import product
 from functools import lru_cache
 from sympy import Symbol, factorial, factor, fraction, simplify
-from sympy.combinatorics import Permutation, PermutationGroup
+from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import murn_naka_rule, get_conjugacy_class, irrep_dimension
-
-
-@lru_cache
-def hyperoctahedral(degree: int) -> PermutationGroup:
-    """Return the hyperoctahedral group
-
-    Args:
-        degree (int): The degree k of the hyperoctahedral group H_k
-
-    Returns:
-        (PermutationGroup): The hyperoctahedral group
-
-    Raise:
-        TypeError: If degree is not of type int
-    """
-    if not isinstance(degree, int):
-        raise TypeError
-    transpositions = tuple(
-        Permutation(2 * degree - 1)(2 * i, 2 * i + 1) for i in range(degree)
-    )
-    double_transpositions = tuple(
-        Permutation(2 * degree - 1)(2 * i, 2 * j)(2 * i + 1, 2 * j + 1)
-        for i in range(degree)
-        for j in range(i + 1, degree)
-    )
-    return PermutationGroup(transpositions + double_transpositions)
-
-
-def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, None]:
-    """Returns the partitions of a tuple in terms of perfect matchings.
-
-    Args:
-        seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
-            Note that it must hold that ``len(s) >= 2``.
-
-    Returns:
-        generator: a generators that goes through all the single-double
-        partitions of the tuple
-    """
-    if len(seed) == 2:
-        yield (seed,)
-
-    for idx1 in range(1, len(seed)):
-        item_partition = (seed[0], seed[idx1])
-        rest = seed[1:idx1] + seed[idx1 + 1 :]
-        rest_partitions = perfect_matchings(rest)
-        for p in rest_partitions:
-            yield ((item_partition),) + p
-
-
-def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
-    """Returns a generator with the permutations of M_2k, the complete set of coset
-    representatives of S_2k/H_k as seen in Macdonald's "Symmetric Functions and Hall
-    Polynomials" chapter VII
-
-    Args:
-        degree (int): Degree 2k of the set M_2k
-
-    Returns:
-        (Generator[Permutation]): The permutations of M_2k
-    """
-    if degree % 2:
-        raise ValueError("degree should be a factor of 2")
-    if degree == 2:
-        return (Permutation(1),)
-    flatten_pmp = (
-        tuple(i for pair in pmp for i in pair)
-        for pmp in perfect_matchings(tuple(range(degree)))
-    )
-    return (Permutation(pmp) for pmp in flatten_pmp)
+from haarpy import (
+    murn_naka_rule,
+    get_conjugacy_class,
+    irrep_dimension,
+    hyperoctahedral,
+    hyperoctahedral_transversal,
+)
 
 
 @lru_cache

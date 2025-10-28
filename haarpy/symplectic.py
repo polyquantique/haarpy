@@ -25,37 +25,6 @@ from haarpy import get_conjugacy_class, murn_naka_rule, hyperoctahedral, irrep_d
 
 
 @lru_cache
-def coset_type(partition: tuple[int]) -> Permutation:
-    """Returns the permutation of S_2k associated with the input coset-type (partition of k)
-    as seen in Matsumoto's "Weingarten calculus for matrix ensembles associated with
-    compact symmetric spaces"
-
-    Args:
-        partition (tuple[int]): The coset-type (partition of k)
-
-    Returns:
-        (Permutation): The associated permutation of S_2k
-
-    Raise:
-        TypeError: If partition is not a tuple
-    """
-    if not isinstance(partition, tuple):
-        raise TypeError
-
-    half_degree = sum(partition)
-    degree = 2 * half_degree
-    permutation_list = degree * [None]
-    for r, _ in enumerate(partition):
-        partial_sum = sum(partition[:r])
-        permutation_list[2 * partial_sum] = 2 * partial_sum
-        permutation_list[2 * partial_sum + 1] = 2 * partial_sum + 2 * partition[r] - 1
-        for p in range(3, 2 * partition[r] + 1):
-            permutation_list[2 * partial_sum + p - 1] = 2 * partial_sum + p - 2
-
-    return Permutation(permutation_list)
-
-
-@lru_cache
 def twisted_spherical_function(
     permutation: Permutation, partition: tuple[int]
 ) -> float:

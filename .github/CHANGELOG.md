@@ -7,6 +7,11 @@
 
 ### Breaking changes
 
+* Certain functions have been renamed to improve clarity. The unitary Weingarten functions have been merged into a single isomorphic `weingarten_unitary()` function that can accept either a permutation or a conjugacy class as its first argument:
+    * `haar_integral()` -> `haar_integral_unitary()`
+    * `weingarten_class()` -> `weingarten_unitary()`
+    * `weingarten_element()` -> `weingarten_unitary()` The argument `degree` has been removed for the degree of the symmetric group is already contained in both the permutation and the conjugacy class. 
+
 ### Improvements
 
 ### Bug fixes
