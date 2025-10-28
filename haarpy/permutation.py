@@ -17,6 +17,7 @@ Permutation matrices Python interface
 
 from itertools import product
 from math import factorial, prod
+from collections.abc import Sequence
 from sympy import Symbol, simplify, binomial, factor, fraction
 from haarpy import set_partition, meet_operation, join_operation, partial_order
 
@@ -71,7 +72,7 @@ def weingarten_permutation(
     """
     disjoint_partition_tuple = tuple(
         (partition for partition in set_partition(block))
-        for block in meet_operation(first_partition, second_partition)
+        for block in meet_operation(first_partition, second_partition) 
     )
 
     inferieur_partition_tuple = (
@@ -147,8 +148,25 @@ def haar_integral_permutation(
     column_indices: tuple[int],
     dimension: Symbol,
 ) -> Symbol:
+    """Returns the integral over Haar random permutation matrices
+
+    Args:
+        row_indices (tuple(int)) : sequence of row indices
+        column_indices (tuple(int)) : sequence of column indices
+
+    Returns:
+        Symbol : Integral under the Haar measure
+
+    Raise:
+        TypeError : If row_indices and column_indices are not Sequence
+        ValueError : If row_indices and column_indices are of different length
     """
-    """
+    if not (isinstance(row_indices, Sequence) and isinstance(column_indices, Sequence)):
+        raise TypeError
+    
+    if len(row_indices) != len(column_indices):
+        raise ValueError("Wrong tuple format")
+    
     def sequence_to_partition(sequence: tuple) -> tuple[tuple[int]]:
         return sorted(
             sorted(index for index, value in enumerate(sequence) if value == unique)
@@ -170,8 +188,25 @@ def haar_integral_centered_permutation(
     column_indices: tuple[int],
     dimension: Symbol,
 ) -> Symbol:
+    """Returns the integral over Haar random centered permutation matrices
+
+    Args:
+        row_indices (tuple(int)) : sequence of row indices
+        column_indices (tuple(int)) : sequence of column indices
+
+    Returns:
+        Symbol : Integral under the Haar measure
+
+    Raise:
+        TypeError : If row_indices and column_indices are not Sequence
+        ValueError : If row_indices and column_indices are of different length
     """
-    """
+    if not (isinstance(row_indices, Sequence) and isinstance(column_indices, Sequence)):
+        raise TypeError
+    
+    if len(row_indices) != len(column_indices):
+        raise ValueError("Wrong tuple format")
+    
     row_partition = tuple(
         tuple(index for index, value in enumerate(row_indices) if value == unique)
         for unique in set(row_indices)
