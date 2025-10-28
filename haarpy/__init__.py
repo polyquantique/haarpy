@@ -92,11 +92,14 @@ from .circular_ensembles import (
     weingarten_circular_symplectic,
 )
 
-from .permutation import (
+from .partition import (
     set_partition,
     partial_order,
     meet_operation,
     join_operation,
+)
+
+from .permutation import (
     mobius_function,
     weingarten_permutation,
     weingarten_centered_permutation,

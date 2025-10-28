@@ -120,19 +120,13 @@ def join_operation(
         for block1 in partition_1
     ]
 
-    merged = [
-        {
-            index
-            for index_set2 in parent
-            for index in index_set2
-            if index_set1 & index_set2
-        }
-        for index_set1 in parent
-    ]
-
-    block_indices = {
-        tuple(index_set) for index_set in merged
-    }
+    merged = []
+    for index_set in parent:
+        overlap = [m for m in merged if m & index_set]
+        for m in overlap:
+            index_set |= m
+            merged.remove(m)
+        merged.append(index_set)
 
     return tuple(sorted(
         tuple(sorted(
@@ -140,5 +134,5 @@ def join_operation(
             for index in block
             for value in partition_2[index]
         ))
-        for block in block_indices
+        for block in merged
     ))

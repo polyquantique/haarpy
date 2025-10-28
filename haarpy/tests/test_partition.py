@@ -210,15 +210,39 @@ def test_meet_operation_additional(partition1, partition2, expected_result):
 @pytest.mark.parametrize("size", range(5, 10))
 def test_meet_operation_symmetry(size):
     "Test the meet operation yields the same output both ways"
-    partitions = tuple(party for party in ap.set_partition(size))
-    sample1 = (choice(partitions))
-    return
+    sample_size = int(1e5)
+    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
+
+    sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
+    sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
+
+    for party1, party2 in zip(sample_partition_1, sample_partition_2):
+        assert (
+            ap.meet_operation(party1, party2)
+            == ap.meet_operation(party2, party1)
+        )
 
 
+@pytest.mark.parametrize("size", range(5, 10))
+def test_meet_operation_size(size):
+    "Test the meet operation yields a partition with correct format"
+    sample_size = int(1e5)
+    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
 
+    sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
+    sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
 
-
-
+    for party1, party2 in zip(sample_partition_1, sample_partition_2):
+        flatten_joined_partition = tuple(
+            value 
+            for block in ap.meet_operation(party1, party2)
+            for value in block
+        )
+        
+        assert (
+            len(flatten_joined_partition) == size
+            and all(i in flatten_joined_partition for i in range(size))
+        )
 
 
 @pytest.mark.parametrize("size" , range(1,7))
@@ -261,3 +285,41 @@ def test_join_operation_additional(partition1, partition2, expected_result):
         for block in expected_result
     )
     assert join_partition == join_expected
+
+
+@pytest.mark.parametrize("size", range(5, 10))
+def test_join_operation_symmetry(size):
+    "Test the join operation yields the same output both ways"
+    sample_size = int(1e5)
+    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
+
+    sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
+    sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
+
+    for party1, party2 in zip(sample_partition_1, sample_partition_2):
+        assert (
+            ap.join_operation(party1, party2)
+            == ap.join_operation(party2, party1)
+        )
+
+
+@pytest.mark.parametrize("size", range(5, 10))
+def test_join_operation_size(size):
+    "Test the join operation yields a partition with correct format"
+    sample_size = int(1e5)
+    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
+
+    sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
+    sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
+
+    for party1, party2 in zip(sample_partition_1, sample_partition_2):
+        flatten_joined_partition = tuple(
+            value 
+            for block in ap.join_operation(party1, party2)
+            for value in block
+        )
+        
+        assert (
+            len(flatten_joined_partition) == size
+            and all(i in flatten_joined_partition for i in range(size))
+        )
