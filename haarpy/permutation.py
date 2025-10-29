@@ -16,6 +16,7 @@ Permutation matrices Python interface
 """
 
 from typing import Union
+from functools import lru_cache
 from math import factorial, prod
 from itertools import product
 from collections.abc import Sequence
@@ -23,6 +24,7 @@ from sympy import Symbol, simplify, binomial, factor, fraction
 from haarpy import Partition, set_partition
 
 
+@lru_cache
 def mobius_function(
     first_partition: Union[Partition, Sequence[Sequence[int]]],
     second_partition: Union[Partition, Sequence[Sequence[int]]],
@@ -35,6 +37,7 @@ def mobius_function(
     return
 
 
+@lru_cache
 def weingarten_permutation(
     first_partition: Union[Partition, Sequence[Sequence[int]]],
     second_partition: Union[Partition, Sequence[Sequence[int]]],
@@ -48,6 +51,7 @@ def weingarten_permutation(
     return
 
 
+@lru_cache
 def weingarten_centered_permutation(
     first_partition: Union[Partition, Sequence[Sequence[int]]],
     second_partition: Union[Partition, Sequence[Sequence[int]]],
@@ -61,6 +65,7 @@ def weingarten_centered_permutation(
     return
 
 
+@lru_cache
 def haar_integral_permutation(
     row_indices: Sequence[int],
     column_indices: Sequence[int],
@@ -75,6 +80,7 @@ def haar_integral_permutation(
     return
 
 
+@lru_cache
 def haar_integral_centered_permutation(
     row_indices: Sequence[int],
     column_indices: Sequence[int],

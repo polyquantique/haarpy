@@ -15,8 +15,8 @@
 Partition Python interface
 """
 
-from __future__ import annotations
 from typing import Generator
+from __future__ import annotations
 from itertools import product
 from sympy.combinatorics.partitions import Partition as SympyPartition
 from sympy.utilities.iterables import multiset_partitions
@@ -237,6 +237,9 @@ class Partition(SympyPartition):
             self._is_crossing = False
 
         return self._is_crossing
+    
+    def fattening(self) -> Partition:
+        return
 
 
 def set_partitions(size: int) -> Generator[Partition, None, None]:
