@@ -33,6 +33,7 @@ class Partition(SympyPartition):
         partition (list[list[int]]): Return partition as a sorted list of lists
         members (tuple[int]): Elements of the Partition - Integer from 0 to size-1
         size (int): size of the partition
+        is_crossing (bool): True for crossing partitions, False otherwise
     """
 
     size: int  # type hint for pylint
