@@ -25,18 +25,13 @@ Functions
 ---------
 
 .. autosummary::
-    weingarten_class
-    weingarten_element
+    weingarten_unitary
     weingarten_orthogonal
     weingarten_symplectic
     weingarten_circular_orthogonal
     weingarten_circular_symplectic
-    weingarten_permutation
-    weingarten_centered_permutation
-    haar_integral
+    haar_integral_unitary
     haar_integral_orthogonal
-    haar_integral_permutation
-    haar_integral_centered_permutation
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -50,39 +45,36 @@ Functions
     zonal_spherical_function
     coset_type
     twisted_spherical_function
-    set_partition
-    partial_order
-    meet_operation
-    join_operation
-    mobius_function
 
 Code details
 ------------
 """
-from .unitary import (
+from .symmetric import (
     get_conjugacy_class,
     derivative_tableaux,
     semi_standard_young_tableaux,
     proper_border_strip,
     murn_naka_rule,
     irrep_dimension,
-    representation_dimension,
-    weingarten_class,
-    weingarten_element,
-    haar_integral,
-)
-
-from .orthogonal import (
     hyperoctahedral,
     hyperoctahedral_transversal,
     perfect_matchings,
+    coset_type,
+)
+
+from .unitary import (
+    representation_dimension,
+    weingarten_unitary,
+    haar_integral_unitary,
+)
+
+from .orthogonal import (
     zonal_spherical_function,
     weingarten_orthogonal,
     haar_integral_orthogonal,
 )
 
 from .symplectic import (
-    coset_type,
     twisted_spherical_function,
     weingarten_symplectic,
 )
@@ -92,36 +84,16 @@ from .circular_ensembles import (
     weingarten_circular_symplectic,
 )
 
-from .partition import (
-    set_partition,
-    partial_order,
-    meet_operation,
-    join_operation,
-)
-
-from .permutation import (
-    mobius_function,
-    weingarten_permutation,
-    weingarten_centered_permutation,
-    haar_integral_permutation,
-    haar_integral_centered_permutation,
-)
-
 from ._version import __version__
 
 __all__ = [
-    "weingarten_class",
-    "weingarten_element",
+    "weingarten_unitary",
     "weingarten_orthogonal",
     "weingarten_symplectic",
     "weingarten_circular_orthogonal",
     "weingarten_circular_symplectic",
-    "weingarten_permutation",
-    "weingarten_centered_permutation",
-    "haar_integral",
+    "haar_integral_unitary",
     "haar_integral_orthogonal",
-    "haar_integral_permutation",
-    "haar_integral_centered_permutation",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",
@@ -135,11 +107,6 @@ __all__ = [
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
-    "set_partition",
-    "partial_order",
-    "meet_operation",
-    "join_operation",
-    "mobius_function",
 ]
 
 
