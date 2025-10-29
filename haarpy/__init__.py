@@ -45,6 +45,7 @@ Functions
     zonal_spherical_function
     coset_type
     twisted_spherical_function
+    Partition
 
 Code details
 ------------
@@ -60,6 +61,10 @@ from .symmetric import (
     hyperoctahedral_transversal,
     perfect_matchings,
     coset_type,
+)
+
+from .partition import (
+    Partition,
 )
 
 from .unitary import (
@@ -107,6 +112,7 @@ __all__ = [
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
+    "Partition",
 ]
 
 

@@ -15,124 +15,127 @@
 Partition Python interface
 """
 
-from typing import Generator
-from collections.abc import Sequence
+from sympy.combinatorics.partitions import Partition as SympyPartition
+from sympy.sets.sets import FiniteSet
 
+# where to put caching here?
+# don't define __ge__ for now. Make sure __le__ works both ways.
+# define __lt__ and make sure both partitions are different. (self.partition != other.partition)
+# Discuss permutation class with Nicolas - Pretty cool but could be part of sympy as is (I overwrite their operators)
+# haar_integral_permutation TypeError
+# haar_integral_permutation ValueError
+# haar_integral_centered_permutation TypeError
+# haar_integral_centered_permutation ValueError
+# raise error in both weingarten if partition elements are not unique
+# add crossing partition method (sort(sort(input))) - test is done in montrealer
+# "The partitions must be composed of unique elements" for all functions in partition
+# Add typing
+# I believe my < overwrite < method!
+# All functions of Permutation are isomorphic (use Union) if Sequence, turn into Partition with *partition
+# if isinstance(partition1, Sequence) and isinstance(partition1, Sequence)
+#   parition1 = Partition(*partition1)
+#   parition2 = Partition(*partition2)
+# elif not (isinstance(partion1, Partition) and isinstance(partion2, Partition)):
+#   raise TypeError
 
-def set_partition(collection: Sequence) -> Generator[tuple[tuple], None, None]:
-    """Returns the partitionning of a given collection (set) of objects
-    into non-empty subsets.
-
-    Args:
-        collection (Sequence): An indexable iterable to be partitionned
-
-    Returns:
-        generator(tuple(tuple)): all partitions of the input collection
-
-    Raise:
-        ValueError: if the collection not an indexable iterable
+class Partition(SympyPartition):
     """
-    if not isinstance(collection, Sequence) or isinstance(collection, range):
-        raise TypeError("collection must be an indexable iterable")
+    Custom subclass of Sympy's Partition class
+    This class represents an abstract partition
+    A partition is a set of disjoint sets whose union equals a given set
+    See  sympy.utilities.iterables.partitions
 
-    if len(collection) == 1:
-        yield (collection,)
+    Attributes:
+        partition (list[list[int]]): Return partition as a sorted list of lists
+        members (tuple[int]): 
+        size (int): size of the partition
+    """
+
+    def __new__(cls, *partition: FiniteSet) -> SympyPartition:
+        """
+        Initializes a Partition
+        
+        Args:
+            partition (Finiteset): Each argument to Partition should be a list, set, or a FiniteSet
+
+        Returns:
+            SympyPartition: An instance of Sympy's Partition
+
+        Raise:
+            ValueError: Integers 0 through len(Partition)-1 must be present.
+        """
+        obj = super().__new__(cls, *partition)
+        if obj.members != tuple(range(obj.size)):
+            raise ValueError('Integers 0 through %s must be present.' %
+            (obj.size-1))
+        
+        return obj
+    
+    def __le__(self, other):
+        """
+        Checks if a partition is less than or equal to the other based on partial order
+
+        Args:
+            other (Partition): Partition to compare
+
+        Returns:
+            bool: True if self <= other
+        """
+        #self.parition
+        "value error if different size - Cannot compare Partition of different sizes."
+        if not isinstance(other, Partition):
+            raise TypeError
+        
+        return True
+    
+    def __lt__(self, other):
+        return self.__le__(other) and self != other
+    
+    def __ge__(self, other):
+        return other.__le__(self)
+    
+    def __gt__(self, other):
+        return other.__lt__(self)
+
+    
+    #def __lt__(self, other):
+    #    return self.__le__(other) and self != other
+
+    #def __ge__(self, other):
+        """
+        
+        Args:
+            other (Partition): Partition to compare
+
+        Returns:
+            bool: True if self is of lower or equal partial order than other
+
+        Raise:
+            TypeError: if other is not an instance of Partition
+            ValueError: if other and self are of different size
+        """
+    #    return other.__le__(self)
+     
+    def __and__(self, other):
+        "meet operation & symbol"
         return
+    
+    def __or__(self, other):
+        "join operation & symbol"
+        return 
 
-    first = collection[0]
-    for smaller in set_partition(collection[1:]):
-        for index, subset in enumerate(smaller):
-            yield ((first,) + subset,) + smaller[:index] + smaller[index + 1 :]
-        yield ((first,),) + smaller
+    def meet(self, other):
+        return self.__and__(other)  
 
+    def join(self, other):
+        return self.__or__(other)
+      
+    def partition_order(self, other):
+        return self.__le__(other)
+    
+    def is_crossing(self, other):
+        return
+    
 
-def partial_order(partition_1: tuple[tuple], partition_2: tuple[tuple]) -> bool:
-    """Returns True if parition_1 <= partition_2 in terms of partial order
-
-    Args:
-        partition_1 (tuple(tuple)): The partition of lower order
-        partition_2 (tuple(tuple)): The partition of higher order
-
-    Returns:
-        bool: True if parition_1 <= partition_2
-
-    Raise:
-        ValueError: If both partitions are not composed of unique elements
-    """
-    flatten_partitions = (
-        tuple(i for j in partition for i in j)
-        for partition in (partition_1, partition_2)
-    )
-    if any(len(flatten) != len(set(flatten)) for flatten in flatten_partitions):
-        raise ValueError("The partitions must be composed of unique elements")
-
-    for part in partition_1:
-        if all(not set(part).issubset(bigger_part) for bigger_part in partition_2):
-            return False
-
-    return True
-
-
-def meet_operation(
-    partition_1: tuple[tuple], partition_2: tuple[tuple]
-) -> tuple[tuple]:
-    """Returns the greatest lower bound of the two input partitions
-
-    Args:
-        partition_1 (tuple(tuple)): partition of a set
-        partition_2 (tuple(tuple)): partition of a set
-
-    Return:
-        tuple(tuple): Greatest lower bound
-    """
-    partition_1 = tuple(set(part) for part in partition_1)
-    partition_2 = tuple(set(part) for part in partition_2)
-
-    meet_list = []
-    for block_1 in partition_1:
-        for block_2 in partition_2:
-            if block_1 & block_2:
-                meet_list.append(block_1 & block_2)
-
-    return tuple(sorted(tuple(block) for block in meet_list))
-
-
-def join_operation(
-    partition_1: tuple[tuple],
-    partition_2: tuple[tuple]
-) -> tuple[tuple]:
-    """Returns the least upper bound of the two input partitions
-
-    Args:
-        partition_1 (tuple(tuple)): partition of a set
-        partition_2 (tuple(tuple)): partition of a set
-
-    Return:
-        tuple(tuple): Least upper bound
-    """
-    parent = [
-        {
-            index 
-            for value in block1
-            for index, block2 in enumerate(partition_2)
-            if value in block2
-        }
-        for block1 in partition_1
-    ]
-
-    merged = []
-    for index_set in parent:
-        overlap = [m for m in merged if m & index_set]
-        for m in overlap:
-            index_set |= m
-            merged.remove(m)
-        merged.append(index_set)
-
-    return tuple(sorted(
-        tuple(sorted(
-            value
-            for index in block
-            for value in partition_2[index]
-        ))
-        for block in merged
-    ))
+#def set_partition(size: int) -> Generator[Partition, None, None]:
+#    return multiset(range())
