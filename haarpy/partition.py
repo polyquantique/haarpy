@@ -15,29 +15,13 @@
 Partition Python interface
 """
 
+from __future__ import annotations
+from itertools import product
 from sympy.combinatorics.partitions import Partition as SympyPartition
 from sympy.sets.sets import FiniteSet
 
-# where to put caching here?
-# don't define __ge__ for now. Make sure __le__ works both ways.
-# define __lt__ and make sure both partitions are different. (self.partition != other.partition)
-# Discuss permutation class with Nicolas - Pretty cool but could be part of sympy as is (I overwrite their operators)
-# haar_integral_permutation TypeError
-# haar_integral_permutation ValueError
-# haar_integral_centered_permutation TypeError
-# haar_integral_centered_permutation ValueError
-# raise error in both weingarten if partition elements are not unique
-# add crossing partition method (sort(sort(input))) - test is done in montrealer
-# "The partitions must be composed of unique elements" for all functions in partition
-# Add typing
-# I believe my < overwrite < method!
-# All functions of Permutation are isomorphic (use Union) if Sequence, turn into Partition with *partition
-# if isinstance(partition1, Sequence) and isinstance(partition1, Sequence)
-#   parition1 = Partition(*partition1)
-#   parition2 = Partition(*partition2)
-# elif not (isinstance(partion1, Partition) and isinstance(partion2, Partition)):
-#   raise TypeError
 
+# pylint: disable=abstract-method
 class Partition(SympyPartition):
     """
     Custom subclass of Sympy's Partition class
@@ -47,14 +31,17 @@ class Partition(SympyPartition):
 
     Attributes:
         partition (list[list[int]]): Return partition as a sorted list of lists
-        members (tuple[int]): 
+        members (tuple[int]): Elements of the Partition - Integer from 0 to size-1
         size (int): size of the partition
     """
+
+    size: int  # type hint for pylint
+    _is_crossing = None
 
     def __new__(cls, *partition: FiniteSet) -> SympyPartition:
         """
         Initializes a Partition
-        
+
         Args:
             partition (Finiteset): Each argument to Partition should be a list, set, or a FiniteSet
 
@@ -66,12 +53,148 @@ class Partition(SympyPartition):
         """
         obj = super().__new__(cls, *partition)
         if obj.members != tuple(range(obj.size)):
-            raise ValueError('Integers 0 through %s must be present.' %
-            (obj.size-1))
-        
+            raise ValueError(
+                f"Integers 0 through {obj.size - 1} should be present given the partition size."
+            )
+
         return obj
-    
-    def __le__(self, other):
+
+    def __le__(self, other: Partition) -> bool:
+        """
+        Checks if a partition is less than or equal to the other based on partial order
+
+        Args:
+            other (Partition): Partition to compare
+
+        Returns:
+            bool: True if self <= other
+
+        Raise:
+            TypeError: if other is not an instance of Partition
+            ValueError: if other and self are of different size
+        """
+        if not isinstance(other, Partition):
+            raise TypeError
+
+        if self.size != other.size:
+            raise ValueError("Cannot compare partitions of different sizes.")
+
+        for self_block in self:
+            if not any(self_block.issubset(other_block) for other_block in other):
+                return False
+
+        return True
+
+    def __lt__(self, other: Partition) -> bool:
+        """
+        Checks if a partition is less than the other based on partial order
+
+        Args:
+            other (Partition): Partition to compare
+
+        Returns:
+            bool: True if self < other
+        """
+        return self <= other and self != other
+
+    def __ge__(self, other: Partition) -> bool:
+        """
+        Checks if a partition is greater or equal than the other based on partial order
+
+        Args:
+            other (Partition): Partition to compare
+
+        Returns:
+            bool: True if self >= other
+        """
+        return other <= self
+
+    def __gt__(self, other: Partition) -> bool:
+        """
+        Checks if a partition is greater than the other based on partial order
+
+        Args:
+            other (Partition): Partition to compare
+
+        Returns:
+            bool: True if self > other
+        """
+        return other < self
+
+    def __and__(self, other: Partition) -> Partition:
+        """Returns the greatest lower bound of the two input partitions
+
+        Args:
+            other (Partition): Partition to meet
+
+        Return:
+            Partition: Greatest lower bound Partition
+        """
+        meet_list = [
+            self_block & other_block
+            for self_block, other_block in product(self, other)
+            if self_block & other_block
+        ]
+
+        return Partition(*meet_list)
+
+    def __or__(self, other: Partition) -> Partition:
+        """Returns the least upper bound of the two input partitions
+
+        Args:
+            other (Partition): Partition to join
+
+        Return:
+            Partition: Least lower bound Partition
+        """
+        parent = [
+            {
+                index
+                for element in self_block
+                for index, other_block in enumerate(other)
+                if element in other_block
+            }
+            for self_block in self
+        ]
+
+        merged = []
+        for index_set in parent:
+            overlap = [m for m in merged if m & index_set]
+            for m in overlap:
+                index_set |= m
+                merged.remove(m)
+            merged.append(index_set)
+
+        return Partition(
+            *[
+                [element for index in block for element in other.partition[index]]
+                for block in merged
+            ]
+        )
+
+    def meet(self, other: Partition) -> Partition:
+        """Returns the greatest lower bound of the two input partitions
+
+        Args:
+            other (Partition): Partition to meet
+
+        Return:
+            Partition: Greatest lower bound Partition
+        """
+        return self & other
+
+    def join(self, other: Partition) -> Partition:
+        """Returns the least upper bound of the two input partitions
+
+        Args:
+            other (Partition): Partition to join
+
+        Return:
+            Partition: Least lower bound Partition
+        """
+        return self | other
+
+    def partition_order(self, other: Partition) -> bool:
         """
         Checks if a partition is less than or equal to the other based on partial order
 
@@ -81,61 +204,33 @@ class Partition(SympyPartition):
         Returns:
             bool: True if self <= other
         """
-        #self.parition
-        "value error if different size - Cannot compare Partition of different sizes."
-        if not isinstance(other, Partition):
-            raise TypeError
-        
-        return True
-    
-    def __lt__(self, other):
-        return self.__le__(other) and self != other
-    
-    def __ge__(self, other):
-        return other.__le__(self)
-    
-    def __gt__(self, other):
-        return other.__lt__(self)
+        return self <= other
 
-    
-    #def __lt__(self, other):
-    #    return self.__le__(other) and self != other
-
-    #def __ge__(self, other):
+    @property
+    def is_crossing(self) -> bool:
         """
-        
-        Args:
-            other (Partition): Partition to compare
+        Checks if the partition is a crossing partition
+        Computed lazily and stored in _is_crossing
 
         Returns:
-            bool: True if self is of lower or equal partial order than other
-
-        Raise:
-            TypeError: if other is not an instance of Partition
-            ValueError: if other and self are of different size
+            bool: True if the partition is crossing, False otherwise
         """
-    #    return other.__le__(self)
-     
-    def __and__(self, other):
-        "meet operation & symbol"
-        return
-    
-    def __or__(self, other):
-        "join operation & symbol"
-        return 
+        if self._is_crossing is None:
+            filtered_partition = [
+                block
+                for block in self.partition
+                if len(block) != 1 and block[0] + 1 != block[-1]
+            ]
 
-    def meet(self, other):
-        return self.__and__(other)  
+            for index, previous_block in enumerate(filtered_partition[:-1]):
+                for next_block in filtered_partition[index + 1 :]:
+                    if previous_block[-1] < next_block[0]:
+                        break
+                    for element in previous_block[1:]:
+                        if next_block[0] < element < next_block[-1]:
+                            self._is_crossing = True
+                            return self._is_crossing
 
-    def join(self, other):
-        return self.__or__(other)
-      
-    def partition_order(self, other):
-        return self.__le__(other)
-    
-    def is_crossing(self, other):
-        return
-    
+            self._is_crossing = False
 
-#def set_partition(size: int) -> Generator[Partition, None, None]:
-#    return multiset(range())
+        return self._is_crossing
