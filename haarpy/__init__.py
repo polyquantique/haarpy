@@ -30,8 +30,12 @@ Functions
     weingarten_symplectic
     weingarten_circular_orthogonal
     weingarten_circular_symplectic
+    weingarten_permutation
+    weingarten_centered_permutation
     haar_integral_unitary
     haar_integral_orthogonal
+    haar_integral_permutation
+    haar_integral_centered_permutation
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -45,7 +49,9 @@ Functions
     zonal_spherical_function
     coset_type
     twisted_spherical_function
+    mobius_function
     Partition
+    set_partitions
 
 Code details
 ------------
@@ -65,6 +71,7 @@ from .symmetric import (
 
 from .partition import (
     Partition,
+    set_partitions,
 )
 
 from .unitary import (
@@ -89,6 +96,14 @@ from .circular_ensembles import (
     weingarten_circular_symplectic,
 )
 
+from .permutation import (
+    mobius_function,
+    weingarten_permutation,
+    weingarten_centered_permutation,
+    haar_integral_permutation,
+    haar_integral_centered_permutation,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -97,8 +112,12 @@ __all__ = [
     "weingarten_symplectic",
     "weingarten_circular_orthogonal",
     "weingarten_circular_symplectic",
+    "weingarten_permutation",
+    "weingarten_centered_permutation",
     "haar_integral_unitary",
     "haar_integral_orthogonal",
+    "haar_integral_permutation",
+    "haar_integral_centered_permutation",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",
@@ -112,7 +131,9 @@ __all__ = [
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
+    "mobius_function",
     "Partition",
+    "set_partitions",
 ]
 
 

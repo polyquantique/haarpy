@@ -16,8 +16,10 @@ Partition Python interface
 """
 
 from __future__ import annotations
+from typing import Generator
 from itertools import product
 from sympy.combinatorics.partitions import Partition as SympyPartition
+from sympy.utilities.iterables import multiset_partitions
 from sympy.sets.sets import FiniteSet
 
 
@@ -235,3 +237,25 @@ class Partition(SympyPartition):
             self._is_crossing = False
 
         return self._is_crossing
+
+
+def set_partitions(size: int) -> Generator[Partition, None, None]:
+    """Returns the partitionning of a set [size] into non-empty subsets.
+
+    Args:
+        size (int): size of the sequence [size]
+
+    Returns:
+        Generator[Partition]: all partitions of set [size]
+
+    Raise:
+        TypeError: if size is not int
+        ValueError: if size <= 0
+    """
+    if not isinstance(size, int):
+        raise TypeError
+    
+    if  size <= 0:
+        raise ValueError("size must be an integer greater than 0.")
+    
+    return (Partition(*partition) for partition in multiset_partitions(range(size)))
