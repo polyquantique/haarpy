@@ -16,7 +16,7 @@ Orthogonal tests
 """
 
 from math import factorial, prod
-from itertools import permutations, product
+from itertools import product
 from fractions import Fraction
 from random import seed, randint
 import pytest
@@ -26,65 +26,6 @@ import haarpy as ap
 
 seed(137)
 d = Symbol('d')
-
-
-@pytest.mark.parametrize("degree", range(1, 8))
-def test_hyperoctahedral_order(degree):
-    "Hyperoctahedral order test"
-    assert ap.hyperoctahedral(degree).order() == 2**degree * factorial(degree)
-
-
-@pytest.mark.parametrize(
-    "degree",
-    [
-        ("a",),
-        ("str",),
-        (0.1,),
-        ((0, 1),),
-    ],
-)
-def test_hyperoctahedral_type_error(degree):
-    "Hyperoctahedral TypeError for wrong degree type"
-    with pytest.raises(TypeError):
-        ap.hyperoctahedral(degree)
-
-
-@pytest.mark.parametrize("degree", range(2, 12, 2))
-def test_hyperoctahedral_transversal_size(degree):
-    "Test the size of the hyperoctahedral transversal set"
-    size = sum(1 for _ in ap.hyperoctahedral_transversal(degree))
-    assert size == factorial(degree)/2**(degree//2)/factorial(degree//2)
-
-
-@pytest.mark.parametrize("degree", range(2, 12, 2))
-def test_hyperoctahedral_transversal_brute_force(degree):
-    "Compare permutations of the transversal set with brute force method"
-    brute_force_permutations = set()
-    for permutation in permutations(range(degree)):
-        if not all(permutation[2*i] < permutation[2*i+1] for i in range(degree//2)):
-            continue
-        if not all(permutation[2*i] < permutation[2*i+2] for i in range(degree//2-1)):
-            continue
-        brute_force_permutations.add(Permutation(permutation))
-
-    transversal = set(ap.hyperoctahedral_transversal(degree))
-    assert transversal == brute_force_permutations
-
-
-@pytest.mark.parametrize("degree", range(3, 12, 2))
-def test_hyperoctahedral_transversal_value_error(degree):
-    "Test ValueError for odd degree"
-    with pytest.raises(ValueError, match=".*degree should be a factor of 2*"):
-        ap.hyperoctahedral_transversal(degree)
-
-
-@pytest.mark.parametrize("size", range(2,14,2))
-def test_perfect_matchings_order(size):
-    "test size of perfect matchings"
-    assert (
-        sum(1 for _ in ap.perfect_matchings(tuple(range(size))))
-        == factorial2(size-1)
-    )
 
 
 @pytest.mark.parametrize(
