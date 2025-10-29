@@ -195,7 +195,7 @@ class Partition(SympyPartition):
         """
         return self | other
 
-    def partition_order(self, other: Partition) -> bool:
+    def partial_order(self, other: Partition) -> bool:
         """
         Checks if a partition is less than or equal to the other based on partial order
 
