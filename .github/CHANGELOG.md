@@ -1,16 +1,18 @@
 # Release 0.0.6-dev
 
 ### New features
-* Added a new module `orthogonal` allowing the calculation of the orthogonal Weingarten function [(#28)](https://github.com/polyquantique/haarpy/pull/28).
+* Added a new module `orthogonal` allowing the calculation of the orthogonal Weingarten function and its moments [(#28)](https://github.com/polyquantique/haarpy/pull/28).
 * Added a new module `symplectic` allowing the calculation of the symplectic Weingarten function [(#31)](https://github.com/polyquantique/haarpy/pull/31).
 * Added a new module `circular_ensembles` allowing the calculation of the circular orthogonal ensembles and circular symplectic ensembles Weingarten functions [(#32)](https://github.com/polyquantique/haarpy/pull/32).
+* Added a new module `permutation` allowing the calculation of the permutation matrices and centered permuation matrices' Weingarten functions as well as their moments [(#36)](https://github.com/polyquantique/haarpy/pull/36).
+* Added a new module `partition` allowing to generate partitions of a set as well as implementing some operations on them such as the meet and the join operations [(#36)](https://github.com/polyquantique/haarpy/pull/36).
 
 ### Breaking changes
 
 * Certain functions have been renamed to improve clarity. The unitary Weingarten functions have been merged into a single isomorphic `weingarten_unitary()` function that can accept either a permutation or a conjugacy class as its first argument:
     * `haar_integral()` -> `haar_integral_unitary()`
     * `weingarten_class()` -> `weingarten_unitary()`
-    * `weingarten_element()` -> `weingarten_unitary()` The argument `degree` has been removed for the degree of the symmetric group is already contained in both the permutation and the conjugacy class. 
+    * `weingarten_element()` -> `weingarten_unitary()` The argument `degree` has been removed for the degree of the symmetric group is already contained in both the permutation and the conjugacy class.
 
 ### Improvements
 

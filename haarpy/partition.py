@@ -46,7 +46,7 @@ def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
         yield ((first,),) + smaller
 
 
-def perfect_matching_partitions(
+def perfect_matchings(
     seed: tuple[int],
 ) -> Generator[tuple[tuple[int]], None, None]:
     """Returns the partitions of a tuple in terms of perfect matchings.
@@ -71,7 +71,7 @@ def perfect_matching_partitions(
     for idx1 in range(1, len(seed)):
         item_partition = (seed[0], seed[idx1])
         rest = seed[1:idx1] + seed[idx1 + 1 :]
-        rest_partitions = perfect_matching_partitions(rest)
+        rest_partitions = perfect_matchings(rest)
         for p in rest_partitions:
             yield ((item_partition),) + p
 
