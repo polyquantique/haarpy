@@ -220,7 +220,7 @@ def test_haar_integral_permutation_type_error(row_indices, column_indices):
     "row_indices, column_indices",
     [
         ((1,2,3), (1,2,3,4)),
-        ([1,2,3,4,5], [1,2,3,4]),
+        ('abcd', 'abc'),
     ]
 )
 def test_haar_integral_permutation_value_error(row_indices, column_indices):
@@ -300,7 +300,7 @@ def test_haar_integral_centered_permutation_type_error(row_indices, column_indic
     "row_indices, column_indices",
     [
         ((1,2,3), (1,2,3,4)),
-        ([1,2,3,4,5], [1,2,3,4]),
+        ('abcd', 'abc'),
     ]
 )
 def test_haar_integral_centered_permutation_value_error(row_indices, column_indices):
