@@ -20,7 +20,7 @@ from functools import lru_cache
 from typing import Generator
 from fractions import Fraction
 from sympy.combinatorics import Permutation, PermutationGroup
-from haarpy import perfect_matching_partitions
+from haarpy import perfect_matchings
 
 
 @lru_cache
@@ -277,7 +277,7 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
         return (Permutation(1),)
     flatten_pmp = (
         tuple(i for pair in pmp for i in pair)
-        for pmp in perfect_matching_partitions(tuple(range(degree)))
+        for pmp in perfect_matchings(tuple(range(degree)))
     )
     return (Permutation(pmp) for pmp in flatten_pmp)
 

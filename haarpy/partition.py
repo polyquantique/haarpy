@@ -60,7 +60,7 @@ def perfect_matchings(
         partitions of the tuple
 
     Raise:
-        ValueError: if the seed is not a tuple
+        TypeError: if the seed is not a tuple
     """
     if not isinstance(seed, tuple):
         raise TypeError("seed must be a tuple")

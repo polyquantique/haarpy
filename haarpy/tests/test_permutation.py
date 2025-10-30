@@ -204,6 +204,32 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
 
 
 @pytest.mark.parametrize(
+    "row_indices, column_indices",
+    [
+        ((1,2,3), 12),
+        ({3,4,5}, (3,4,5)),
+    ]
+)
+def test_haar_integral_permutation_type_error(row_indices, column_indices):
+    "test haar_integral_permutation_weingarten type error"
+    with pytest.raises(TypeError):
+        ap.haar_integral_permutation(row_indices, column_indices, d)
+
+
+@pytest.mark.parametrize(
+    "row_indices, column_indices",
+    [
+        ((1,2,3), (1,2,3,4)),
+        ([1,2,3,4,5], [1,2,3,4]),
+    ]
+)
+def test_haar_integral_permutation_value_error(row_indices, column_indices):
+    "test haar_integral_permutation_weingarten value error"
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral_permutation(row_indices, column_indices, d)
+
+
+@pytest.mark.parametrize(
     "row_indices, column_indices, result_dict",
     [
         ((1,2),(1,2), {21:1}),
@@ -255,3 +281,29 @@ def test_haar_integral_centered_permutation_weingarten(row_indices, column_indic
         ap.haar_integral_centered_permutation(row_indices, column_indices, d)
         == factor(num)/factor(denum)
     )
+
+
+@pytest.mark.parametrize(
+    "row_indices, column_indices",
+    [
+        ((1,2,3), 12),
+        ({3,4,5}, (3,4,5)),
+    ]
+)
+def test_haar_integral_centered_permutation_type_error(row_indices, column_indices):
+    "test haar_integral_centered_permutation_weingarten type error"
+    with pytest.raises(TypeError):
+        ap.haar_integral_centered_permutation(row_indices, column_indices, d)
+
+
+@pytest.mark.parametrize(
+    "row_indices, column_indices",
+    [
+        ((1,2,3), (1,2,3,4)),
+        ([1,2,3,4,5], [1,2,3,4]),
+    ]
+)
+def test_haar_integral_centered_permutation_value_error(row_indices, column_indices):
+    "test haar_integral_centered_permutation_weingarten value error"
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral_centered_permutation(row_indices, column_indices, d)

@@ -73,7 +73,7 @@ def test_set_partition_type_error(collection):
     "Raise TypeError for wrong type input"
     with pytest.raises(
         TypeError,
-        match = 'collection must be a tuple'
+        match = 'collection must be a tuple',
     ):
         tuple(ap.set_partitions(collection))
 
@@ -85,6 +85,24 @@ def test_perfect_matchings_order(size):
         sum(1 for _ in ap.perfect_matchings(tuple(range(size))))
         == factorial2(size-1)
     )
+
+
+@pytest.mark.parametrize(
+    "seed",
+    [
+        [1,2],
+        'a',
+        range(4),
+        12,
+    ]
+)
+def test_perfect_matchings_type_error(seed):
+    "test perfect matching type error"
+    with pytest.raises(
+        TypeError,
+        match = "seed must be a tuple",
+    ):
+        [_ for _ in ap.perfect_matchings(seed)]
 
 
 @pytest.mark.parametrize("size", range(1, 7))
@@ -322,6 +340,7 @@ def test_join_operation_size(size):
     [
         ((0,4),(1,),(2,),(3,)),
         ((0,5),(1,4),(2,3)),
+        ((0,3),(1,2),(4,7),(5,6)),
         ((0,8),(1,2),(3,7),(4,),(5,6)),
         ((0,11), (1,2), (3,7,8), (4,6), (5,), (9,10)),
     ]
@@ -337,6 +356,7 @@ def test_crossing_partition_false(partition):
         ((0,4),(1,),(2,5),(3,)),
         ((0,3,6),(1,5),(2,4)),
         ((0,7,8),(1,2),(3,6),(4,9),(5,)),
+        ((0,5),(1,2),(3,4),(6,8),(7,9,10)),
         ((0,7),(1,),(2,3),(4,),(5,12),(6,),(8,9),(10,11)),
         ((0,11,15),(1,2),(3,7),(4,),(5,6),(8,9),(10,12),(13,14)),
     ]
