@@ -21,7 +21,7 @@ from math import factorial, prod
 from itertools import product
 from collections.abc import Sequence
 from sympy import Symbol, simplify, binomial, factor, fraction
-from haarpy import Partition, set_partition
+from haarpy import Partition, set_partitions
 
 
 @lru_cache

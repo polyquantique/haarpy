@@ -134,7 +134,17 @@ class Partition(SympyPartition):
 
         Return:
             Partition: Greatest lower bound Partition
+
+        Raise:
+            TypeError: if other is not an instance of Partition
+            ValueError: if other and self are of different size
         """
+        if not isinstance(other, Partition):
+            raise TypeError
+
+        if self.size != other.size:
+            raise ValueError("Cannot compare partitions of different sizes.")
+        
         meet_list = [
             self_block & other_block
             for self_block, other_block in product(self, other)
@@ -151,7 +161,17 @@ class Partition(SympyPartition):
 
         Return:
             Partition: Least lower bound Partition
+
+        Raise:
+            TypeError: if other is not an instance of Partition
+            ValueError: if other and self are of different size
         """
+        if not isinstance(other, Partition):
+            raise TypeError
+
+        if self.size != other.size:
+            raise ValueError("Cannot compare partitions of different sizes.")
+        
         parent = [
             {
                 index
@@ -255,19 +275,29 @@ class Partition(SympyPartition):
 
     def fattening(self) -> Partition:
         """
+        Transforms a partition of [k] into a perfect matching partition of [2k]
+
+        Returns:
+            Partition: The associate perfect matching partition of [2k]
         """
-        return
-    
-    def thinning(self) -> Partition:
-        """
-        """
-        if not self.is_perfect_matching:
-            raise ValueError("Thinning only applies to perfect matching partitions.")
-        return
+        def block_fattening(block: list[int]) -> Generator[list[int], None, None]:
+            yield [2*block[0], 2*block[-1]+1]
+            if len(block) == 1:
+                return
+            for i, j in zip(block[:-1], block[1:]):
+                yield [2*i+1, 2*j]
+
+        return  Partition(
+            *[
+                matching
+                for block in self.partition
+                for matching in block_fattening(block)
+            ]
+        )
 
 
 def set_partitions(size: int) -> Generator[Partition, None, None]:
-    """Returns the partitionning of a set [size] into non-empty subsets.
+    """Returns the partitions of a set [size] into non-empty subsets.
 
     Args:
         size (int): size of the sequence [size]
@@ -286,3 +316,36 @@ def set_partitions(size: int) -> Generator[Partition, None, None]:
         raise ValueError("size must be an integer greater than 0.")
     
     return (Partition(*partition) for partition in multiset_partitions(range(size)))
+
+
+def perfect_matching_partitions(size: int) -> Generator[Partition, None, None]:
+    """Returns the partitions set [size] in terms of perfect matchings.
+
+    Args:
+        size (int): size of the sequence [size]
+
+    Returns:
+        Generator[Partition]: all perfect matching partitions of set [size]
+
+    Raise:
+        TypeError: if size is not int
+        ValueError: if size <= 0 or size is not even
+    """
+    if not isinstance(size, int):
+        raise TypeError
+    
+    if  size <= 0 or size % 2:
+        raise ValueError("size must be an even integer greater than 0.")
+    
+    def matchings(seed: tuple[int]) -> Generator[list[list[int]], None, None]:
+        if len(seed) == 2:
+            yield [seed]
+
+        for idx1 in range(1, len(seed)):
+            item_partition = [seed[0], seed[idx1]]
+            rest = seed[1:idx1] + seed[idx1 + 1 :]
+            rest_partitions = matchings(rest)
+            for p in rest_partitions:
+                yield [item_partition] + p
+
+    return (Partition(*partition) for partition in matchings(list(range(size))))
