@@ -15,13 +15,15 @@
 Permutation matrices Python interface
 """
 
-from itertools import product
 from math import factorial, prod
+from functools import lru_cache
+from itertools import product
 from collections.abc import Sequence
 from sympy import Symbol, simplify, binomial, factor, fraction
 from haarpy import set_partitions, meet_operation, join_operation, partial_order
 
 
+@lru_cache
 def mobius_function(
     partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 ) -> int:
@@ -49,6 +51,7 @@ def mobius_function(
     )
 
 
+@lru_cache
 def weingarten_permutation(
     first_partition: tuple[tuple[int]],
     second_partition: tuple[tuple[int]],
@@ -86,6 +89,7 @@ def weingarten_permutation(
     return weingarten if isinstance(dimension, int) else simplify(weingarten)
 
 
+@lru_cache
 def weingarten_centered_permutation(
     first_partition: tuple[tuple[int]],
     second_partition: tuple[tuple[int]],
@@ -139,6 +143,7 @@ def weingarten_centered_permutation(
     return weingarten
 
 
+@lru_cache
 def haar_integral_permutation(
     row_indices: tuple[int],
     column_indices: tuple[int],
@@ -179,6 +184,7 @@ def haar_integral_permutation(
     )
 
 
+@lru_cache
 def haar_integral_centered_permutation(
     row_indices: tuple[int],
     column_indices: tuple[int],

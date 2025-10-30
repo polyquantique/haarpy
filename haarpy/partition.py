@@ -15,6 +15,7 @@
 Partition Python interface
 """
 
+from functools import lru_cache
 from typing import Generator
 from itertools import product
 
@@ -76,6 +77,7 @@ def perfect_matchings(
             yield ((item_partition),) + p
 
 
+@lru_cache
 def partial_order(
     partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 ) -> bool:
@@ -95,6 +97,7 @@ def partial_order(
     return True
 
 
+@lru_cache
 def meet_operation(
     partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 ) -> tuple[tuple]:
@@ -119,6 +122,7 @@ def meet_operation(
     return tuple(sorted(tuple(block) for block in meet_list))
 
 
+@lru_cache
 def join_operation(
     partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 ) -> tuple[tuple]:
@@ -157,6 +161,7 @@ def join_operation(
     )
 
 
+@lru_cache
 def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
     """
     Checks if the partition is a crossing partition
