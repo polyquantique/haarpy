@@ -15,8 +15,8 @@
 Partition Python interface
 """
 
-from typing import Generator
 from __future__ import annotations
+from typing import Generator
 from itertools import product
 from sympy.combinatorics.partitions import Partition as SympyPartition
 from sympy.utilities.iterables import multiset_partitions
@@ -36,10 +36,12 @@ class Partition(SympyPartition):
         members (tuple[int]): Elements of the Partition - Integer from 0 to size-1
         size (int): size of the partition
         is_crossing (bool): True for crossing partitions, False otherwise
+        is_perfect_matching (bool): True for perfect matching partitions, False otherwise
     """
 
     size: int  # type hint for pylint
     _is_crossing = None
+    _is_perfect_matching = None
 
     def __new__(cls, *partition: FiniteSet) -> SympyPartition:
         """
@@ -238,7 +240,29 @@ class Partition(SympyPartition):
 
         return self._is_crossing
     
+    @property
+    def is_perfect_matching(self) -> bool:
+        """
+        Checks if the partition is a crossing partition
+        Computed lazily and stored in _is_crossing
+
+        Returns:
+            bool: True if the partition is crossing, False otherwise
+        """
+        if self._is_perfect_matching is None:
+            self._is_perfect_matching = all(len(block) == 2 for block in self.partition)
+        return self._is_perfect_matching
+
     def fattening(self) -> Partition:
+        """
+        """
+        return
+    
+    def thinning(self) -> Partition:
+        """
+        """
+        if not self.is_perfect_matching:
+            raise ValueError("Thinning only applies to perfect matching partitions.")
         return
 
 

@@ -30,7 +30,8 @@ def mobius_function(
     second_partition: Union[Partition, Sequence[Sequence[int]]],
 ) -> int:
     if isinstance(first_partition, Sequence) and isinstance(second_partition, Sequence):
-        first_partition, second_partition = Partition(*first_partition), Partition(*second_partition)
+        first_partition = Partition(*first_partition)
+        second_partition = Partition(*second_partition)
     elif not (isinstance(first_partition, Partition) and isinstance(second_partition, Partition)):
         raise TypeError("Partitions must be either an instance of haarpy.Partition or Sequence.")
     
@@ -44,7 +45,8 @@ def weingarten_permutation(
     dimension: Symbol,
 ) -> Symbol:
     if isinstance(first_partition, Sequence) and isinstance(second_partition, Sequence):
-        first_partition, second_partition = Partition(*first_partition), Partition(*second_partition)
+        first_partition = Partition(*first_partition)
+        second_partition = Partition(*second_partition)
     elif not (isinstance(first_partition, Partition) and isinstance(second_partition, Partition)):
         raise TypeError("Partitions must be either an instance of haarpy.Partition or Sequence.")
     
@@ -58,7 +60,8 @@ def weingarten_centered_permutation(
     dimension: Symbol,
 ) -> Symbol:
     if isinstance(first_partition, Sequence) and isinstance(second_partition, Sequence):
-        first_partition, second_partition = Partition(*first_partition), Partition(*second_partition)
+        first_partition = Partition(*first_partition)
+        second_partition = Partition(*second_partition)
     elif not (isinstance(first_partition, Partition) and isinstance(second_partition, Partition)):
         raise TypeError("Partitions must be either an instance of haarpy.Partition or Sequence.")
     
