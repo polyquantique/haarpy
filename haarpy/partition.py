@@ -15,337 +15,169 @@
 Partition Python interface
 """
 
-from __future__ import annotations
 from typing import Generator
 from itertools import product
-from sympy.combinatorics.partitions import Partition as SympyPartition
-from sympy.utilities.iterables import multiset_partitions
-from sympy.sets.sets import FiniteSet
 
 
-# pylint: disable=abstract-method
-class Partition(SympyPartition):
-    """
-    Custom subclass of Sympy's Partition class
-    This class represents an abstract partition
-    A partition is a set of disjoint sets whose union equals a given set
-    See  sympy.utilities.iterables.partitions
-
-    Attributes:
-        partition (list[list[int]]): Return partition as a sorted list of lists
-        members (tuple[int]): Elements of the Partition - Integer from 0 to size-1
-        size (int): size of the partition
-        is_crossing (bool): True for crossing partitions, False otherwise
-        is_perfect_matching (bool): True for perfect matching partitions, False otherwise
-    """
-
-    size: int  # type hint for pylint
-    _is_crossing = None
-    _is_perfect_matching = None
-
-    def __new__(cls, *partition: FiniteSet) -> SympyPartition:
-        """
-        Initializes a Partition
-
-        Args:
-            partition (Finiteset): Each argument to Partition should be a list, set, or a FiniteSet
-
-        Returns:
-            SympyPartition: An instance of Sympy's Partition
-
-        Raise:
-            ValueError: Integers 0 through len(Partition)-1 must be present.
-        """
-        obj = super().__new__(cls, *partition)
-        if obj.members != tuple(range(obj.size)):
-            raise ValueError(
-                f"Integers 0 through {obj.size - 1} should be present given the partition size."
-            )
-
-        return obj
-
-    def __le__(self, other: Partition) -> bool:
-        """
-        Checks if a partition is less than or equal to the other based on partial order
-
-        Args:
-            other (Partition): Partition to compare
-
-        Returns:
-            bool: True if self <= other
-
-        Raise:
-            TypeError: if other is not an instance of Partition
-            ValueError: if other and self are of different size
-        """
-        if not isinstance(other, Partition):
-            raise TypeError
-
-        if self.size != other.size:
-            raise ValueError("Cannot compare partitions of different sizes.")
-
-        for self_block in self:
-            if not any(self_block.issubset(other_block) for other_block in other):
-                return False
-
-        return True
-
-    def __lt__(self, other: Partition) -> bool:
-        """
-        Checks if a partition is less than the other based on partial order
-
-        Args:
-            other (Partition): Partition to compare
-
-        Returns:
-            bool: True if self < other
-        """
-        return self <= other and self != other
-
-    def __ge__(self, other: Partition) -> bool:
-        """
-        Checks if a partition is greater or equal than the other based on partial order
-
-        Args:
-            other (Partition): Partition to compare
-
-        Returns:
-            bool: True if self >= other
-        """
-        return other <= self
-
-    def __gt__(self, other: Partition) -> bool:
-        """
-        Checks if a partition is greater than the other based on partial order
-
-        Args:
-            other (Partition): Partition to compare
-
-        Returns:
-            bool: True if self > other
-        """
-        return other < self
-
-    def __and__(self, other: Partition) -> Partition:
-        """Returns the greatest lower bound of the two input partitions
-
-        Args:
-            other (Partition): Partition to meet
-
-        Return:
-            Partition: Greatest lower bound Partition
-
-        Raise:
-            TypeError: if other is not an instance of Partition
-            ValueError: if other and self are of different size
-        """
-        if not isinstance(other, Partition):
-            raise TypeError
-
-        if self.size != other.size:
-            raise ValueError("Cannot compare partitions of different sizes.")
-        
-        meet_list = [
-            self_block & other_block
-            for self_block, other_block in product(self, other)
-            if self_block & other_block
-        ]
-
-        return Partition(*meet_list)
-
-    def __or__(self, other: Partition) -> Partition:
-        """Returns the least upper bound of the two input partitions
-
-        Args:
-            other (Partition): Partition to join
-
-        Return:
-            Partition: Least lower bound Partition
-
-        Raise:
-            TypeError: if other is not an instance of Partition
-            ValueError: if other and self are of different size
-        """
-        if not isinstance(other, Partition):
-            raise TypeError
-
-        if self.size != other.size:
-            raise ValueError("Cannot compare partitions of different sizes.")
-        
-        parent = [
-            {
-                index
-                for element in self_block
-                for index, other_block in enumerate(other)
-                if element in other_block
-            }
-            for self_block in self
-        ]
-
-        merged = []
-        for index_set in parent:
-            overlap = [m for m in merged if m & index_set]
-            for m in overlap:
-                index_set |= m
-                merged.remove(m)
-            merged.append(index_set)
-
-        return Partition(
-            *[
-                [element for index in block for element in other.partition[index]]
-                for block in merged
-            ]
-        )
-
-    def meet(self, other: Partition) -> Partition:
-        """Returns the greatest lower bound of the two input partitions
-
-        Args:
-            other (Partition): Partition to meet
-
-        Return:
-            Partition: Greatest lower bound Partition
-        """
-        return self & other
-
-    def join(self, other: Partition) -> Partition:
-        """Returns the least upper bound of the two input partitions
-
-        Args:
-            other (Partition): Partition to join
-
-        Return:
-            Partition: Least lower bound Partition
-        """
-        return self | other
-
-    def partial_order(self, other: Partition) -> bool:
-        """
-        Checks if a partition is less than or equal to the other based on partial order
-
-        Args:
-            other (Partition): Partition to compare
-
-        Returns:
-            bool: True if self <= other
-        """
-        return self <= other
-
-    @property
-    def is_crossing(self) -> bool:
-        """
-        Checks if the partition is a crossing partition
-        Computed lazily and stored in _is_crossing
-
-        Returns:
-            bool: True if the partition is crossing, False otherwise
-        """
-        if self._is_crossing is None:
-            filtered_partition = [
-                block
-                for block in self.partition
-                if len(block) != 1 and block[0] + 1 != block[-1]
-            ]
-
-            for index, previous_block in enumerate(filtered_partition[:-1]):
-                for next_block in filtered_partition[index + 1 :]:
-                    if previous_block[-1] < next_block[0]:
-                        break
-                    for element in previous_block[1:]:
-                        if next_block[0] < element < next_block[-1]:
-                            self._is_crossing = True
-                            return self._is_crossing
-
-            self._is_crossing = False
-
-        return self._is_crossing
-    
-    @property
-    def is_perfect_matching(self) -> bool:
-        """
-        Checks if the partition is a crossing partition
-        Computed lazily and stored in _is_crossing
-
-        Returns:
-            bool: True if the partition is crossing, False otherwise
-        """
-        if self._is_perfect_matching is None:
-            self._is_perfect_matching = all(len(block) == 2 for block in self.partition)
-        return self._is_perfect_matching
-
-    def fattening(self) -> Partition:
-        """
-        Transforms a partition of [k] into a perfect matching partition of [2k]
-
-        Returns:
-            Partition: The associate perfect matching partition of [2k]
-        """
-        def block_fattening(block: list[int]) -> Generator[list[int], None, None]:
-            yield [2*block[0], 2*block[-1]+1]
-            if len(block) == 1:
-                return
-            for i, j in zip(block[:-1], block[1:]):
-                yield [2*i+1, 2*j]
-
-        return  Partition(
-            *[
-                matching
-                for block in self.partition
-                for matching in block_fattening(block)
-            ]
-        )
-
-
-def set_partitions(size: int) -> Generator[Partition, None, None]:
-    """Returns the partitions of a set [size] into non-empty subsets.
+def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
+    """Returns the partitionning of a given collection (set) of objects
+    into non-empty subsets.
 
     Args:
-        size (int): size of the sequence [size]
+        collection (tuple): An indexable iterable to be partitionned
 
     Returns:
-        Generator[Partition]: all partitions of set [size]
+        generator(tuple[tuple]): all partitions of the input collection
 
     Raise:
-        TypeError: if size is not int
-        ValueError: if size <= 0
+        ValueError: if the collection is not a tuple
     """
-    if not isinstance(size, int):
-        raise TypeError
-    
-    if  size <= 0:
-        raise ValueError("size must be an integer greater than 0.")
-    
-    return (Partition(*partition) for partition in multiset_partitions(range(size)))
+    if not isinstance(collection, tuple):
+        raise TypeError("collection must be a tuple")
+
+    if len(collection) == 1:
+        yield (collection,)
+        return
+
+    first = collection[0]
+    for smaller in set_partitions(collection[1:]):
+        for index, subset in enumerate(smaller):
+            yield ((first,) + subset,) + smaller[:index] + smaller[index + 1 :]
+        yield ((first,),) + smaller
 
 
-def perfect_matching_partitions(size: int) -> Generator[Partition, None, None]:
-    """Returns the partitions set [size] in terms of perfect matchings.
+def perfect_matching_partitions(
+    seed: tuple[int],
+) -> Generator[tuple[tuple[int]], None, None]:
+    """Returns the partitions of a tuple in terms of perfect matchings.
 
     Args:
-        size (int): size of the sequence [size]
+        seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
+            Note that it must hold that ``len(s) >= 2``.
 
     Returns:
-        Generator[Partition]: all perfect matching partitions of set [size]
+        generator: a generators that goes through all the single-double
+        partitions of the tuple
 
     Raise:
-        TypeError: if size is not int
-        ValueError: if size <= 0 or size is not even
+        ValueError: if the seed is not a tuple
     """
-    if not isinstance(size, int):
-        raise TypeError
-    
-    if  size <= 0 or size % 2:
-        raise ValueError("size must be an even integer greater than 0.")
-    
-    def matchings(seed: tuple[int]) -> Generator[list[list[int]], None, None]:
-        if len(seed) == 2:
-            yield [seed]
+    if not isinstance(seed, tuple):
+        raise TypeError("seed must be a tuple")
 
-        for idx1 in range(1, len(seed)):
-            item_partition = [seed[0], seed[idx1]]
-            rest = seed[1:idx1] + seed[idx1 + 1 :]
-            rest_partitions = matchings(rest)
-            for p in rest_partitions:
-                yield [item_partition] + p
+    if len(seed) == 2:
+        yield (seed,)
 
-    return (Partition(*partition) for partition in matchings(list(range(size))))
+    for idx1 in range(1, len(seed)):
+        item_partition = (seed[0], seed[idx1])
+        rest = seed[1:idx1] + seed[idx1 + 1 :]
+        rest_partitions = perfect_matching_partitions(rest)
+        for p in rest_partitions:
+            yield ((item_partition),) + p
+
+
+def partial_order(
+    partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
+) -> bool:
+    """Returns True if parition_1 <= partition_2 in terms of partial order
+
+    Args:
+        partition_1 tuple[tuple[int]]: The partition of lower order
+        partition_2 tuple[tuple[int]]: The partition of higher order
+
+    Returns:
+        bool: True if parition_1 <= partition_2
+    """
+    for part in partition_1:
+        if all(not set(part).issubset(bigger_part) for bigger_part in partition_2):
+            return False
+
+    return True
+
+
+def meet_operation(
+    partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
+) -> tuple[tuple]:
+    """Returns the greatest lower bound of the two input partitions
+
+    Args:
+        partition_1 (tuple[tuple[int]]): partition of a set
+        partition_2 (tuple[tuple[int]]): partition of a set
+
+    Return:
+        tuple[tuple]: Greatest lower bound
+    """
+    partition_1 = tuple(set(part) for part in partition_1)
+    partition_2 = tuple(set(part) for part in partition_2)
+
+    meet_list = [
+        block_1 & block_2
+        for block_1, block_2 in product(partition_1, partition_2)
+        if block_1 & block_2
+    ]
+
+    return tuple(sorted(tuple(block) for block in meet_list))
+
+
+def join_operation(
+    partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
+) -> tuple[tuple]:
+    """Returns the least upper bound of the two input partitions
+
+    Args:
+        partition_1 (tuple[tuple[int]]): partition of a set
+        partition_2 (tuple[tuple[int]]): partition of a set
+
+    Return:
+        tuple[tuple[int]]: Least upper bound
+    """
+    parent = [
+        {
+            index
+            for value in block1
+            for index, block2 in enumerate(partition_2)
+            if value in block2
+        }
+        for block1 in partition_1
+    ]
+
+    merged = []
+    for index_set in parent:
+        overlap = [m for m in merged if m & index_set]
+        for m in overlap:
+            index_set |= m
+            merged.remove(m)
+        merged.append(index_set)
+
+    return tuple(
+        sorted(
+            tuple(sorted(value for index in block for value in partition_2[index]))
+            for block in merged
+        )
+    )
+
+
+def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
+    """
+    Checks if the partition is a crossing partition
+    Computed lazily and stored in _is_crossing
+
+    Args:
+        partition (tuple[tuple[int]])): partition of a set
+
+    Returns:
+        bool: True if the partition is crossing, False otherwise
+    """
+    filtered_partition = tuple(
+        block for block in partition if len(block) != 1 and block[0] + 1 != block[-1]
+    )
+
+    for index, previous_block in enumerate(filtered_partition[:-1]):
+        for next_block in filtered_partition[index + 1 :]:
+            if previous_block[-1] < next_block[0]:
+                break
+            for value in previous_block[1:]:
+                if next_block[0] < value < next_block[-1]:
+                    return True
+
+    return False

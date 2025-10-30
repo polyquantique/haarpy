@@ -45,17 +45,29 @@ Functions
     representation_dimension
     hyperoctahedral
     hyperoctahedral_transversal
-    perfect_matchings
     zonal_spherical_function
     coset_type
     twisted_spherical_function
     mobius_function
-    Partition
     set_partitions
+    perfect_matching_partitions
+    partial_order
+    meet_operation
+    join_operation
+    is_crossing_partition
 
 Code details
 ------------
 """
+from .partition import (
+    set_partitions,
+    perfect_matching_partitions,
+    partial_order,
+    meet_operation,
+    join_operation,
+    is_crossing_partition,
+)
+
 from .symmetric import (
     get_conjugacy_class,
     derivative_tableaux,
@@ -65,13 +77,7 @@ from .symmetric import (
     irrep_dimension,
     hyperoctahedral,
     hyperoctahedral_transversal,
-    perfect_matchings,
     coset_type,
-)
-
-from .partition import (
-    Partition,
-    set_partitions,
 )
 
 from .unitary import (
@@ -127,13 +133,16 @@ __all__ = [
     "representation_dimension",
     "hyperoctahedral",
     "hyperoctahedral_transversal",
-    "perfect_matchings",
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
     "mobius_function",
-    "Partition",
     "set_partitions",
+    "perfect_matching_partitions",
+    "partial_order",
+    "meet_operation",
+    "join_operation",
+    "is_crossing_partition",
 ]
 
 

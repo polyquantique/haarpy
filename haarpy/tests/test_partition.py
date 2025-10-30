@@ -18,7 +18,7 @@ Partition tests
 import pytest
 from collections import Counter
 from random import seed, choice
-from sympy import bell
+from sympy import bell, factorial2
 import haarpy as ap
 
 seed(137)
@@ -27,14 +27,14 @@ seed(137)
 @pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_size(size):
     "Assert the number of partitions is given by the Bell number"
-    assert sum(1 for _ in ap.set_partition(tuple(range(size)))) == bell(size)
+    assert sum(1 for _ in ap.set_partitions(tuple(range(size)))) == bell(size)
 
 
 @pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_maximum_partition(size):
     "Assert that there is a single maximum partition"
     assert sum(
-        1 for partition in ap.set_partition(tuple(range(size)))
+        1 for partition in ap.set_partitions(tuple(range(size)))
         if len(partition) == 1
         and len(partition[0]) == size
     ) == 1
@@ -44,7 +44,7 @@ def test_set_partition_maximum_partition(size):
 def test_set_partition_minimum_partition(size):
     "Assert that there is a single minimum partition"
     assert sum(
-        1 for partition in ap.set_partition(tuple(range(size)))
+        1 for partition in ap.set_partitions(tuple(range(size)))
         if len(partition) == size
         and all(len(part) == 1 for part in partition)
     ) == 1
@@ -54,7 +54,7 @@ def test_set_partition_minimum_partition(size):
 def test_set_partition_unique(size):
     "Assert that all partitions are unique"
     partition_tuple = tuple(
-        partition for partition in ap.set_partition(tuple(range(size)))
+        partition for partition in ap.set_partitions(tuple(range(size)))
     )
     assert len(partition_tuple) == len(set(partition_tuple))
 
@@ -66,15 +66,25 @@ def test_set_partition_unique(size):
             (dict()),
             (range(7)),
             (11),
+            ([0,1,2,3]),
         ]
 )
 def test_set_partition_type_error(collection):
     "Raise TypeError for wrong type input"
     with pytest.raises(
         TypeError,
-        match = 'collection must be an indexable iterable'
+        match = 'collection must be a tuple'
     ):
-        tuple(ap.set_partition(collection))
+        tuple(ap.set_partitions(collection))
+
+
+@pytest.mark.parametrize("size", range(2,14,2))
+def test_perfect_matching_partitions_order(size):
+    "test size of perfect matching partitions"
+    assert (
+        sum(1 for _ in ap.perfect_matching_partitions(tuple(range(size))))
+        == factorial2(size-1)
+    )
 
 
 @pytest.mark.parametrize("size", range(1, 7))
@@ -83,7 +93,7 @@ def test_partial_order_maximum_partition_in(size):
     maximum_partition = (tuple(range(size)),)
     assert all(
         ap.partial_order(partition, maximum_partition)
-        for partition in ap.set_partition(tuple(range(size)))
+        for partition in ap.set_partitions(tuple(range(size)))
     )
 
 
@@ -93,7 +103,7 @@ def test_partial_order_maximum_partition_out(size):
     maximum_partition = (tuple(range(size)),)
     assert sum(
         ap.partial_order(maximum_partition, partition)
-        for partition in ap.set_partition(tuple(range(size)))
+        for partition in ap.set_partitions(tuple(range(size)))
     ) == 1
 
 
@@ -103,7 +113,7 @@ def test_partial_order_minimum_partition_out(size):
     minimum_partition = tuple((i,) for i in range(size))
     assert sum(
         ap.partial_order(partition, minimum_partition)
-        for partition in ap.set_partition(tuple(range(size)))
+        for partition in ap.set_partitions(tuple(range(size)))
     ) == 1
 
 
@@ -113,7 +123,7 @@ def test_partial_order_minimum_partition_in(size):
     minimum_partition = tuple((i,) for i in range(size))
     assert all(
         ap.partial_order(minimum_partition, partition)
-        for partition in ap.set_partition(tuple(range(size)))
+        for partition in ap.set_partitions(tuple(range(size)))
     )
 
 
@@ -146,30 +156,12 @@ def test_partial_order_false(partition1, partition2):
     assert not ap.partial_order(partition1, partition2)
 
 
-@pytest.mark.parametrize(
-    "partition1, partition2",
-    [
-        (((1,1),(3,4,5)), ((1,1),(3,4,5))),
-        (((1,),(2,),(3,2,5)), ((1,2),(3,2,5))),
-        (((1,2),(3,),(4,4)), ((1,2),(3,5,5))),
-        (((3,2,1),(5,4),(8,),(9,7)), ((4,5,2,3,1,1),(7,9))),
-    ]
-)
-def test_partial_order_value_error(partition1, partition2):
-    "Partial orders value error for repetition"
-    with pytest.raises(
-        ValueError,
-        match = "The partitions must be composed of unique elements",
-    ):
-        ap.partial_order(partition1, partition2)
-
-
 @pytest.mark.parametrize("size" , range(1,7))
 def test_meet_operation_minimum_partition(size):
     "Meet operation with minimum partition returns minimum partition"
     minimum_partition = tuple((i,) for i in range(size))
     minimum_counter = Counter(minimum_partition)
-    for partition in ap.set_partition(tuple(range(size))):
+    for partition in ap.set_partitions(tuple(range(size))):
         assert (
             Counter(ap.meet_operation(partition, minimum_partition))
             == minimum_counter
@@ -180,7 +172,7 @@ def test_meet_operation_minimum_partition(size):
 def test_meet_operation_maximum_partition(size):
     "Meet operation with maximum partition returns the same partition"
     maximum_partition = (tuple(range(size)),)
-    for partition in ap.set_partition(tuple(range(size))):
+    for partition in ap.set_partitions(tuple(range(size))):
         assert (
             ap.meet_operation(partition, maximum_partition)
             == partition
@@ -211,7 +203,7 @@ def test_meet_operation_additional(partition1, partition2, expected_result):
 def test_meet_operation_symmetry(size):
     "Test the meet operation yields the same output both ways"
     sample_size = int(1e5)
-    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
+    partition_tuple = tuple(partition for partition in ap.set_partitions(tuple(range(size))))
 
     sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
     sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
@@ -227,7 +219,7 @@ def test_meet_operation_symmetry(size):
 def test_meet_operation_size(size):
     "Test the meet operation yields a partition with correct format"
     sample_size = int(1e5)
-    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
+    partition_tuple = tuple(partition for partition in ap.set_partitions(tuple(range(size))))
 
     sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
     sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
@@ -249,7 +241,7 @@ def test_meet_operation_size(size):
 def test_join_operation_minimum_partition(size):
     "Join operation with minimum partition returns same partition"
     minimum_partition = tuple((i,) for i in range(size))
-    for partition in ap.set_partition(tuple(range(size))):
+    for partition in ap.set_partitions(tuple(range(size))):
         assert (
             ap.join_operation(partition, minimum_partition)
             == partition
@@ -260,7 +252,7 @@ def test_join_operation_minimum_partition(size):
 def test_join_operation_maximum_partition(size):
     "Join operation with maximum partition returns maximum partition"
     maximum_partition = (tuple(range(size)),)
-    for partition in ap.set_partition(tuple(range(size))):
+    for partition in ap.set_partitions(tuple(range(size))):
         assert (
             ap.join_operation(partition, maximum_partition)
             == maximum_partition
@@ -291,7 +283,7 @@ def test_join_operation_additional(partition1, partition2, expected_result):
 def test_join_operation_symmetry(size):
     "Test the join operation yields the same output both ways"
     sample_size = int(1e5)
-    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
+    partition_tuple = tuple(partition for partition in ap.set_partitions(tuple(range(size))))
 
     sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
     sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
@@ -307,7 +299,7 @@ def test_join_operation_symmetry(size):
 def test_join_operation_size(size):
     "Test the join operation yields a partition with correct format"
     sample_size = int(1e5)
-    partition_tuple = tuple(partition for partition in ap.set_partition(tuple(range(size))))
+    partition_tuple = tuple(partition for partition in ap.set_partitions(tuple(range(size))))
 
     sample_partition_1 = (choice(partition_tuple) for _ in range(sample_size))
     sample_partition_2 = (choice(partition_tuple) for _ in range(sample_size))
@@ -323,3 +315,32 @@ def test_join_operation_size(size):
             len(flatten_joined_partition) == size
             and all(i in flatten_joined_partition for i in range(size))
         )
+
+
+@pytest.mark.parametrize(
+    "partition",
+    [
+        ((0,4),(1,),(2,),(3,)),
+        ((0,5),(1,4),(2,3)),
+        ((0,8),(1,2),(3,7),(4,),(5,6)),
+        ((0,11), (1,2), (3,7,8), (4,6), (5,), (9,10)),
+    ]
+)
+def test_crossing_partition_false(partition):
+    "Non crossing partitions"
+    assert not ap.is_crossing_partition(partition)
+
+
+@pytest.mark.parametrize(
+    "partition",
+    [
+        ((0,4),(1,),(2,5),(3,)),
+        ((0,3,6),(1,5),(2,4)),
+        ((0,7,8),(1,2),(3,6),(4,9),(5,)),
+        ((0,7),(1,),(2,3),(4,),(5,12),(6,),(8,9),(10,11)),
+        ((0,11,15),(1,2),(3,7),(4,),(5,6),(8,9),(10,12),(13,14)),
+    ]
+)
+def test_crossing_partition_true(partition):
+    "Crossing partitions"
+    assert ap.is_crossing_partition(partition)

@@ -18,7 +18,6 @@ Symmetric tests
 from math import factorial
 from itertools import permutations
 import pytest
-from sympy import factorial2
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 import haarpy as ap
@@ -331,15 +330,6 @@ def test_hyperoctahedral_transversal_value_error(degree):
     "Test ValueError for odd degree"
     with pytest.raises(ValueError, match=".*degree should be a factor of 2*"):
         ap.hyperoctahedral_transversal(degree)
-
-
-@pytest.mark.parametrize("size", range(2,14,2))
-def test_perfect_matchings_order(size):
-    "test size of perfect matchings"
-    assert (
-        sum(1 for _ in ap.perfect_matchings(tuple(range(size))))
-        == factorial2(size-1)
-    )
 
 
 @pytest.mark.parametrize(

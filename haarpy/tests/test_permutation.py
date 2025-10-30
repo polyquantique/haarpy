@@ -23,6 +23,35 @@ import haarpy as ap
 
 d = Symbol('d')
 
+hand_calculated_weingarten = {
+    21: 1/d**2/(d-1),
+    22: -1/d/(d-1),
+    23: 1/(d-1),
+
+    31: 4/d**3/(d-1)/(d-2),
+    32: -2/d**2/(d-1)/(d-2),
+    33: 2/d/(d-1)/(d-2),
+    34: 1/d/(d-1)/(d-2),
+    35: -1/(d-1)/(d-2),
+    36: d/(d-1)/(d-2),
+
+    41: factor(3*(d+6))/d**4/(d-1)/(d-2)/(d-3),
+    42: -(d+6)/d**3/(d-1)/(d-2)/(d-3),
+    43: 1/d/(d-1)/(d-2)/(d-3),
+    44: 6/d**2/(d-1)/(d-2)/(d-3),
+    45: -6/d/(d-1)/(d-2)/(d-3),
+    46: 3/d**2/(d-1)/(d-2)/(d-3),
+    47: -1/d/(d-1)/(d-3),
+    48: -1/d/(d-1)/(d-2)/(d-3),
+    49: -2/d/(d-1)/(d-2)/(d-3),
+    410: 2/(d-1)/(d-2)/(d-3),
+    411: (d**2-3*d+1)/d/(d-1)/(d-2)/(d-3),
+    412: 1/d/(d-2)/(d-3),
+    413: -1/(d-2)/(d-3),
+    414: (d+1)/d/(d-1)/(d-2)/(d-3),
+    415: -(d+1)/(d-1)/(d-2)/(d-3),
+    416: d*(d+1)/(d-1)/(d-2)/(d-3),
+}
 
 @pytest.mark.parametrize("size", range(1,7))
 def test_mobius_function_trivial(size):
@@ -49,8 +78,8 @@ def test_mobius_inversion_formula(size):
     """
     collection = tuple(range(size))
     for partition_1, partition_2 in product(
-        ap.set_partition(collection),
-        ap.set_partition(collection),
+        ap.set_partitions(collection),
+        ap.set_partitions(collection),
     ):
         kronecker = int(partition_1 == partition_2)
         convolution = sum(
@@ -64,7 +93,7 @@ def test_mobius_inversion_formula(size):
                     partition_2
                 )
             )
-            for partition_3 in ap.set_partition(collection)
+            for partition_3 in ap.set_partitions(collection)
             if (
                 ap.partial_order(partition_1, partition_3)
                 and ap.partial_order(partition_3, partition_2)
@@ -75,64 +104,54 @@ def test_mobius_inversion_formula(size):
 
 
 @pytest.mark.parametrize(
-        "partition1, partition2",
+        "partition1, partition2, result_key",
         [
-            (((0,1),(2,3)), ((0,2),(1,3))),
+            (((0,), (1,)), ((0,), (1,)), 21),
+            (((0,), (1,)), ((0,1),), 22),
+            (((0,1),), ((0,1),), 23),
+
+            (((0,), (1,), (2,)), ((0,), (1,), (2,)), 31),
+            (((0,), (1,), (2,)), ((0,2), (1,)), 32),
+            (((0,), (1,), (2,)), ((0,1,2),), 33),
+            (((0,1,), (2,)), ((0,2), (1,)), 34),
+            (((0,1,2),), ((0,1), (2,)), 35),
+            (((0,1,2),), ((0,1,2),), 36),
+
+            (((0,), (1,), (2,), (3,)), ((0,), (1,), (2,), (3,)), 41),
+            (((0,), (1,2,), (3,)), ((0,), (1,), (2,), (3,)), 42),
+            (((0,2), (1,3)), ((0,), (1,), (2,), (3,)), 43),
+            (((0,1,3), (2,)), ((0,), (1,), (2,), (3,)), 44),
+            (((0,1,2,3),), ((0,), (1,), (2,), (3,)), 45),
+
+            (((0,1), (2,), (3,)), ((0,), (1,3), (2,)), 46),
+            (((0,2), (1,), (3,)), ((0,), (1,3), (2,)), 43),
+
+            (((0,3), (1,), (2,)), ((0,2), (1,3)), 48),
+            (((0,3), (1,), (2,)), ((0,3), (1,2)), 47),
+
+            (((0,), (1,), (2,3)), ((0,2,3), (1,)), 49),
+
+            (((0,), (1,), (2,3)), ((0,1,2,3),), 410),
+
+            (((0,2), (1,3)), ((0,3), (1,2)), 43),
+            (((0,3), (1,2)), ((0,3), (1,2)), 411),
+
+            (((0,3), (1,2)), ((0,), (1,2,3)), 412),
+
+            (((0,3), (1,2)), ((0,1,2,3),), 413),
+
+            (((0,1,2), (3,)), ((0,1,2), (3,)), 414),
+            (((0,1,2), (3,)), ((0,1,2,3),), 415),
+
+            (((0,1,2,3),), ((0,1,2,3),), 416),
         ]
 )
-def test_weingarten_permutation_hand_calculated(partition1, partition2):
-    "Test Weingarten permutation function against hand calculated cases"
-    assert False
-
-
-@pytest.mark.parametrize(
-        "partition1, partition2, result",
-        [
-            (((0,), (1,)), ((0,), (1,)), 1/d**2/(d-1)),
-            (((0,), (1,)), ((0,1),), -1/d/(d-1)),
-            (((0,1),), ((0,1),), 1/(d-1)),
-
-            (((0,), (1,), (2,)), ((0,), (1,), (2,)), 4/d**3/(d-1)/(d-2)),
-            (((0,), (1,), (2,)), ((0,2), (1,)), -2/d**2/(d-1)/(d-2)),
-            (((0,), (1,), (2,)), ((0,1,2),), 2/d/(d-1)/(d-2)),
-            (((0,1,), (2,)), ((0,2), (1,)), 1/d/(d-1)/(d-2)),
-            (((0,1,2),), ((0,1), (2,)), -1/(d-1)/(d-2)),
-            (((0,1,2),), ((0,1,2),), d/(d-1)/(d-2)),
-
-            (((0,), (1,), (2,), (3,)), ((0,), (1,), (2,), (3,)), factor(3*(d+6))/d**4/(d-1)/(d-2)/(d-3)),
-            (((0,), (1,2,), (3,)), ((0,), (1,), (2,), (3,)), -(d+6)/d**3/(d-1)/(d-2)/(d-3)),
-            (((0,2), (1,3)), ((0,), (1,), (2,), (3,)), 1/d/(d-1)/(d-2)/(d-3)),
-            (((0,1,3), (2,)), ((0,), (1,), (2,), (3,)), 6/d**2/(d-1)/(d-2)/(d-3)),
-            (((0,1,2,3),), ((0,), (1,), (2,), (3,)), -6/d/(d-1)/(d-2)/(d-3)),
-
-            (((0,1), (2,), (3,)), ((0,), (1,3), (2,)), 3/d**2/(d-1)/(d-2)/(d-3)),
-            (((0,2), (1,), (3,)), ((0,), (1,3), (2,)), 1/d/(d-1)/(d-2)/(d-3)),
-
-            (((0,3), (1,), (2,)), ((0,2), (1,3)), -1/d/(d-1)/(d-2)/(d-3)),
-            (((0,3), (1,), (2,)), ((0,3), (1,2)), -1/d/(d-1)/(d-3)),
-
-            (((0,), (1,), (2,3)), ((0,2,3), (1,)), -2/d/(d-1)/(d-2)/(d-3)),
-
-            (((0,), (1,), (2,3)), ((0,1,2,3),), 2/(d-1)/(d-2)/(d-3)),
-
-            (((0,), (1,), (2,3)), ((0,2,3), (1,)), -2/d/(d-1)/(d-2)/(d-3)),
-
-            (((0,2), (1,3)), ((0,3), (1,2)), 1/d/(d-1)/(d-2)/(d-3)),
-            (((0,3), (1,2)), ((0,3), (1,2)), (d**2-3*d+1)/d/(d-1)/(d-2)/(d-3)),
-
-            (((0,3), (1,2)), ((0,), (1,2,3)), 1/d/(d-2)/(d-3)),
-
-            (((0,3), (1,2)), ((0,1,2,3),), -1/(d-2)/(d-3)),
-
-            (((0,1,2), (3,)), ((0,1,2), (3,)), (d+1)/d/(d-1)/(d-2)/(d-3)),
-            (((0,1,2), (3,)), ((0,1,2,3),), -(d+1)/(d-1)/(d-2)/(d-3)),
-
-            (((0,1,2,3),), ((0,1,2,3),), d*(d+1)/(d-1)/(d-2)/(d-3)),
-        ]
-)
-def test_weingarten_centered_permutation_hand_calculated(partition1, partition2, result):
+def test_weingarten_centered_permutation_hand_calculated(partition1, partition2, result_key):
     "Test Weingarten centered permutation function against hand calculated cases"
-    assert ap.weingarten_centered_permutation(partition1, partition2, d) == result
+    assert (
+        ap.weingarten_centered_permutation(partition1, partition2, d) 
+        == hand_calculated_weingarten[result_key]
+    )
 
 
 @pytest.mark.parametrize(
@@ -168,8 +187,8 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
             d,
         )
         for partition_sigma, partition_tau in product(
-            ap.set_partition(tuple(i for i, _ in enumerate(row_indices))),
-            ap.set_partition(tuple(i for i, _ in enumerate(column_indices))),
+            ap.set_partitions(tuple(i for i, _ in enumerate(row_indices))),
+            ap.set_partitions(tuple(i for i, _ in enumerate(column_indices))),
         )
         if ap.partial_order(partition_sigma, partition_row)
         and ap.partial_order(partition_tau, partition_column)
@@ -185,21 +204,54 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
 
 
 @pytest.mark.parametrize(
-    "row_indices, column_indices",
+    "row_indices, column_indices, result_dict",
     [
-        ((1,2,3,4),(1,2,3,4)),
-        ((3,2,2,1),(2,2,1,3)),
-        ((3,2,2,1),(3,2,2,1)),
-        ((3,2,2,1,2),(3,2,2,1,2)),
-        ((3,3,2,2,1,2),(3,3,2,2,1,2)),
-        ((3,3,2,2,3,2),(3,3,2,2,3,2)),
-        ((3,3,2,2,3,2),(3,3,2,2,1,2)),
+        ((1,2),(1,2), {21:1}),
+        ((1,1),(2,2), {21:1, 22:2, 23:1}),
+        ((1,1),(1,2), {21:1, 22:1}),
+
+        ((1,2,3), (1,2,3), {31:1}),
+        ((1,2,3), (1,2,2), {31:1, 32:1}),
+        ((1,2,3), (1,1,1), {31:1, 32:3, 33:1}),
+        ((1,2,2), (1,1,1), {31:1, 32:4, 33:1, 34:3, 35:1}),
+        ((1,2,2), (2,2,1), {31:1, 32:2, 34:1}),
+        ((1,1,1), (1,1,1), {31:1, 32:6, 33:2, 34:9, 35:6, 36:1}),
+
+        ((1,2,3,4), (1,2,3,4), {41:1}),
+        ((1,2,3,2), (1,1,1,1), {41:1, 42:7, 43:5, 44:4, 45:1, 46:4, 47:1, 48:2, 49:4, 410:1}),
+        (
+            (1,1,1,1),
+            (1,1,1,1),
+            {
+                41:1,
+                42:12,
+                43:24,
+                44:8,
+                45:2,
+                46:24,
+                47:12,
+                48:24,
+                49:48,
+                410:12,
+                411:3,
+                412:24,
+                413:6,
+                414:16,
+                415:8,
+                416:1,
+            }
+        ),
     ]
 )
-def test_haar_integral_centered_permutation_weingarten(row_indices, column_indices):
+def test_haar_integral_centered_permutation_weingarten(row_indices, column_indices, result_dict):
     """Test haar integral for centered permutation matrices
     against the Weingarten sum as seen in Eq.(2.2)
     and (2.4) of `Collins and Nagatsu. Weingarten Calculus for Centered Random
     Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
     """
-    assert False
+    result = simplify(sum(value*hand_calculated_weingarten[key] for key, value in result_dict.items()))
+    num, denum = fraction(result)
+    assert (
+        ap.haar_integral_centered_permutation(row_indices, column_indices, d)
+        == factor(num)/factor(denum)
+    )
