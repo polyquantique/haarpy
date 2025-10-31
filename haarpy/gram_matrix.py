@@ -74,3 +74,13 @@ def weingarten_matrix_free_orthogonal(degree: int, group_dimension: Symbol) -> M
     """
     """
     return
+
+
+@lru_cache
+def haar_integral_free_symmetric():
+    return
+
+
+@lru_cache
+def haar_integral_free_orthogonal():
+    return
