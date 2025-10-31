@@ -311,3 +311,9 @@ def coset_type(partition: tuple[int]) -> Permutation:
             permutation_list[2 * partial_sum + p - 1] = 2 * partial_sum + p - 2
 
     return Permutation(permutation_list)
+
+
+def young_subgroup(partition: tuple[int]) -> PermutationGroup :
+    return
+#try both direct product and permutation group using symmetricgroup generators
+# to acces the generators : tuple(generator for generator in symmetricgroup(degree))
