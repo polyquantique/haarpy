@@ -147,6 +147,37 @@ def test_haar_integral_coe_off_diagonal_entry(power):
     )
 
 
+@pytest.mark.parametrize("power", range(2,6,2))
+def test_haar_integral_coe_diagonal_entry_numeric(power):
+    """Test Thm. 4.2 as seen in
+    `Matsumoto. General moments of matrix elements from circular
+    orthogonal ensembles <https://doi.org/10.1142/S2010326312500050>`_
+    """
+    dimension = 17
+    sequences = (power*(0,), power*(0,))
+    assert (
+        ap.haar_integral_circular_orthogonal(sequences, dimension)
+        == Fraction(factorial2(power),prod((dimension+i) for i in range(1,power,2)))
+    )
+
+
+@pytest.mark.parametrize("power", range(2,6,2))
+def test_haar_integral_coe_off_diagonal_entry_numeric(power):
+    """Test Thm. 4.3 as seen in
+    `Matsumoto. General moments of matrix elements from circular
+    orthogonal ensembles <https://doi.org/10.1142/S2010326312500050>`_
+    """
+    dimension = 17
+    half_power = int(power/2)
+    sequences = (half_power*(0,1), half_power*(0,1))
+    assert (
+        ap.haar_integral_circular_orthogonal(sequences, dimension)
+        == Fraction(
+            factorial(half_power),
+            ((dimension+(power-1))*prod((dimension+i) for i in range(half_power-1))),
+        )
+    )
+
 @pytest.mark.parametrize(
     "sequences",
     [
@@ -163,12 +194,6 @@ def test_haar_integral_coe_value_error(sequences):
     "Test haar integral value error"
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_circular_orthogonal(sequences, d)
-
-
-#test case vii
-#test case vij
-#test numeric
-#type error (both)
 
 #assert that Wg is invariant under coset type
 #assert that coset type = coset type only if HsigmaH = HtauH
