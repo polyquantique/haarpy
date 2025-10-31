@@ -145,8 +145,29 @@ def test_haar_integral_coe_off_diagonal_entry(power):
         ap.haar_integral_circular_orthogonal(sequences, d)
         == factorial(half_power)/((d+(power-1))*prod((d+i) for i in range(half_power-1)))
     )
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,),),
+        ((1,2,3),),
+        ((1,2),(3,4),(4,5)),
+        "str",
+        ((1,2),(3,4,5)),
+        ((1,2,3),(3,4,5,6)),
+        ((1,2,3),(1,2,3)),
+    ]
+)
+def test_haar_integral_coe_value_error(sequences):
+    "Test haar integral value error"
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral_circular_orthogonal(sequences, d)
+
+
 #test case vii
 #test case vij
+#test numeric
 #type error (both)
 
 #assert that Wg is invariant under coset type

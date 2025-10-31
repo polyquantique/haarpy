@@ -85,13 +85,13 @@ def haar_integral_circular_orthogonal(
 
     if degree % 2 or len(seq_j) % 2:
         raise ValueError("Wrong tuple format")
-    
+
     if len(seq_j) != degree:
         return 0
 
     if sorted(seq_i) != sorted(seq_j):
         return 0
-    
+
     seq_j = list(seq_j)
     integral = sum(
         weingarten_circular_orthogonal(perm, group_dimension)
