@@ -194,15 +194,3 @@ def test_haar_integral_coe_value_error(sequences):
     "Test haar integral value error"
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_circular_orthogonal(sequences, d)
-
-#assert that Wg is invariant under coset type
-#assert that coset type = coset type only if HsigmaH = HtauH
-# generate all coset types (in a set for all permutations in S2k, then
-# generate a set of permutation representative. Make sure that the size
-# of the representative set matches M2k and that all elements are in M2k)
-# make sure signature is +1
-# from sympy.combinatorics.fp_groups import FpGroup, coset_enumeration_r, CosetTable
-#from sympy.combinatorics.perm_groups import PermutationGroup, Coset
-#https://medium.com/@mohitgupta6678/cosets-for-finite-groups-in-sympy-combinatorics-module-d094046d2edc
-# G = group... H = subgroup... G.coset_enumeration(H)
-#

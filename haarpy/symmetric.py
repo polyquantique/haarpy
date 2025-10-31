@@ -292,7 +292,7 @@ def coset_type(permutation: Permutation) -> tuple[int]:
         permutation (Permutation): A permutation of the symmetric group S_2k
 
     Returns:
-        (Permutation): The associated permutation of S_2k
+        tuple[int]: The associated coset-type as a partition of k
 
     Raise:
         TypeError: If partition is not a Permutation
