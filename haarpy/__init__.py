@@ -47,6 +47,7 @@ Functions
     hyperoctahedral
     hyperoctahedral_transversal
     zonal_spherical_function
+    coset_type
     coset_type_representative
     twisted_spherical_function
     mobius_function
@@ -78,6 +79,7 @@ from .symmetric import (
     irrep_dimension,
     hyperoctahedral,
     hyperoctahedral_transversal,
+    coset_type,
     coset_type_representative,
 )
 
@@ -137,6 +139,7 @@ __all__ = [
     "hyperoctahedral",
     "hyperoctahedral_transversal",
     "zonal_spherical_function",
+    "coset_type",
     "coset_type_representative",
     "twisted_spherical_function",
     "mobius_function",

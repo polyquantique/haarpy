@@ -15,12 +15,15 @@
 Symmetric tests
 """
 
+import pytest
 from math import factorial
 from itertools import permutations
-import pytest
+from random import seed
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 import haarpy as ap
+
+seed(137)
 
 
 @pytest.mark.parametrize(
@@ -330,6 +333,33 @@ def test_hyperoctahedral_transversal_value_error(degree):
     "Test ValueError for odd degree"
     with pytest.raises(ValueError, match=".*degree should be a factor of 2*"):
         ap.hyperoctahedral_transversal(degree)
+
+
+@pytest.mark.parametrize("half_degree", range(1,10))
+def test_coset_type_partition(half_degree):
+    "Test that all coset-types of S_2k are partitions of k"
+    sample_size = 100 if half_degree > 2 else 4
+    permutation_sample = (
+        Permutation.random(2*half_degree) for _ in range(sample_size)
+    )
+    for permutation in permutation_sample:
+        assert (
+            sum(ap.coset_type(permutation)) == half_degree
+        )
+
+
+@pytest.mark.parametrize("half_degree", range(1,8))
+def test_coset_type_coset_representative(half_degree):
+    """ Taking all partitions of integer k, finding its coset-type
+    representative and then finding the coset-type of this permutation
+    should yield the initial partition
+    """
+    for partition in partitions(half_degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        assert (
+            ap.coset_type(ap.coset_type_representative(partition))
+            == partition
+        )
 
 
 @pytest.mark.parametrize(
