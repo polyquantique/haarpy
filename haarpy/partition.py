@@ -83,6 +83,13 @@ def partial_order(
 ) -> bool:
     """Returns True if parition_1 <= partition_2 in terms of partial order
 
+    For parition_1 and partition_2, two partitions of the same set, we call
+    parition_1 <= partition_2 if and only if each block of parition_1 is
+    contained in some block of partition_2
+
+    Ex.
+    ((0,1), (2,3), (4,)) < ((0,1), (2,3,4))
+
     Args:
         partition_1 tuple[tuple[int]]: The partition of lower order
         partition_2 tuple[tuple[int]]: The partition of higher order
@@ -102,6 +109,12 @@ def meet_operation(
     partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 ) -> tuple[tuple]:
     """Returns the greatest lower bound of the two input partitions
+
+    For parition_1 and partition_2, two partitions of the same set,
+    the meet operation yields the greatest lower bound of both partitions
+
+    Ex.
+    ((0,1), (2,3), (4,)) ∧ ((0,1,2), (3,4)) = ((0,1), (2,), (3,), (4,))
 
     Args:
         partition_1 (tuple[tuple[int]]): partition of a set
@@ -127,6 +140,12 @@ def join_operation(
     partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 ) -> tuple[tuple]:
     """Returns the least upper bound of the two input partitions
+
+    For parition_1 and partition_2, two partitions of the same set,
+    the join operation yields the least upper bound of both partitions
+
+    Ex.
+    ((0,1), (2,), (3,4)) ∨ ((0,2), (1,), (3,), (,4)) = ((0,1,2), (3,4))
 
     Args:
         partition_1 (tuple[tuple[int]]): partition of a set
@@ -165,7 +184,10 @@ def join_operation(
 def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
     """
     Checks if the partition is a crossing partition
-    Computed lazily and stored in _is_crossing
+
+    Ex.
+    Crossing partition : ((0,2,4), (1,3))
+    Non crossing partition : ((0,3,4), (1,2))
 
     Args:
         partition (tuple[tuple[int]])): partition of a set

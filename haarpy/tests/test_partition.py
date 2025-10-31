@@ -78,12 +78,12 @@ def test_set_partition_type_error(collection):
         tuple(ap.set_partitions(collection))
 
 
-@pytest.mark.parametrize("size", range(2,14,2))
+@pytest.mark.parametrize("size", range(2,14))
 def test_perfect_matchings_order(size):
     "test size of perfect matching partitions"
     assert (
         sum(1 for _ in ap.perfect_matchings(tuple(range(size))))
-        == factorial2(size-1)
+        == (factorial2(size-1) if not size % 2 else 0)
     )
 
 

@@ -27,8 +27,9 @@ from haarpy import set_partitions, meet_operation, join_operation, partial_order
 def mobius_function(
     partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 ) -> int:
-    """Return the Möbius function as seen in Collin & Nagatsu's
-    "Weingarten calculus for centered random permutation matrices"
+    """Return the Möbius function
+    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
 
     Args:
         partition_1 (tuple[tuple[int]): The intersected partition
@@ -150,6 +151,8 @@ def haar_integral_permutation(
     dimension: Symbol,
 ) -> Symbol:
     """Returns the integral over Haar random permutation matrices
+    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
 
     Args:
         row_indices (tuple(int)) : sequence of row indices
@@ -191,6 +194,8 @@ def haar_integral_centered_permutation(
     dimension: Symbol,
 ) -> Symbol:
     """Returns the integral over Haar random centered permutation matrices
+    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
+    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
 
     Args:
         row_indices (tuple(int)) : sequence of row indices
