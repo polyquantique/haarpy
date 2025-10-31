@@ -283,10 +283,11 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
 
 @lru_cache
-def coset_type(partition: tuple[int]) -> Permutation:
-    """Returns the permutation of S_2k associated with the input coset-type (partition of k)
-    as seen in Matsumoto's "Weingarten calculus for matrix ensembles associated with
-    compact symmetric spaces"
+def coset_type_representative(partition: tuple[int]) -> Permutation:
+    """Returns a representative permutation of S_2k for a given
+    input coset-type (partition of k) as seen 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with
+    compact symmetric spaces <https://arxiv.org/pdf/1301.5401>`_
 
     Args:
         partition (tuple[int]): The coset-type (partition of k)

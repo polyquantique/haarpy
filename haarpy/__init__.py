@@ -34,6 +34,7 @@ Functions
     weingarten_centered_permutation
     haar_integral_unitary
     haar_integral_orthogonal
+    haar_integral_circular_orthogonal
     haar_integral_permutation
     haar_integral_centered_permutation
     get_conjugacy_class
@@ -46,7 +47,7 @@ Functions
     hyperoctahedral
     hyperoctahedral_transversal
     zonal_spherical_function
-    coset_type
+    coset_type_representative
     twisted_spherical_function
     mobius_function
     set_partitions
@@ -77,7 +78,7 @@ from .symmetric import (
     irrep_dimension,
     hyperoctahedral,
     hyperoctahedral_transversal,
-    coset_type,
+    coset_type_representative,
 )
 
 from .unitary import (
@@ -100,6 +101,7 @@ from .symplectic import (
 from .circular_ensembles import (
     weingarten_circular_orthogonal,
     weingarten_circular_symplectic,
+    haar_integral_circular_orthogonal,
 )
 
 from .permutation import (
@@ -122,6 +124,7 @@ __all__ = [
     "weingarten_centered_permutation",
     "haar_integral_unitary",
     "haar_integral_orthogonal",
+    "haar_integral_circular_orthogonal",
     "haar_integral_permutation",
     "haar_integral_centered_permutation",
     "get_conjugacy_class",
@@ -134,7 +137,7 @@ __all__ = [
     "hyperoctahedral",
     "hyperoctahedral_transversal",
     "zonal_spherical_function",
-    "coset_type",
+    "coset_type_representative",
     "twisted_spherical_function",
     "mobius_function",
     "set_partitions",

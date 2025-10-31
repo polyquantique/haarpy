@@ -50,7 +50,7 @@ def test_twisted_spherical_image(partition):
     )
     for coset_type in partitions(half_degree):
         coset_type = tuple(key for key, value in coset_type.items() for _ in range(value))
-        coset_type_permutation = ap.coset_type(coset_type)
+        coset_type_permutation = ap.coset_type_representative(coset_type)
         assert ap.twisted_spherical_function(
             coset_type_permutation,
             partition,

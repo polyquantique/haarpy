@@ -13,6 +13,7 @@
     * `haar_integral()` -> `haar_integral_unitary()`
     * `weingarten_class()` -> `weingarten_unitary()`
     * `weingarten_element()` -> `weingarten_unitary()` The argument `degree` has been removed for the degree of the symmetric group is already contained in both the permutation and the conjugacy class.
+    * `coset_type()` -> `coset_type_representative()`
 
 ### Improvements
 

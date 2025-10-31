@@ -15,8 +15,9 @@
 Circular ensembles tests
 """
 
+from math import prod
 from fractions import Fraction
-from sympy import Symbol, simplify
+from sympy import Symbol, simplify, factorial, factorial2
 from sympy.combinatorics import SymmetricGroup
 import pytest
 import haarpy as ap
@@ -103,3 +104,47 @@ def test_weingarten_circular_symplectic_hyperoctahedral_numeric(half_degree):
                 simplify((7-1)*coefficient) if permutation in hyperoctahedral
                 else coefficient*Fraction(1,2)
             )
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((0,1,2,3), (0,1)),
+        ((0,1,2,3,4,5), (0,1,2,3)),
+        ((0,1,2,3), (0,1,2,2)),
+        ((0,0,0,0), (0,0,0,1)),
+    ]
+)
+def test_haar_integral_coe_zero(sequences):
+    "test cases that return 0"
+    assert not ap.haar_integral_circular_orthogonal(sequences, d)
+
+
+@pytest.mark.parametrize("power", range(2,8,2))
+def test_haar_integral_coe_diagonal_entry(power):
+    """Test Thm. 4.2 as seen in
+    `Matsumoto. General moments of matrix elements from circular
+    orthogonal ensembles <https://doi.org/10.1142/S2010326312500050>`_
+    """
+    sequences = (power*(0,), power*(0,))
+    assert (
+        ap.haar_integral_circular_orthogonal(sequences, d)
+        == factorial2(power)/prod((d+i) for i in range(1,power,2))
+    )
+
+
+@pytest.mark.parametrize("power", range(2,8,2))
+def test_haar_integral_coe_off_diagonal_entry(power):
+    """Test Thm. 4.3 as seen in
+    `Matsumoto. General moments of matrix elements from circular
+    orthogonal ensembles <https://doi.org/10.1142/S2010326312500050>`_
+    """
+    half_power = int(power/2)
+    sequences = (half_power*(0,1), half_power*(0,1))
+    assert (
+        ap.haar_integral_circular_orthogonal(sequences, d)
+        == factorial(half_power)/((d+(power-1))*prod((d+i) for i in range(half_power-1)))
+    )
+#test case vii
+#test case vij
+#type error (both)

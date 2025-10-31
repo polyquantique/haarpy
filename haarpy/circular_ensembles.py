@@ -17,8 +17,8 @@ Circular ensembles Python interface
 
 from fractions import Fraction
 from functools import lru_cache
-from sympy import Symbol
-from sympy.combinatorics import Permutation
+from sympy import Symbol, fraction, factor, simplify
+from sympy.combinatorics import Permutation, SymmetricGroup
 from haarpy import weingarten_orthogonal, weingarten_symplectic
 
 
@@ -57,3 +57,50 @@ def weingarten_circular_symplectic(
         else Fraction(2 * cse_dimension - 1, 2)
     )
     return weingarten_symplectic(permutation, symplectic_dimension)
+
+
+@lru_cache
+def haar_integral_circular_orthogonal(
+    sequences: tuple[tuple[int]], group_dimension: int
+) -> Symbol:
+    """Returns integral over circular orthogonal ensemble polynomial
+    sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple(tuple(int))) : Indices of matrix elements
+        orthogonal_dimension (int) : Dimension of the orthogonal group
+
+    Returns:
+        Symbol : Integral under the Haar measure
+
+    Raise:
+        ValueError : If sequences doesn't contain 2 tuples
+        ValueError : If tuples i and j are of odd size
+    """
+    if len(sequences) != 2:
+        raise ValueError("Wrong tuple format")
+
+    seq_i, seq_j = sequences
+    degree = len(seq_i)
+
+    if degree % 2 or len(seq_j) % 2:
+        raise ValueError("Wrong tuple format")
+    
+    if len(seq_j) != degree:
+        return 0
+
+    if sorted(seq_i) != sorted(seq_j):
+        return 0
+    
+    seq_j = list(seq_j)
+    integral = sum(
+        weingarten_circular_orthogonal(perm, group_dimension)
+        for perm in SymmetricGroup(degree).generate()
+        if perm(seq_i) == seq_j
+    )
+
+    if isinstance(group_dimension, Symbol):
+        numerator, denominator = fraction(simplify(integral))
+        integral = factor(numerator) / factor(denominator)
+
+    return integral
