@@ -230,12 +230,28 @@ def test_zonal_spherical_type_error(permutation, partition):
         (Permutation(7), (d+3)*(d**2+6*d+1), d*(d-1)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
     ]
 )
-def test_weingarten_orthogonal(permutation, num, denum):
+def test_weingarten_orthogonal_litterature(permutation, num, denum):
     """Symbolic validation of orthogonal Weingarten function against results shown in
     `Collins et al. Integration with Respect to the Haar Measure on Unitary, Orthogonal
     and Symplectic Group: <https://link.springer.com/article/10.1007/s00220-006-1554-3>`_
     """
     assert ap.weingarten_orthogonal(permutation, d) == num/denum
+
+
+@pytest.mark.parametrize("degree", range(2,10,2))
+def test_weingarten_orthogonal_coset_type(degree):
+    "Test that the orthogonal function works for both a permutation or its coset-type"
+    sample_size = 10 if degree > 2 else 5
+    permutation_sample = (
+        Permutation.random(degree) for _ in range(sample_size)
+    )
+    for permutation in permutation_sample:
+        assert (
+            ap.weingarten_orthogonal(permutation, d)
+            == ap.weingarten_orthogonal(ap.coset_type(permutation), d)
+        )
+#test typeerror
+#test valueerror
 
 
 @pytest.mark.parametrize(

@@ -19,6 +19,7 @@ from math import prod
 from fractions import Fraction
 from itertools import product
 from functools import lru_cache
+from typing import Union
 from sympy import Symbol, factorial, factor, fraction, simplify
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
@@ -28,6 +29,7 @@ from haarpy import (
     irrep_dimension,
     hyperoctahedral,
     hyperoctahedral_transversal,
+    coset_type_representative,
 )
 
 
@@ -73,23 +75,32 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
 
 @lru_cache
 def weingarten_orthogonal(
-    permutation: Permutation, orthogonal_dimension: Symbol
+    permutation: Union[Permutation, tuple[int]], orthogonal_dimension: Symbol
 ) -> Symbol:
     """Returns the orthogonal Weingarten function
 
     Args:
-        permutation (Permutation): A permutation of the symmetric group S_2k
+        permutation (Permutation, tuple(int)): A permutation of S_2k or its coset-type
         orthogonal_dimension (int): Dimension of the orthogonal group
 
     Returns:
-        Symbol : The Weingarten function
+        Symbol: The Weingarten function
 
     Raise:
-        ValueError : If the degree 2k of the symmetric group S_2k is not a factor of 2
+        ValueError: if the degree 2k of the symmetric group S_2k is not a factor of 2
+        TypeError: if permutation has the wrong type
     """
+    if isinstance(permutation, (tuple, list)) and all(
+        isinstance(value, int) for value in permutation
+    ):
+        permutation = coset_type_representative(permutation)
+    elif not isinstance(permutation, Permutation):
+        raise TypeError
+
     degree = permutation.size
     if degree % 2:
         raise ValueError("The degree of the symmetric group S_2k should be even")
+    
     half_degree = degree // 2
 
     partition_tuple = tuple(

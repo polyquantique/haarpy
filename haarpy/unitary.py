@@ -69,11 +69,15 @@ def weingarten_unitary(
     """Returns the Weingarten function
 
     Args:
-        cycle (Permutation, tuple(int)) : Permutation from the symmetric group or its cycle-type
-        unitary_dimension (Symbol) : Dimension d of the unitary matrix U
+        cycle (Permutation, tuple(int)): Permutation from the symmetric group or its cycle-type
+        unitary_dimension (Symbol): Dimension d of the unitary matrix U
 
     Returns:
-        Symbol : The Weingarten function
+        Symbol: The Weingarten function
+
+    Raise:
+        TypeError: if unitary_dimension has the wrong type
+        TypeError: if cycle has the wrong type
     """
     if not isinstance(unitary_dimension, (Symbol, int)):
         raise TypeError("unitary_dimension must be an instance of int or sympy.Symbol")
