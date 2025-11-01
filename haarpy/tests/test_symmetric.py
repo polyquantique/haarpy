@@ -16,10 +16,10 @@ Symmetric tests
 """
 
 import pytest
-from math import factorial
+from math import factorial, prod
 from itertools import permutations
-from random import seed
-from sympy.combinatorics import Permutation
+from random import seed, shuffle
+from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 import haarpy as ap
 
@@ -285,12 +285,65 @@ def test_irrep_dimension_murn_naka_rule(partition):
     assert ap.irrep_dimension(partition) == ap.murn_naka_rule(partition, conjugacy_identity)
 
 
-#test permutation.size is same as len(sequence)
-#test permutation(list) == sorted(list)
-#test applying inverse of sorting returns same sequence
+@pytest.mark.parametrize("degree", range(1,8))
+def test_sorting_permutation_len(degree):
+    "Test that the size of the permutation is the size of the sorted sequence"
+    shuffled_sequence = list(range(degree))
+    shuffle(shuffled_sequence)
+    permutation = ap.sorting_permutation(shuffled_sequence)
+    assert permutation.size == len(shuffled_sequence)
 
-#test size is product of symmetricgroup.order or size
-#test stabilizer property, appling all permutation(list) == list for all permutation in Y
+
+@pytest.mark.parametrize("degree", range(1,8))
+def test_sorting_permutation_len(degree):
+    "Test that the sorting permutation properly sorts the shuffled sequence"
+    sorted_sequence = list(range(degree))
+    shuffled_sequence = sorted_sequence.copy()
+    shuffle(shuffled_sequence)
+    permutation = ap.sorting_permutation(shuffled_sequence)
+    assert permutation(shuffled_sequence) == sorted_sequence
+
+
+@pytest.mark.parametrize('degree', range(1,8))
+def test_young_subgroup_order(degree):
+    "Test the order of the Young subgroup"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        young = ap.young_subgroup(partition)
+        assert (
+            young.order()
+            == prod(SymmetricGroup(part).order() for part in partition)
+        )
+
+
+@pytest.mark.parametrize('degree', range(2,8))
+def test_young_subgroup_stabilizer(degree):
+    "Test the stabilizer property of the Young subgroup"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        if partition == degree*(1,):
+            continue
+        sequence = [i for i, j in enumerate(partition) for _ in range(j)]
+        young = ap.young_subgroup(partition)
+        assert young.random()(sequence) == sequence
+
+
+
+@pytest.mark.parametrize(
+    "partition",
+    [
+        {1,2,3},
+        'abc',
+        {1:1, 2:2},
+        (2,2,0),
+        (1,-1,2),
+        (2,2,'a'),
+    ],
+)
+def test_young_subgroup_type_error(partition):
+    "Young subgroup TypeError"
+    with pytest.raises(TypeError):
+        ap.young_subgroup(partition)
 
 
 @pytest.mark.parametrize("degree", range(1, 8))

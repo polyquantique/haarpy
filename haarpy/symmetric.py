@@ -19,7 +19,12 @@ from math import factorial, prod
 from functools import lru_cache
 from typing import Generator
 from fractions import Fraction
-from sympy.combinatorics import Permutation, PermutationGroup, SymmetricGroup, DirectProduct
+from sympy.combinatorics import (
+    Permutation,
+    PermutationGroup,
+    SymmetricGroup,
+    DirectProduct,
+)
 from haarpy import perfect_matchings
 
 
@@ -244,10 +249,10 @@ def sorting_permutation(sequence: tuple[int]) -> Permutation:
     Returns:
         Permutation: the sorting permutation
     """
-    return  Permutation(sorted(range(len(sequence)), key=lambda k: sequence[k]))
+    return Permutation(sorted(range(len(sequence)), key=lambda k: sequence[k]))
 
 
-def young_subgroup(partition: tuple[int]) -> PermutationGroup :
+def young_subgroup(partition: tuple[int]) -> PermutationGroup:
     """Returns the Young subgroup of a given input partition
 
     Args:
@@ -257,13 +262,13 @@ def young_subgroup(partition: tuple[int]) -> PermutationGroup :
         PermutationGroup: the associated Young subgroup
 
     Raise:
-        TypeError: if partition is not a tuple
+        TypeError: if partition is not a tuple or a list
         TypeError: if partition is not made of positive integers
     """
     if not isinstance(partition, (tuple, list)):
         raise TypeError
     if not all(isinstance(part, int) and part > 0 for part in partition):
-        raise TypeError 
+        raise TypeError
     return DirectProduct(*[SymmetricGroup(part) for part in partition])
 
 
