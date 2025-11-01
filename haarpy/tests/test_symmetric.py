@@ -348,6 +348,31 @@ def test_coset_type_partition(half_degree):
         )
 
 
+@pytest.mark.parametrize(
+        "permutation",
+        [
+            [0,1,2],
+            12,
+            'abc',
+            (1,1,1),
+        ]
+)
+def test_coset_type_type_error(permutation):
+    "Test TypeError if input is not a Permutation"
+    with pytest.raises(TypeError):
+        ap.coset_type(permutation)
+
+
+@pytest.mark.parametrize("degree", range(1,11,2))
+def test_coset_type_value_error(degree):
+    "Test ValueError for odd size permutations"
+    with pytest.raises(
+        ValueError,
+        match = "Coset-type are only defined for even sized permutations"
+    ):
+        ap.coset_type(Permutation.random(degree))
+
+
 @pytest.mark.parametrize("half_degree", range(1,8))
 def test_coset_type_coset_representative(half_degree):
     """ Taking all partitions of integer k, finding its coset-type
