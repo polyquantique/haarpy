@@ -235,6 +235,39 @@ def irrep_dimension(partition: tuple[int]) -> int:
 
 
 @lru_cache
+def sorting_permutation(sequence: tuple[int]) -> Permutation:
+    """Returns the sorting permutation of a given sequence
+
+    Args:
+        sequence (tuple[int]): a sequence of unorderd elements
+
+    Returns:
+        Permutation: the sorting permutation
+    """
+    return  Permutation(sorted(range(len(sequence)), key=lambda k: sequence[k]))
+
+
+def young_subgroup(partition: tuple[int]) -> PermutationGroup :
+    """Returns the Young subgroup of a given input partition
+
+    Args:
+        partition (tuple[int]): A partition
+
+    Returns:
+        PermutationGroup: the associated Young subgroup
+
+    Raise:
+        TypeError: if partition is not a tuple
+        TypeError: if partition is not made of positive integers
+    """
+    if not isinstance(partition, (tuple, list)):
+        raise TypeError
+    if not all(isinstance(part, int) and part > 0 for part in partition):
+        raise TypeError 
+    return DirectProduct(*[SymmetricGroup(part) for part in partition])
+
+
+@lru_cache
 def hyperoctahedral(degree: int) -> PermutationGroup:
     """Return the hyperoctahedral group
 
@@ -311,24 +344,3 @@ def coset_type(partition: tuple[int]) -> Permutation:
             permutation_list[2 * partial_sum + p - 1] = 2 * partial_sum + p - 2
 
     return Permutation(permutation_list)
-
-
-@lru_cache
-def sorting_permutation(sequence: tuple[int]) -> Permutation:
-    #see montrealer other haar integral implementations
-    if not isinstance(sequence, (tuple, list)):
-        raise TypeError
-    if not all(isinstance(value, int) and value > 0 for value in sequence):
-        raise TypeError
-    return  Permutation(sorted(range(len(sequence)), key=lambda k: sequence[k]))
-
-
-from sympy.combinatorics.group_constructs import DirectProduct
-def young_subgroup(partition: tuple[int]) -> PermutationGroup :
-    """
-    """
-    if not isinstance(partition, (tuple, list)):
-        raise TypeError
-    if not all(isinstance(part, int) and part > 0 for part in partition):
-        raise TypeError
-    return DirectProduct(*[SymmetricGroup(part) for part in partition])
