@@ -15,12 +15,15 @@
 Symmetric tests
 """
 
+import pytest
 from math import factorial
 from itertools import permutations
-import pytest
+from random import seed
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 import haarpy as ap
+
+seed(137)
 
 
 @pytest.mark.parametrize(
@@ -280,6 +283,14 @@ def test_irrep_dimension_murn_naka_rule(partition):
     "Reconcil irrep_dimension and murn_naka_rule for the identity conjugacy class"
     conjugacy_identity = sum(partition) * (1,)
     assert ap.irrep_dimension(partition) == ap.murn_naka_rule(partition, conjugacy_identity)
+
+
+#test permutation.size is same as len(sequence)
+#test permutation(list) == sorted(list)
+#test applying inverse of sorting returns same sequence
+
+#test size is product of symmetricgroup.order or size
+#test stabilizer property, appling all permutation(list) == list for all permutation in Y
 
 
 @pytest.mark.parametrize("degree", range(1, 8))
