@@ -19,7 +19,7 @@ from math import factorial, prod
 from functools import lru_cache
 from typing import Generator
 from fractions import Fraction
-from sympy.combinatorics import Permutation, PermutationGroup, SymmetricGroup
+from sympy.combinatorics import Permutation, PermutationGroup, SymmetricGroup, DirectProduct
 from haarpy import perfect_matchings
 
 
@@ -313,19 +313,22 @@ def coset_type(partition: tuple[int]) -> Permutation:
     return Permutation(permutation_list)
 
 
-def sorting_permutation() -> Permutation:
+@lru_cache
+def sorting_permutation(sequence: tuple[int]) -> Permutation:
     #see montrealer other haar integral implementations
-    return
+    if not isinstance(sequence, (tuple, list)):
+        raise TypeError
+    if not all(isinstance(value, int) and value > 0 for value in sequence):
+        raise TypeError
+    return  Permutation(sorted(range(len(sequence)), key=lambda k: sequence[k]))
 
 
-def young_subgroup_direct(partition: tuple[int]) -> PermutationGroup :
-    return
-
-
-def young_subgroup_generators(partition: tuple[int]) -> PermutationGroup :
-    generators = ((perm for perm in SymmetricGroup(degree)) for degree in partition)
-    #shifted_generator()
-    return
-
-#try both direct product and permutation group using symmetricgroup generators
-# to acces the generators : tuple(generator for generator in symmetricgroup(degree))
+from sympy.combinatorics.group_constructs import DirectProduct
+def young_subgroup(partition: tuple[int]) -> PermutationGroup :
+    """
+    """
+    if not isinstance(partition, (tuple, list)):
+        raise TypeError
+    if not all(isinstance(part, int) and part > 0 for part in partition):
+        raise TypeError
+    return DirectProduct(*[SymmetricGroup(part) for part in partition])
