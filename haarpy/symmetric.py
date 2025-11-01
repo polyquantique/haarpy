@@ -290,7 +290,7 @@ def stabilizer_coset(
     """
     """
     if sorted(first_sequence) != sorted(second_sequence):
-        return PermutationGroup()
+        return ()
     
     first_sorting = sorting_permutation(first_sequence)
     second_sorting = sorting_permutation(second_sequence)
