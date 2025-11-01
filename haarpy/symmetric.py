@@ -19,7 +19,7 @@ from math import factorial, prod
 from functools import lru_cache
 from typing import Generator
 from fractions import Fraction
-from sympy.combinatorics import Permutation, PermutationGroup
+from sympy.combinatorics import Permutation, PermutationGroup, SymmetricGroup
 from haarpy import perfect_matchings
 
 
@@ -313,7 +313,19 @@ def coset_type(partition: tuple[int]) -> Permutation:
     return Permutation(permutation_list)
 
 
-def young_subgroup(partition: tuple[int]) -> PermutationGroup :
+def sorting_permutation() -> Permutation:
+    #see montrealer other haar integral implementations
     return
+
+
+def young_subgroup_direct(partition: tuple[int]) -> PermutationGroup :
+    return
+
+
+def young_subgroup_generators(partition: tuple[int]) -> PermutationGroup :
+    generators = ((perm for perm in SymmetricGroup(degree)) for degree in partition)
+    #shifted_generator()
+    return
+
 #try both direct product and permutation group using symmetricgroup generators
 # to acces the generators : tuple(generator for generator in symmetricgroup(degree))
