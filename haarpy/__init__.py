@@ -30,8 +30,12 @@ Functions
     weingarten_symplectic
     weingarten_circular_orthogonal
     weingarten_circular_symplectic
+    weingarten_permutation
+    weingarten_centered_permutation
     haar_integral_unitary
     haar_integral_orthogonal
+    haar_integral_permutation
+    haar_integral_centered_permutation
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -41,14 +45,29 @@ Functions
     representation_dimension
     hyperoctahedral
     hyperoctahedral_transversal
-    perfect_matchings
     zonal_spherical_function
     coset_type
     twisted_spherical_function
+    mobius_function
+    set_partitions
+    perfect_matchings
+    partial_order
+    meet_operation
+    join_operation
+    is_crossing_partition
 
 Code details
 ------------
 """
+from .partition import (
+    set_partitions,
+    perfect_matchings,
+    partial_order,
+    meet_operation,
+    join_operation,
+    is_crossing_partition,
+)
+
 from .symmetric import (
     get_conjugacy_class,
     derivative_tableaux,
@@ -58,7 +77,6 @@ from .symmetric import (
     irrep_dimension,
     hyperoctahedral,
     hyperoctahedral_transversal,
-    perfect_matchings,
     coset_type,
 )
 
@@ -84,6 +102,14 @@ from .circular_ensembles import (
     weingarten_circular_symplectic,
 )
 
+from .permutation import (
+    mobius_function,
+    weingarten_permutation,
+    weingarten_centered_permutation,
+    haar_integral_permutation,
+    haar_integral_centered_permutation,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -92,8 +118,12 @@ __all__ = [
     "weingarten_symplectic",
     "weingarten_circular_orthogonal",
     "weingarten_circular_symplectic",
+    "weingarten_permutation",
+    "weingarten_centered_permutation",
     "haar_integral_unitary",
     "haar_integral_orthogonal",
+    "haar_integral_permutation",
+    "haar_integral_centered_permutation",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",
@@ -103,10 +133,16 @@ __all__ = [
     "representation_dimension",
     "hyperoctahedral",
     "hyperoctahedral_transversal",
-    "perfect_matchings",
     "zonal_spherical_function",
     "coset_type",
     "twisted_spherical_function",
+    "mobius_function",
+    "set_partitions",
+    "perfect_matchings",
+    "partial_order",
+    "meet_operation",
+    "join_operation",
+    "is_crossing_partition",
 ]
 
 

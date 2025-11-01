@@ -20,6 +20,7 @@ from functools import lru_cache
 from typing import Generator
 from fractions import Fraction
 from sympy.combinatorics import Permutation, PermutationGroup
+from haarpy import perfect_matchings
 
 
 @lru_cache
@@ -47,7 +48,9 @@ def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
             "The degree you have provided is too low. It must be an integer greater than 0."
         )
     if not isinstance(perm, Permutation):
-        raise TypeError("Permutation must be of type sympy.combinatorics.permutations.Permutation")
+        raise TypeError(
+            "Permutation must be of type sympy.combinatorics.permutations.Permutation"
+        )
 
     if perm.size > degree:
         raise ValueError("Incompatible degree and permutation cycle")
@@ -93,7 +96,8 @@ def derivative_tableaux(
         if not current_row_length:
             if tableau[index][0] <= increment:
                 yield tuple(
-                    row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau)
+                    row if i != index + 1 else row + (increment,)
+                    for i, row in enumerate(tableau)
                 )
             return
         if (
@@ -101,7 +105,8 @@ def derivative_tableaux(
             and tableau[index][current_row_length] <= increment
         ):
             yield tuple(
-                row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau)
+                row if i != index + 1 else row + (increment,)
+                for i, row in enumerate(tableau)
             )
 
 
@@ -131,7 +136,9 @@ def semi_standard_young_tableaux(
 
 
 @lru_cache
-def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int]) -> bool:
+def proper_border_strip(
+    tableau: tuple[tuple[int]], conjugacy_class: tuple[int]
+) -> bool:
     """Returns True if input Young tableau is a valid border-strip tableau
 
     Args:
@@ -162,7 +169,12 @@ def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int])
     # 2x2 square condition
     for i in range(1, len(tableau)):
         for j in range(1, len(tableau[i])):
-            if tableau[i][j] == tableau[i][j - 1] == tableau[i - 1][j] == tableau[i - 1][j - 1]:
+            if (
+                tableau[i][j]
+                == tableau[i][j - 1]
+                == tableau[i - 1][j]
+                == tableau[i - 1][j - 1]
+            ):
                 return False
 
     return True
@@ -184,12 +196,15 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
         return 0
 
     tableaux = semi_standard_young_tableaux(partition, conjugacy_class)
-    tableaux = (tableau for tableau in tableaux if proper_border_strip(tableau, conjugacy_class))
+    tableaux = (
+        tableau for tableau in tableaux if proper_border_strip(tableau, conjugacy_class)
+    )
 
     tableaux_set = ((set(row) for row in tableau) for tableau in tableaux)
     heights = (tuple(i for row in tableau for i in row) for tableau in tableaux_set)
     heights = (
-        sum(height.count(unit) - 1 for unit in range(len(conjugacy_class))) for height in heights
+        sum(height.count(unit) - 1 for unit in range(len(conjugacy_class)))
+        for height in heights
     )
 
     character = sum((-1) ** height for height in heights)
@@ -211,7 +226,9 @@ def irrep_dimension(partition: tuple[int]) -> int:
         for i, part_i in enumerate(partition)
         for j, part_j in enumerate(partition[i + 1 :])
     )
-    denominator = prod(factorial(part + len(partition) - i - 1) for i, part in enumerate(partition))
+    denominator = prod(
+        factorial(part + len(partition) - i - 1) for i, part in enumerate(partition)
+    )
     dimension = Fraction(numerator, denominator) * factorial(sum(partition))
 
     return dimension.numerator
@@ -241,28 +258,6 @@ def hyperoctahedral(degree: int) -> PermutationGroup:
         for j in range(i + 1, degree)
     )
     return PermutationGroup(transpositions + double_transpositions)
-
-
-def perfect_matchings(seed: tuple[int]) -> Generator[tuple[tuple[int]], None, None]:
-    """Returns the partitions of a tuple in terms of perfect matchings.
-
-    Args:
-        seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
-            Note that it must hold that ``len(s) >= 2``.
-
-    Returns:
-        generator: a generators that goes through all the single-double
-        partitions of the tuple
-    """
-    if len(seed) == 2:
-        yield (seed,)
-
-    for idx1 in range(1, len(seed)):
-        item_partition = (seed[0], seed[idx1])
-        rest = seed[1:idx1] + seed[idx1 + 1 :]
-        rest_partitions = perfect_matchings(rest)
-        for p in rest_partitions:
-            yield ((item_partition),) + p
 
 
 def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
