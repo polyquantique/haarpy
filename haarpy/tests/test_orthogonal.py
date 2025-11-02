@@ -230,7 +230,7 @@ def test_zonal_spherical_type_error(permutation, partition):
         (Permutation(7), (d+3)*(d**2+6*d+1), d*(d-1)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
     ]
 )
-def test_weingarten_orthogonal_litterature(permutation, num, denum):
+def test_weingarten_orthogonal_literature(permutation, num, denum):
     """Symbolic validation of orthogonal Weingarten function against results shown in
     `Collins et al. Integration with Respect to the Haar Measure on Unitary, Orthogonal
     and Symplectic Group: <https://link.springer.com/article/10.1007/s00220-006-1554-3>`_
