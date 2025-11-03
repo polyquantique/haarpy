@@ -20,7 +20,7 @@ from functools import lru_cache
 from typing import Generator
 from fractions import Fraction
 from sympy.combinatorics import Permutation, PermutationGroup
-from haarpy import perfect_matchings
+from haarpy import perfect_matchings, join_operation
 
 
 @lru_cache
@@ -283,10 +283,50 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
 
 @lru_cache
-def coset_type(partition: tuple[int]) -> Permutation:
-    """Returns the permutation of S_2k associated with the input coset-type (partition of k)
-    as seen in Matsumoto's "Weingarten calculus for matrix ensembles associated with
-    compact symmetric spaces"
+def coset_type(permutation: Permutation) -> tuple[int]:
+    """Returns the coset-type of a given permutation of S_2k as seen
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with
+    compact symmetric spaces <https://arxiv.org/pdf/1301.5401>`_
+
+    Args:
+        permutation (Permutation): A permutation of the symmetric group S_2k
+
+    Returns:
+        tuple[int]: The associated coset-type as a partition of k
+
+    Raise:
+        TypeError: If partition is not a Permutation
+        ValueError: If the symmetric group is of odd degree
+    """
+    if not isinstance(permutation, Permutation):
+        raise TypeError
+
+    degree = permutation.size
+    if degree % 2:
+        raise ValueError("Coset-type are only defined for even sized permutations")
+
+    array_form = permutation.array_form
+    base_partition = tuple((2 * i, 2 * i + 1) for i in range(degree // 2))
+    matching_partition = tuple(
+        (array_form[2 * i], array_form[2 * i + 1]) for i in range(degree // 2)
+    )
+    return tuple(
+        sorted(
+            (
+                len(block) // 2
+                for block in join_operation(base_partition, matching_partition)
+            ),
+            reverse=True,
+        )
+    )
+
+
+@lru_cache
+def coset_type_representative(partition: tuple[int]) -> Permutation:
+    """Returns a representative permutation of S_2k for a given
+    input coset-type (partition of k) as seen
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with
+    compact symmetric spaces <https://arxiv.org/pdf/1301.5401>`_
 
     Args:
         partition (tuple[int]): The coset-type (partition of k)

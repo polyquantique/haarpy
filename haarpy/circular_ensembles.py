@@ -17,23 +17,26 @@ Circular ensembles Python interface
 
 from fractions import Fraction
 from functools import lru_cache
-from sympy import Symbol
-from sympy.combinatorics import Permutation
-from haarpy import weingarten_orthogonal, weingarten_symplectic
+from typing import Union
+from collections import Counter
+from sympy import Symbol, Expr, fraction, factor, simplify
+from sympy.combinatorics import Permutation, SymmetricGroup
+from haarpy import weingarten_orthogonal, weingarten_symplectic, coset_type
 
 
 @lru_cache
 def weingarten_circular_orthogonal(
-    permutation: Permutation, coe_dimension: Symbol
-) -> Symbol:
+    permutation: Union[Permutation, tuple[int]],
+    coe_dimension: Symbol,
+) -> Expr:
     """Returns the circular orthogonal ensembles Weingarten functions
 
     Args:
-        permutation (Permutation): A permutation of the symmetric group S_2k
+        permutation (Permutation): A permutation of S_2k or its coset-type
         coe_dimension (int): The dimension of the COE
 
     Returns:
-        Symbol : The Weingarten function
+        Expr: The Weingarten function
     """
     return weingarten_orthogonal(permutation, coe_dimension + 1)
 
@@ -41,7 +44,7 @@ def weingarten_circular_orthogonal(
 @lru_cache
 def weingarten_circular_symplectic(
     permutation: Permutation, cse_dimension: Symbol
-) -> Symbol:
+) -> Expr:
     """Returns the circular symplectic ensembles Weingarten functions
 
     Args:
@@ -49,11 +52,63 @@ def weingarten_circular_symplectic(
         cse_dimension (int): The dimension of the CSE
 
     Returns:
-        Symbol : The Weingarten function
+        Expr: The Weingarten function
     """
     symplectic_dimension = (
         (2 * cse_dimension - 1) / 2
-        if isinstance(cse_dimension, Symbol)
+        if isinstance(cse_dimension, Expr)
         else Fraction(2 * cse_dimension - 1, 2)
     )
     return weingarten_symplectic(permutation, symplectic_dimension)
+
+
+@lru_cache
+def haar_integral_circular_orthogonal(
+    sequences: tuple[tuple[int]], group_dimension: Symbol
+) -> Expr:
+    """Returns integral over circular orthogonal ensemble polynomial
+    sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple[tuple[int]]) : Indices of matrix elements
+        group_dimension (Symbol) : Dimension of the orthogonal group
+
+    Returns:
+        Expr : Integral under the Haar measure
+
+    Raise:
+        ValueError : If sequences doesn't contain 2 tuples
+        ValueError : If tuples i and j are of odd size
+    """
+    if len(sequences) != 2:
+        raise ValueError("Wrong tuple format")
+
+    seq_i, seq_j = sequences
+    degree = len(seq_i)
+
+    if degree % 2 or len(seq_j) % 2:
+        raise ValueError("Wrong tuple format")
+
+    if len(seq_j) != degree:
+        return 0
+
+    if sorted(seq_i) != sorted(seq_j):
+        return 0
+
+    seq_j = list(seq_j)
+    coset_mapping = Counter(
+        coset_type(permutation)
+        for permutation in SymmetricGroup(degree).generate()
+        if permutation(seq_i) == seq_j
+    )
+
+    integral = sum(
+        count * weingarten_circular_orthogonal(coset, group_dimension)
+        for coset, count in coset_mapping.items()
+    )
+
+    if isinstance(group_dimension, Expr):
+        numerator, denominator = fraction(simplify(integral))
+        integral = factor(numerator) / factor(denominator)
+
+    return integral

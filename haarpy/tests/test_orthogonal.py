@@ -230,12 +230,67 @@ def test_zonal_spherical_type_error(permutation, partition):
         (Permutation(7), (d+3)*(d**2+6*d+1), d*(d-1)*(d-3)*(d+1)*(d+2)*(d+4)*(d+6)),
     ]
 )
-def test_weingarten_orthogonal(permutation, num, denum):
+def test_weingarten_orthogonal_literature(permutation, num, denum):
     """Symbolic validation of orthogonal Weingarten function against results shown in
     `Collins et al. Integration with Respect to the Haar Measure on Unitary, Orthogonal
     and Symplectic Group: <https://link.springer.com/article/10.1007/s00220-006-1554-3>`_
     """
     assert ap.weingarten_orthogonal(permutation, d) == num/denum
+
+
+@pytest.mark.parametrize("degree", range(2,10,2))
+def test_weingarten_orthogonal_coset_type(degree):
+    "Test that the orthogonal function works for both a permutation or its coset-type"
+    sample_size = 10 if degree > 2 else 5
+    permutation_sample = (
+        Permutation.random(degree) for _ in range(sample_size)
+    )
+    for permutation in permutation_sample:
+        assert (
+            ap.weingarten_orthogonal(permutation, d)
+            == ap.weingarten_orthogonal(ap.coset_type(permutation), d)
+        )
+
+
+@pytest.mark.parametrize(
+    "coset_type, dimension",
+    [
+        ((3, 2), 1.0),
+        ((3, 1, 1), 'a'),
+        ((2, 2, 1), (1, 0)),
+        ((3, 3), (8,)),
+    ],
+)
+def test_weingarten_orthogonal_class_dimension_type_error(coset_type, dimension):
+    with pytest.raises(
+        TypeError,
+        match=".*orthogonal_dimension must be an instance of int or sympy.Symbol*",
+    ):
+        ap.weingarten_orthogonal(coset_type, dimension)
+
+
+@pytest.mark.parametrize(
+    "coset",
+    [
+        (1,2,"a"),
+        (3, (1,2), 4),
+        "abc",
+    ]
+)
+def test_weingarten_orthogonal_coset_type_error(coset):
+    "Test the type error for wrong permutation input"
+    with pytest.raises(TypeError):
+        ap.weingarten_orthogonal(coset, d)
+
+
+@pytest.mark.parametrize("degree", range(1,10,2))
+def test_weingarten_orthogonal_degree_value_error(degree):
+    "Test value error for odd size permutations"
+    with pytest.raises(
+        ValueError,
+        match="The degree of the symmetric group S_2k should be even",
+    ):
+        ap.weingarten_orthogonal(Permutation.random(degree), d)
 
 
 @pytest.mark.parametrize(
@@ -331,7 +386,7 @@ def test_haar_integral_orthogonal_column_numeric(power_tuple):
         "dimension, half_power",
         product(range(2,5), range(1,4))
 )
-def test_haar_integral_trace(dimension, half_power):
+def test_haar_integral_orthogonal_trace(dimension, half_power):
     "Test based on the integral of the power of the trace"
     for half_power in range(1,min(dimension+1, 4)):
         integral = sum(
@@ -355,7 +410,7 @@ def test_haar_integral_trace(dimension, half_power):
         ((1,2,3),(3,4,5,6)),
     ]
 )
-def test_haar_integral_value_error(sequences):
+def test_haar_integral_orthogonal_value_error(sequences):
     "Test haar integral value error"
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_orthogonal(sequences, d)
