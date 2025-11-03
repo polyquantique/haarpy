@@ -21,14 +21,14 @@ from typing import Union
 from itertools import product
 from collections import Counter
 from fractions import Fraction
-from sympy import Symbol, fraction, simplify, factor
+from sympy import Symbol, Expr, fraction, simplify, factor
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 from haarpy import get_conjugacy_class, murn_naka_rule, irrep_dimension
 
 
 @lru_cache
-def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> int:
+def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> Expr:
     """Returns the dimension of the unitary group U(d) labelled by the input partition
 
     Args:
@@ -36,7 +36,7 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
         unitary_dimension (Symbol) : dimension d of the unitary matrix U
 
     Returns:
-        Symbol : The dimension of the representation of U(d) labeled by the partition
+        Expr : The dimension of the representation of U(d) labeled by the partition
     """
     conjugate_partition = tuple(
         sum(1 for part in partition if i < part) for i in range(partition[0])
@@ -65,18 +65,22 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
 @lru_cache
 def weingarten_unitary(
     cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol
-) -> Symbol:
+) -> Expr:
     """Returns the Weingarten function
 
     Args:
-        cycle (Permutation, tuple(int)) : Permutation from the symmetric group or its cycle-type
-        unitary_dimension (Symbol) : Dimension d of the unitary matrix U
+        cycle (Permutation, tuple[int]): Permutation from the symmetric group or its cycle-type
+        unitary_dimension (Symbol): Dimension d of the unitary matrix U
 
     Returns:
-        Symbol : The Weingarten function
+        Expr: The Weingarten function
+
+    Raise:
+        TypeError: if unitary_dimension has the wrong type
+        TypeError: if cycle has the wrong type
     """
-    if not isinstance(unitary_dimension, (Symbol, int)):
-        raise TypeError("unitary_dimension must be an instance of int or sympy.Symbol")
+    if not isinstance(unitary_dimension, (Expr, int)):
+        raise TypeError("unitary_dimension must be an instance of int or sympy.Expr")
 
     if isinstance(cycle, Permutation):
         degree = cycle.size
@@ -124,19 +128,19 @@ def weingarten_unitary(
 @lru_cache
 def haar_integral_unitary(
     sequences: tuple[tuple[int]], unitary_dimension: Symbol
-) -> Symbol:
+) -> Expr:
     """Returns integral over unitary group polynomial sampled at random from the Haar measure
 
     Args:
-        sequences (tuple(tuple(int))) : Indices of matrix elements
-        unitary_dimension (Symbol) : Dimension of the unitary group
+        sequences (tuple[tuple[int]]): Indices of matrix elements
+        unitary_dimension (Symbol): Dimension of the unitary group
 
     Returns:
-        Symbol : Integral under the Haar measure
+        Expr: Integral under the Haar measure
 
     Raise:
-        ValueError : If sequences doesn't contain 4 tuples
-        ValueError : If tuples i and j are of different length
+        ValueError: If sequences doesn't contain 4 tuples
+        ValueError: If tuples i and j are of different length
     """
     if len(sequences) != 4:
         raise ValueError("Wrong tuple format")
@@ -164,18 +168,17 @@ def haar_integral_unitary(
         if perm(seq_j_prime) == seq_j
     )
 
-    class_mapping = dict(
-        Counter(
-            get_conjugacy_class(cycle_i * ~cycle_j, degree)
-            for cycle_i, cycle_j in product(permutation_i, permutation_j)
-        )
+    class_mapping = Counter(
+        get_conjugacy_class(cycle_i * ~cycle_j, degree)
+        for cycle_i, cycle_j in product(permutation_i, permutation_j)
     )
+
     integral = sum(
         count * weingarten_unitary(conjugacy, unitary_dimension)
         for conjugacy, count in class_mapping.items()
     )
 
-    if isinstance(unitary_dimension, Symbol):
+    if isinstance(unitary_dimension, Expr):
         numerator, denominator = fraction(simplify(integral))
         integral = factor(numerator) / factor(denominator)
 

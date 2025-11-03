@@ -396,6 +396,58 @@ def test_hyperoctahedral_transversal_value_error(degree):
         ap.hyperoctahedral_transversal(degree)
 
 
+@pytest.mark.parametrize("half_degree", range(1,10))
+def test_coset_type_partition(half_degree):
+    "Test that all coset-types of S_2k are partitions of k"
+    sample_size = 100 if half_degree > 2 else 4
+    permutation_sample = (
+        Permutation.random(2*half_degree) for _ in range(sample_size)
+    )
+    for permutation in permutation_sample:
+        assert (
+            sum(ap.coset_type(permutation)) == half_degree
+        )
+
+
+@pytest.mark.parametrize(
+        "permutation",
+        [
+            [0,1,2],
+            12,
+            'abc',
+            (1,1,1),
+        ]
+)
+def test_coset_type_type_error(permutation):
+    "Test TypeError if input is not a Permutation"
+    with pytest.raises(TypeError):
+        ap.coset_type(permutation)
+
+
+@pytest.mark.parametrize("degree", range(1,11,2))
+def test_coset_type_value_error(degree):
+    "Test ValueError for odd size permutations"
+    with pytest.raises(
+        ValueError,
+        match = "Coset-type are only defined for even sized permutations"
+    ):
+        ap.coset_type(Permutation.random(degree))
+
+
+@pytest.mark.parametrize("half_degree", range(1,8))
+def test_coset_type_coset_representative(half_degree):
+    """ Taking all partitions of integer k, finding its coset-type
+    representative and then finding the coset-type of this permutation
+    should yield the initial partition
+    """
+    for partition in partitions(half_degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        assert (
+            ap.coset_type(ap.coset_type_representative(partition))
+            == partition
+        )
+
+
 @pytest.mark.parametrize(
         "partition",
         [
@@ -404,39 +456,39 @@ def test_hyperoctahedral_transversal_value_error(degree):
             (13),
         ]
 )
-def test_coset_type_type_error(partition):
+def test_coset_type_representative_type_error(partition):
     "Test TypeError for invalid permutation and partition"
     with pytest.raises(TypeError):
-        ap.coset_type(partition)
+        ap.coset_type_representative(partition)
 
 
 @pytest.mark.parametrize("half_degree", range(2,7))
-def test_coset_type_in_transversal(half_degree):
-    """assert that all coset-type permutations of integer partition are in M_2k as seen in 
+def test_coset_type_representative_in_transversal(half_degree):
+    """assert that all coset-type representative permutations of integer partition are in M_2k as seen in 
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
     <https://arxiv.org/abs/1301.5401>`_
     """
     transversal = tuple(ap.hyperoctahedral_transversal(2*half_degree))
     for partition in partitions(half_degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        assert ap.coset_type(partition) in transversal
+        assert ap.coset_type_representative(partition) in transversal
 
 
 @pytest.mark.parametrize("half_degree", range(2,7))
-def test_coset_type_signature(half_degree):
+def test_coset_type_representative_signature(half_degree):
     """assert that all coset-type permutations of integer partition have signature of 1 as seen in 
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
     <https://arxiv.org/abs/1301.5401>`_
     """
     for partition in partitions(half_degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        assert ap.coset_type(partition).signature() == 1
+        assert ap.coset_type_representative(partition).signature() == 1
 
 
 @pytest.mark.parametrize("half_degree", range(2,10))
-def test_coset_type_identity(half_degree):
+def test_coset_type_representative_identity(half_degree):
     """ asert that the coset-type permutation of the identity partition is the identity permutation
     as seen in `Matsumoto. Weingarten calculus for matrix ensembles associated with compact 
     symmetric spaces: <https://arxiv.org/abs/1301.5401>`_
     """
-    assert ap.coset_type(half_degree * (1,)) == Permutation(2*half_degree - 1)
+    assert ap.coset_type_representative(half_degree * (1,)) == Permutation(2*half_degree - 1)

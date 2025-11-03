@@ -161,9 +161,10 @@ def test_weingarten_reconciliation_symbolic(cycle):
     ],
 )
 def test_weingarten_unitary_class_dimension_type_error(partition, dimension):
+    "Test type error for for wrong unitary dimension input"
     with pytest.raises(
         TypeError,
-        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+        match=".*unitary_dimension must be an instance of int or sympy.Expr*",
     ):
         ap.weingarten_unitary(partition, dimension)
 
@@ -181,7 +182,7 @@ def test_weingarten_unitary_element_dimension_type_error(cycle, dimension):
     "Test type error for for wrong unitary dimension input"
     with pytest.raises(
         TypeError,
-        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+        match=".*unitary_dimension must be an instance of int or sympy.Expr*",
     ):
         ap.weingarten_unitary(cycle, dimension)
 
