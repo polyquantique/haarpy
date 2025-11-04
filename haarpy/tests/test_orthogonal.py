@@ -151,7 +151,6 @@ def test_zonal_spherical_orthogonality_symmetric_zero(permutation, partition1, p
 )
 def test_zonal_spherical_orthogonality_symmetric_none_zero(permutation, partition):
     """Orthogonality relation for the zonal spherical function.
-    All test should be 0 since partitions are distinct.
     `Matsumoto. General moments of matrix elements from circular orthogonal ensembles:
     <https://arxiv.org/abs/1109.2409>`_
     """
