@@ -419,23 +419,50 @@ def test_stabilizer_coset_size(degree):
             order
             == prod(SymmetricGroup(part).order() for part in partition)
         )
-        
+    
+
+@pytest.mark.parametrize("degree", range(2,8))
+def test_stabilizer_coset_permutation(degree):
+    "Test the set of permutations"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq2 = seq1.copy()
+        shuffle(seq1)
+        shuffle(seq2)
+        assert all(
+            perm(seq1) == seq2
+            for perm in ap.stabilizer_coset(tuple(seq1), tuple(seq2))
+        )
 
 
+@pytest.mark.parametrize("degree", range(2,6))
+def test_stabilizer_coset_brute_force(degree):
+    "Test the set of permutations against brute force"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq2 = seq1.copy()
+        shuffle(seq1)
+        shuffle(seq2)
+        stabilizer = tuple(ap.stabilizer_coset(tuple(seq1), tuple(seq2)))
+        assert all(perm in stabilizer
+            for perm in SymmetricGroup(degree).generate()
+            if perm(seq1) == seq2
+        )       
 
 
-
-
-
-
-
-
-
-
-        
-# test perm(seq1) == perm(seq2) for all in Y
-# test for same and diff tuple
-# assert that if a permutation of Sk stabilizes something, it is in tuple(stabilizer_coset)
+@pytest.mark.parametrize("degree", range(2,8))
+def test_stabilizer_coset_single(degree):
+    "Test the set of permutations for single input"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        shuffle(seq1)
+        assert all(
+            perm(seq1) == seq1
+            for perm in ap.stabilizer_coset(tuple(seq1))
+        )
 # test type error
 
 @pytest.mark.parametrize("degree", range(1, 8))

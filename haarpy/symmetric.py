@@ -296,7 +296,7 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
         TypeError: if the sequence argument contains more than two sequences
     """
     if len(sequence) == 1:
-        sequence = (sequence[0] for _ in range(2))
+        sequence = tuple(sequence[0] for _ in range(2))
     elif len(sequence) == 2:
         if sorted(sequence[0]) != sorted(sequence[1]):
             return ()
