@@ -342,7 +342,7 @@ def test_sorting_permutation_type_error(degree):
         ((0,0,0,0), (0,0,0)),
     ]
 )
-def test_sorting_permutation_type_error(seq1, seq2):
+def test_sorting_permutation_value_error(seq1, seq2):
     "Value error for different inputs"
     with pytest.raises(
         ValueError,
@@ -463,7 +463,17 @@ def test_stabilizer_coset_single(degree):
             perm(seq1) == seq1
             for perm in ap.stabilizer_coset(tuple(seq1))
         )
-# test type error
+
+
+@pytest.mark.parametrize("degree", range(3,8))
+def test_stabilizer_coset_type_error(degree):
+    "Type error for more than 2 inputs"
+    sequence = tuple(range(degree))
+    with pytest.raises(TypeError):
+        ap.stabilizer_coset(
+            *[tuple(sequence) for _ in range(degree)]
+        )
+
 
 @pytest.mark.parametrize("degree", range(1, 8))
 def test_hyperoctahedral_order(degree):

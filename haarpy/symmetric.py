@@ -254,13 +254,15 @@ def sorting_permutation(*sequence: tuple[int]) -> Permutation:
         TypeError: if more than two sequences are passed as arguments
     """
     if len(sequence) == 1:
-        return Permutation(sorted(range(len(sequence[0])), key=lambda k: sequence[0][k]))
-    elif len(sequence) == 2:
+        return Permutation(
+            sorted(range(len(sequence[0])), key=lambda k: sequence[0][k])
+        )
+    if len(sequence) == 2:
         if sorted(sequence[0]) != sorted(sequence[1]):
-            raise ValueError('Incompatible sequences')
+            raise ValueError("Incompatible sequences")
         return ~sorting_permutation(sequence[1]) * sorting_permutation(sequence[0])
-    else:
-        raise TypeError
+
+    raise TypeError
 
 
 def young_subgroup(partition: tuple[int]) -> PermutationGroup:
@@ -302,12 +304,12 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
             return ()
     else:
         raise TypeError
-    
+
     young_partition = tuple(sequence[0].count(i) for i in sorted(set(sequence[0])))
 
     return (
         ~sorting_permutation(sequence[1])
-        * permutation 
+        * permutation
         * sorting_permutation(sequence[0])
         for permutation in young_subgroup(young_partition).generate()
     )
