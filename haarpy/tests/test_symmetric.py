@@ -286,22 +286,69 @@ def test_irrep_dimension_murn_naka_rule(partition):
 
 
 @pytest.mark.parametrize("degree", range(1,8))
-def test_sorting_permutation_len(degree):
+def test_sorting_permutation_single_len(degree):
     "Test that the size of the permutation is the size of the sorted sequence"
+    sample_size = 10
     shuffled_sequence = list(range(degree))
-    shuffle(shuffled_sequence)
-    permutation = ap.sorting_permutation(shuffled_sequence)
-    assert permutation.size == len(shuffled_sequence)
+    for _ in range(sample_size):
+        shuffle(shuffled_sequence)
+        permutation = ap.sorting_permutation(tuple(shuffled_sequence))
+        assert permutation.size == len(shuffled_sequence)
 
 
 @pytest.mark.parametrize("degree", range(1,8))
-def test_sorting_permutation_len(degree):
+def test_sorting_permutation_single_shuffle(degree):
     "Test that the sorting permutation properly sorts the shuffled sequence"
+    sample_size = 10
     sorted_sequence = list(range(degree))
-    shuffled_sequence = sorted_sequence.copy()
-    shuffle(shuffled_sequence)
-    permutation = ap.sorting_permutation(shuffled_sequence)
-    assert permutation(shuffled_sequence) == sorted_sequence
+    for _ in range(sample_size):
+        shuffled_sequence = sorted_sequence.copy()
+        shuffle(shuffled_sequence)
+        permutation = ap.sorting_permutation(tuple(shuffled_sequence))
+        assert permutation(shuffled_sequence) == sorted_sequence
+
+
+@pytest.mark.parametrize("degree", range(1,8))
+def test_sorting_permutation_double_shuffle(degree):
+    "Test that the sorting permutation properly sorts the shuffled sequence"
+    sample_size = 10
+    sorted_sequence = list(range(degree))
+    for _ in range(sample_size):
+        first_sequence = sorted_sequence.copy()
+        second_sequence = sorted_sequence.copy()
+        shuffle(first_sequence)
+        shuffle(second_sequence)
+        permutation = ap.sorting_permutation(
+            tuple(first_sequence),
+            tuple(second_sequence),
+        )
+        assert permutation(first_sequence) == second_sequence
+
+
+@pytest.mark.parametrize("degree", range(3,8))
+def test_sorting_permutation_type_error(degree):
+    "Type error for more than 2 inputs"
+    sequence = tuple(range(degree))
+    with pytest.raises(TypeError):
+        ap.sorting_permutation(
+            *[tuple(sequence) for _ in range(degree)]
+        )
+
+
+@pytest.mark.parametrize(
+    "seq1, seq2",
+    [
+        ((1,2,3),(0,1,2)),
+        ((0,0,0,0), (0,0,0)),
+    ]
+)
+def test_sorting_permutation_type_error(seq1, seq2):
+    "Value error for different inputs"
+    with pytest.raises(
+        ValueError,
+        match = "Incompatible sequences"
+    ):
+        ap.sorting_permutation(seq1, seq2)
 
 
 @pytest.mark.parametrize('degree', range(1,8))
@@ -328,7 +375,6 @@ def test_young_subgroup_stabilizer(degree):
         assert young.random()(sequence) == sequence
 
 
-
 @pytest.mark.parametrize(
     "partition",
     [
@@ -345,6 +391,10 @@ def test_young_subgroup_type_error(partition):
     with pytest.raises(TypeError):
         ap.young_subgroup(partition)
 
+
+# test size of stabilizer
+# test perm(seq1) == perm(seq2) for all in Y
+# test for same and diff tuple
 
 @pytest.mark.parametrize("degree", range(1, 8))
 def test_hyperoctahedral_order(degree):

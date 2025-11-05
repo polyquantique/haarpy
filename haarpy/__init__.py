@@ -46,6 +46,7 @@ Functions
     representation_dimension
     sorting_permutation
     young_subgroup
+    stabilizer_coset
     hyperoctahedral
     hyperoctahedral_transversal
     zonal_spherical_function
@@ -81,6 +82,7 @@ from .symmetric import (
     irrep_dimension,
     sorting_permutation,
     young_subgroup,
+    stabilizer_coset,
     hyperoctahedral,
     hyperoctahedral_transversal,
     coset_type,
@@ -142,6 +144,7 @@ __all__ = [
     "representation_dimension",
     "sorting_permutation",
     "young_subgroup",
+    "stabilizer_coset",
     "hyperoctahedral",
     "hyperoctahedral_transversal",
     "zonal_spherical_function",

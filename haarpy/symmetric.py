@@ -240,7 +240,7 @@ def irrep_dimension(partition: tuple[int]) -> int:
 
 
 @lru_cache
-def sorting_permutation(sequence: tuple[int]) -> Permutation:
+def sorting_permutation(*sequence: tuple[int]) -> Permutation:
     """Returns the sorting permutation of a given sequence
 
     Args:
@@ -248,8 +248,19 @@ def sorting_permutation(sequence: tuple[int]) -> Permutation:
 
     Returns:
         Permutation: the sorting permutation
+
+    Raise:
+        ValueError: for incompatible sequence inputs
+        TypeError: if more than two sequences are passed as arguments
     """
-    return Permutation(sorted(range(len(sequence)), key=lambda k: sequence[k]))
+    if len(sequence) == 1:
+        return Permutation(sorted(range(len(sequence[0])), key=lambda k: sequence[0][k]))
+    elif len(sequence) == 2:
+        if sorted(sequence[0]) != sorted(sequence[1]):
+            raise ValueError('Incompatible sequences')
+        return ~sorting_permutation(sequence[1]) * sorting_permutation(sequence[0])
+    else:
+        raise TypeError
 
 
 def young_subgroup(partition: tuple[int]) -> PermutationGroup:
@@ -272,13 +283,29 @@ def young_subgroup(partition: tuple[int]) -> PermutationGroup:
     return DirectProduct(*[SymmetricGroup(part) for part in partition])
 
 
-def stabilizer_group(sequence: tuple) -> PermutationGroup:
+def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
     """
     """
-    sorting = sorting_permutation(sequence)
-    young_partition = tuple(sequence.count(i) for i in sorted(set(sequence)))
-    young = young_subgroup(young_partition)
-    return PermutationGroup(*[sorting * g * ~sorting for g in young.generators])
+    if len(sequence) == 1:
+        sequence = (sequence[0] for _ in range(2))
+    elif len(sequence) == 2:
+        if sorted(sequence[0]) != sorted(sequence[1]):
+            return ()
+    else:
+        raise TypeError
+    
+    young_partition = tuple(sequence[0].count(i) for i in sorted(set(sequence[0])))
+
+    return (
+        ~sorting_permutation(sequence[1])
+        * permutation 
+        * sorting_permutation(sequence[0])
+        for permutation in young_subgroup(young_partition).generate()
+    )
+    #sorting = sorting_permutation(sequence)
+    #young_partition = tuple(sequence.count(i) for i in sorted(set(sequence)))
+    #young = young_subgroup(young_partition)
+    #return PermutationGroup(*[sorting * g * ~sorting for g in young.generators])
     #assert size is the same as youngsubgroup
     #assert it stabilizes anything (shuffled partition)
 

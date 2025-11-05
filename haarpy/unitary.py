@@ -24,7 +24,7 @@ from fractions import Fraction
 from sympy import Symbol, Expr, fraction, simplify, factor
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class, murn_naka_rule, irrep_dimension
+from haarpy import get_conjugacy_class, murn_naka_rule, irrep_dimension, sorting_permutation, young_subgroup
 
 
 @lru_cache
