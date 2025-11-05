@@ -33,7 +33,6 @@ Functions
     weingarten_permutation
     weingarten_centered_permutation
     haar_integral_unitary
-    haar_integral_unitary_new
     haar_integral_orthogonal
     haar_integral_circular_orthogonal
     haar_integral_permutation
@@ -94,7 +93,6 @@ from .unitary import (
     representation_dimension,
     weingarten_unitary,
     haar_integral_unitary,
-    haar_integral_unitary_new,
 )
 
 from .orthogonal import (
@@ -133,7 +131,6 @@ __all__ = [
     "weingarten_permutation",
     "weingarten_centered_permutation",
     "haar_integral_unitary",
-    "haar_integral_unitary_new",
     "haar_integral_orthogonal",
     "haar_integral_circular_orthogonal",
     "haar_integral_permutation",
