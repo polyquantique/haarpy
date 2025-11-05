@@ -22,9 +22,14 @@ from itertools import product
 from collections import Counter
 from fractions import Fraction
 from sympy import Symbol, Expr, fraction, simplify, factor
-from sympy.combinatorics import Permutation, SymmetricGroup
+from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class, murn_naka_rule, irrep_dimension, stabilizer_coset
+from haarpy import (
+    get_conjugacy_class,
+    murn_naka_rule,
+    irrep_dimension,
+    stabilizer_coset,
+)
 
 
 @lru_cache
@@ -154,8 +159,7 @@ def haar_integral_unitary(
 
     class_mapping = Counter(
         get_conjugacy_class(cycle_i * ~cycle_j, degree)
-        for cycle_i, cycle_j 
-        in product(
+        for cycle_i, cycle_j in product(
             stabilizer_coset(seq_i, seq_i_prime),
             stabilizer_coset(seq_j, seq_j_prime),
         )
