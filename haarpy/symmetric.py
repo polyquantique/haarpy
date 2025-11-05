@@ -284,7 +284,14 @@ def young_subgroup(partition: tuple[int]) -> PermutationGroup:
 
 
 def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
-    """
+    """Returns all permutation that, when acting on sequence[0], return sequence[1]
+
+    Args:
+
+    Returns:
+
+    Raise:
+
     """
     if len(sequence) == 1:
         sequence = (sequence[0] for _ in range(2))
@@ -302,33 +309,6 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
         * sorting_permutation(sequence[0])
         for permutation in young_subgroup(young_partition).generate()
     )
-    #sorting = sorting_permutation(sequence)
-    #young_partition = tuple(sequence.count(i) for i in sorted(set(sequence)))
-    #young = young_subgroup(young_partition)
-    #return PermutationGroup(*[sorting * g * ~sorting for g in young.generators])
-    #assert size is the same as youngsubgroup
-    #assert it stabilizes anything (shuffled partition)
-
-
-def stabilizer_coset(
-    first_sequence: tuple,
-    second_sequence: tuple,
-) -> Generator[Permutation, None, None]:
-    """
-    """
-    if sorted(first_sequence) != sorted(second_sequence):
-        return ()
-    
-    first_sorting = sorting_permutation(first_sequence)
-    second_sorting = sorting_permutation(second_sequence)
-    young_partition = tuple(first_sequence.count(i) for i in sorted(set(first_sequence)))
-    return (
-            first_sorting * g * ~second_sorting 
-            for g in young_subgroup(young_partition).generate()
-    )
-    #assert size is the same as youngsubgroup
-    #assert it stabilizes anything based on two shuffled sequences
-    #assert that if a permutation of Sk stabilizes something, it is in tuple(stabilizer_coset)
 
 
 @lru_cache

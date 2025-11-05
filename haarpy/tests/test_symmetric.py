@@ -395,6 +395,8 @@ def test_young_subgroup_type_error(partition):
 # test size of stabilizer
 # test perm(seq1) == perm(seq2) for all in Y
 # test for same and diff tuple
+# assert that if a permutation of Sk stabilizes something, it is in tuple(stabilizer_coset)
+# test type error
 
 @pytest.mark.parametrize("degree", range(1, 8))
 def test_hyperoctahedral_order(degree):
