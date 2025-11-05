@@ -392,7 +392,47 @@ def test_young_subgroup_type_error(partition):
         ap.young_subgroup(partition)
 
 
-# test size of stabilizer
+@pytest.mark.parametrize(
+        "seq1, seq2",
+        [
+            ((0,1),(0,2)),
+            ((0,0,0), (0,0)),
+            ((0,1,2,3,4), (0,1,2,3,3)),
+        ]
+)
+def test_stabilizer_coset_empty(seq1, seq2):
+    "test cases for which there are no stabilizing permutation"
+    assert not len(tuple(ap.stabilizer_coset(seq1, seq2)))
+
+
+@pytest.mark.parametrize("degree", range(2,6))
+def test_stabilizer_coset_size(degree):
+    "Test the size of the stabilizer coset"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq2 = seq1.copy()
+        shuffle(seq1)
+        shuffle(seq2)
+        order = sum(1 for _ in ap.stabilizer_coset(tuple(seq1), tuple(seq2)))
+        assert (
+            order
+            == prod(SymmetricGroup(part).order() for part in partition)
+        )
+        
+
+
+
+
+
+
+
+
+
+
+
+
+        
 # test perm(seq1) == perm(seq2) for all in Y
 # test for same and diff tuple
 # assert that if a permutation of Sk stabilizes something, it is in tuple(stabilizer_coset)
