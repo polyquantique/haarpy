@@ -286,7 +286,7 @@ def young_subgroup(partition: tuple[int]) -> PermutationGroup:
 
 
 def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
-    """Returns all permutation that, when acting on sequence[0], return sequence[1]
+    """Returns all permutations that, when acting on sequence[0], return sequence[1]
 
     Args:
         *sequence (tuple): the sequences acted upon
