@@ -51,7 +51,8 @@ def average_mod_single_elem(dim, shots=10000):
 ```
 and use it to obtain values for different sizes of the unitary matrices
 ```
-np.array([average_mod_single_elem(i) for i in range(2, 5)]) # Output: array([0.50464014, 0.33273422, 0.25036507])
+np.array([average_mod_single_elem(i) for i in range(2, 5)]) 
+# Output: array([0.50464014, 0.33273422, 0.25036507])
 ```
 
 Haarpy allows you to obtain this (and many other!) overages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and simply write
@@ -61,153 +62,40 @@ from sympy import Symbol
 from haarpy import haar_integral_unitary
 
 d = Symbol("d")
-haar_integral_unitary(("i","j","i","j"),d)   # Output: 1/d
+haar_integral_unitary(("i","j","i","j"),d)   
+# Output: 1/d
 ```
 Notice the order of the indices! The first `"i"` and `"j"` are the indices of $U$ while the second pair of `"i"` and `"j"` are the indices of $U^*$.
 
-Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_{k,o} U_{i,m}^* U_{j,n}^* U_{k,p}^* = \int dU |U_{i,j,k}U_{m,n,o}|^2$ we simply do
+Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_{k,o} U_{i,m}^* U_{j,n}^* U_{k,p}^*$ $= \int dU |U_{i,m} U_{j,n} U_{k,o}|^2$ we simply do
 ```
-haar_integral_unitary(("ijk","mno","ijk","mno"), d) # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
+haar_integral_unitary(("ijk","mno","ijk","mno"), d) 
+# Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
+The averages we are calculating are obtained by using so-called Weingarten calculus. Averages over the unitary group can be written in quite general form as follows
+$ \int dU U_{i_1j_1}\cdots U_{i_nj_n}U^*_{i^\prime_1j^\prime_1}\cdots U^*_{i^\prime_nj^\prime_n} =  \sum_{\sigma,\tau\in S_n}\delta_{i_1i^\prime_{\sigma(1)}}\cdots\delta_{i_ni^\prime_{\sigma(n)}} \delta_{j_1j^\prime_{\tau(1)}}\cdots\delta_{j_nj^\prime_{\tau(n)}}W_{\sigma \tau^{-1}}(d)$
+where $W_{\sigma, \tau}(d)$ is the (unitary) Weingarten function associated with the permutation $\sigma \tau^{-1}$ and $d$ is the dimensionality of the unitary matrices involved.
 
-
-The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar measure. We recommend importing the following when working with Haarpy:
+One can access directly the Weingarten functions by calling
 ```Python
-from sympy import Symbol
-from sympy.combinatorics import Permutation
+from haarpy import weingarten_unitary
+weingarten_unitary((1,2,3),d)
+# Output: (-2*d**2 - 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
+```
+NEED TO EXPLAIN WHAT (1,2,3) is and how to use Sympy's Permutation!
 
-d = Symbol("d")
-```
-### *weingarten_class*
-Takes a partition, labeling a conjugacy class of $S_p$, and a dimension $d$ as arguments. For the conjugacy class labeled by partition $\lbrace 3,1\rbrace$, the function returns
-```Python
-from haarpy import weingarten_class
-weingarten_class((3,1),d)
-```
-```
-(2*d**2 - 3)/(d**2*(d - 3)*(d - 2)*(d - 1)*(d + 1)*(d + 2)*(d + 3))
-```
-The previous can also be called with integer values as such
-```Python
-weingarten_class((3,1),4)
-```
-```
-29/20160
-```
-### *weingarten_element*
-Takes an element and the degree $p$ of the symmetric group $S_p,$ and a dimension $d$ as arguments, the conjugacy class being obtained from the first two.
-```Python
-from haarpy import weingarten_element
-weingarten_element(Permutation(0,1,2), 4, d)
-```
-```
-(2*d**2 - 3)/(d**2*(d - 3)*(d - 2)*(d - 1)*(d + 1)*(d + 2)*(d + 3))
-```
-Which yields the same result as before since $\lbrace 3,1\rbrace$ is the class of permutation $(0,1,2)$ in $S_4$.
 
-### *haar_integral*
-Takes in a tuple of sequences $((i_1,\dots,i_p),\ (j_1,\dots,j_p),\ (i\prime_1,\dots, i\prime_p),\ (j\prime_1,\dots,j\prime_p))$, and the dimension $d$ of the unitary group. Returns the value of the integral $\int dU \ U_{i_1j_1}\dots U_{i_pj_p}U^\ast_{i\prime_1 j\prime_1}\dots U^\ast_{i\prime_p j\prime_p}$.
-```Python
-from haarpy import haar_integral
-haar_integral(((1,2), (1,2), (1,2), (1,2)), d)
-```
-```
-1/((d-1)*(d+1))
-```
-Auxiliary functions include, but are not limited to, the following. For a comprehensive list of functionalities, please refer to the [documentation]().
+## Haarpy functionality
 
-### *murn_naka_rule*
-Implementation of the [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) for the characters irreducible representations of the symmetric group $S_p$. Takes a partition characterizing an irrep of $S_p$ and a conjugacy class and yields the associate character.
-```Python
-from haarpy import murn_naka_rule
-murn_naka_rule((3,1), (1,1,1,1))
-```
-```
-3
-```
-### *get_conjugacy_class*
-Returns the class of a given element of $S_p$ when given the order and the element.
-```Python
-from haarpy import get_conjugacy_class
-get_conjugacy_class(Permutation(0,1,2), 4)
-```
-```
-(3,1)
-```
-### *irrep_dimension*
-Takes a partition labeling an irrep of $S_p$ and returns the dimension of this irrep.
-```Python
-from haarpy import irrep_dimension
-irrep_dimension((5,4,2,1,1,1))
-```
-```
-63063
-```
-### *representation_dimension*
-Takes a partition labeling a representation of the unitary group $U(d)$, as well as the dimension $d$, and returns the dimension of the representation.
-```Python
-from haarpy import representation_dimension
-representation_dimension((5, 4, 2, 1, 1, 1),d)
-```
-```
-d**2*(d - 5)*(d - 4)*(d - 3)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)**2*(d + 3)*(d + 4)/1382400
-```
-Which can also be done numerically.
-```Python
-ud_dimension((5, 4, 2, 1, 1, 1),8)
-```
-```
-873180
-```
+For each item below, explain when the integral is zero and what each weingarten function eats (a pemutation or perfect matching permutation or whatever it is)
+### Unitary group
+### Orthogonal group
+### Unitary-Symplectic group
+### Circular Orthogonal ensemble
+### Circular Symplectic ensemble
+### Other useful functionality
+List the other things that happen order the hood: murn_naka, young subgroup, accounting with tableaux etc etc...
 
-## Tables of Weingarten functions for $n \le 5$
-The following have been retrieved using the *weingarten_class* function. Weingarten functions of symmetric groups of higher degrees can just as easily be obtained.
-
-### Symmetric group $S_2$
-|Class| Weingarten |
-|--|--|
-|$\lbrace2\rbrace$ |$-\displaystyle\frac{1}{(d-1) d (d+1)}$|
-| $\lbrace1,1\rbrace$ | $\displaystyle\frac{1}{(d-1)(d+1)}$ |
-
-### Symmetric group $S_3$
-|Class  | Weingarten |
-|--|--|
-|  $\lbrace 3\rbrace$ | $\displaystyle\frac{2}{(d-2) (d-1) d (d+1) (d+2)}$ |
-|$\lbrace 2,1\rbrace$|$-\displaystyle\frac{1}{(d-2) (d-1) (d+1) (d+2)}$|
-| $\lbrace 1,1,1\rbrace$  |$\displaystyle\frac{d^2-2}{(d-2) (d-1) d (d+1) (d+2)}$ |
-
-### Symmetric group $S_4$
-|Class| Weingarten |
-|--|--|
-| $\lbrace 4\rbrace$   |$-\displaystyle\frac{5}{(d-3) (d-2) (d-1) d (d+1) (d+2) (d+3)}$  |
-|$\lbrace 3,1\rbrace$ |$\displaystyle\frac{2 d^2-3}{(d-3) (d-2) (d-1) d^2 (d+1) (d+2) (d+3)}$ |
-|$\lbrace 2,2\rbrace$|$\displaystyle\frac{d^2+6}{(d-3) (d-2) (d-1) d^2 (d+1) (d+2) (d+3)}$|
-| $\lbrace 2,1,1\rbrace$| $-\displaystyle\frac{1}{(d-3) (d-1) d (d+1) (d+3)}$|
-|$\lbrace 1,1,1,1\rbrace$ |$\displaystyle\frac{d^4-8 d^2+6}{(d-3) (d-2) (d-1)d^2 (d+1) (d+2)(d+3)}$|
-
-### Symmetric group $S_5$
-|Class| Weingarten |
-|--|--|
-|  $\lbrace 5\rbrace$    |$\displaystyle\frac{14}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3)(d+4)}$  |
-|$\lbrace 4,1\rbrace$  |$\displaystyle\frac{24-5 d^2}{(d-4) (d-3) (d-2) (d-1) d^2 (d+1) (d+2)(d+3)(d+4)}$ |
-| $\lbrace 3,2\rbrace$|$-\displaystyle\frac{2 \left(d^2+12\right)}{(d-4) (d-3) (d-2) (d-1)d^2(d+1)(d+2)(d+3)(d+4)}$|
-|  $\lbrace 3,1,1\rbrace$ | $\displaystyle\frac{2}{(d-4) (d-2) (d-1) d (d+1) (d+2) (d+4)}$|
-| $\lbrace 2,2,1\rbrace$  |$\displaystyle\frac{-d^4+14 d^2-24}{(d-4) (d-3) (d-2) (d-1) d^2  (d+1) (d+2) (d+3) (d+4)}$|
-| $\lbrace 1,1,1,1,1\rbrace$|$\displaystyle\frac{d^4-20 d^2+78}{(d-4) (d-3) (d-2) (d-1) d (d+1) (d+2) (d+3) (d+4)}$|
-
-## Examples of integrals over Haar-random unitaries
-Selected integrals of unitary groups ; $i,j,k$ and $\ell$ are assumed to take distinct integer values in the following.
-|Integral| Result |
-|--|--|
-| $\int dU \ U_{ij}U^\ast_{ij}$ |$\displaystyle\frac{1}{d}$|
-| $\int dU \ U_{ij}U_{kj}U^\ast_{ij}U^\ast_{kj}$ | $\displaystyle\frac{1}{d(d+1)}$|
-| $\int dU \ U_{ik}U_{k\ell}U^\ast_{ij}U^\ast_{k\ell}$ |$\displaystyle\frac{1}{(d-1)(d+1)}$|
-| $\int dU \ U_{ij}U_{k\ell}U^\ast_{i\ell}U^\ast_{kj}$ | $\displaystyle\frac{-1}{(d-1)d(d+1)}$ |
-| $\int dU \ U_{ij}U_{k\ell}U_{mn}U^\ast_{ij}U^\ast_{k\ell}U^\ast_{mn}$ | $\displaystyle\frac{d^2-2}{(d-2)(d-1)d(d+1)(d+2)}$ |
-| $\int dU \ U_{i\ell}U_{jm}U_{kn}U^\ast_{im}U^\ast_{jn}U^\ast_{k\ell}$ | $\displaystyle\frac{2}{(d-2)(d-1)d(d+1)(d+2)}$ |
-| $\int dU \ U_{i\ell}U_{j\ell}U_{km}U^\ast_{i\ell}U^\ast_{jm}U^\ast_{k\ell}$ | $\displaystyle\frac{-1}{(d-1)d(d+1)(d+2)}$ |
-| $\int dU  \ U_{i\ell}U_{j\ell}U_{k\ell}U^\ast_{i\ell}U^\ast_{j\ell}U^\ast_{k\ell}$ | $\displaystyle\frac{1}{d(d+1)(d+2)}$ |
-| $\int dU \ U_{ij}U_{ik}U_{i\ell}U_{im}U^\ast_{ij}U^\ast_{ik}U^\ast_{i\ell}U^\ast_{im}$ | $\displaystyle\frac{1}{d(d + 1)(d + 2)(d + 3)}$ |
 ## Installation
 Haarpy requires Python version 3.9 or later. Installation can be done through the pip command
 ```
@@ -238,10 +126,12 @@ Please cite as:
 }
 ```
 
-
 ## Authors
 * Yanic Cardin, Hubert de Guise, Nicolás Quesada.
 
 
 ## License
 Haarpy is free and open source, released under the Apache License, Version 2.0.
+
+## Acknowledgements
+The authors thank the Natural Sciences and Engineering Research Council of Canada and the Ministère de l'Économie, de l'Innovation et de l'Énergie du Québec.
