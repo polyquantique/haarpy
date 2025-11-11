@@ -51,9 +51,7 @@ def average_mod_single_elem(dim, shots=10000):
 ```
 and use it to obtain values for different sizes of the unitary matrices
 ```
-np.array([average_mod_single_elem(i) for i in range(2,11)])
-array([0.50464014, 0.33273422, 0.25036507, 0.20136712, 0.1649703 ,
-       0.14089495, 0.12560514, 0.11235414, 0.10043517])
+np.array([average_mod_single_elem(i) for i in range(2, 5)]) # Output: array([0.50464014, 0.33273422, 0.25036507])
 ```
 
 Haarpy allows you to obtain this (and many other!) overages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and simply write
@@ -63,10 +61,14 @@ from sympy import Symbol
 from haarpy import haar_integral_unitary
 
 d = Symbol("d")
-print(haar_integral_unitary(("i","j","i","j"),d))
->>>1/d
+haar_integral_unitary(("i","j","i","j"),d)   # Output: 1/d
 ```
+Notice the order of the indices! The first `"i"` and `"j"` are the indices of $U$ while the second pair of `"i"` and `"j"` are the indices of $U^*$.
 
+Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_{k,o} U_{i,m}^* U_{j,n}^* U_{k,p}^* = \int dU |U_{i,j,k}U_{m,n,o}|^2$ we simply do
+```
+haar_integral_unitary(("ijk","mno","ijk","mno"), d) # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
+```
 
 
 The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar measure. We recommend importing the following when working with Haarpy:
