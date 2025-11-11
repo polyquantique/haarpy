@@ -292,7 +292,7 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
         *sequence (tuple): the sequences acted upon
 
     Returns:
-        Gerenrator[Permutation]: permutations that, when acting on sequence[0], return sequence[1]
+        Generator[Permutation]: permutations that, when acting on sequence[0], return sequence[1]
 
     Raise:
         TypeError: if the sequence argument contains more than two sequences
