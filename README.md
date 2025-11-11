@@ -24,11 +24,51 @@
 
 <br>
 
-Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of unitary matrices $U(d)$ sampled uniformly at random from the [Haar measure](https://en.wikipedia.org/wiki/Haar_measure).
+Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of ensembles of unitary matrices under the [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) namely the orthogonal, unitary and (complex-)symplectic groups, as well as the circular orthogonal and symplectic orthogonal ensembles. 
 
-The original Mathematica version of this code, for the calculation of Weingarten functions of the unitary group, can be found [here](https://github.com/hdeguise/Weingarten_calculus).
 
 ## Haarpy in action
+To introduce the main functionality of Haarpy consider the following problem: imagine that you can generate unitary matrices at random, you would like to estimate the average of $|U_{i,j}|^2$ which we write mathematically as $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. We could obtain this average by using the random matrix functionality of SciPy as follows:
+```Python
+import numpy as np
+from scipy.stats import unitary_group
+
+np.random.seed(137)
+
+def average_mod_single_elem(dim, shots=10000):
+    """Estimate the average of the modulus squared of a single element of a Haar random unitary matrix
+    
+    Args:
+        d (int): size of the matrix
+        shots (ind): number of shots
+
+    Returns:
+        (float): average
+    """
+    return np.mean([np.abs(unitary_group.rvs(dim = dim)[0,1])**2 for _ in range(shots)])
+
+
+```
+and use it to obtain values for different sizes of the unitary matrices
+```
+np.array([average_mod_single_elem(i) for i in range(2,11)])
+array([0.50464014, 0.33273422, 0.25036507, 0.20136712, 0.1649703 ,
+       0.14089495, 0.12560514, 0.11235414, 0.10043517])
+```
+
+Haarpy allows you to obtain this (and many other!) overages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and simply write
+
+```Python
+from sympy import Symbol
+from haarpy import haar_integral_unitary
+
+d = Symbol("d")
+print(haar_integral_unitary(("i","j","i","j"),d))
+>>>1/d
+```
+
+
+
 The main functions of Haarpy are *weingarten_class*, *weingarten_element* and *haar_integral* allowing for the calculation of Weingarten functions and integrals over unitaries sampled at random from the Haar measure. We recommend importing the following when working with Haarpy:
 ```Python
 from sympy import Symbol
