@@ -34,28 +34,20 @@ import numpy as np
 from scipy.stats import unitary_group
 
 np.random.seed(137)
+shots = 1000
 
-def average_mod_single_elem(dim, shots=10000):
-    """Estimate the average of the modulus squared of a single element of a Haar random unitary matrix
-    
-    Args:
-        d (int): size of the matrix
-        shots (ind): number of shots
-
-    Returns:
-        (float): average
-    """
-    return np.mean([np.abs(unitary_group.rvs(dim = dim)[0,1])**2 for _ in range(shots)])
-
-
-```
-and use it to obtain values for different sizes of the unitary matrices
-```
-np.array([average_mod_single_elem(i) for i in range(2, 5)]) 
-# Output: array([0.50464014, 0.33273422, 0.25036507])
+# For unitary matrices of size between 2 and 4 produce 1000 shots and calculate the average 
+# value of the absolute value squared of the 0,1 entry
+np.array(
+    [
+        np.mean([np.abs(unitary_group.rvs(dim=dim)[0, 1]) ** 2 for _ in range(shots)])
+        for dim in range(2, 5)
+    ]
+)
+# Output: array([0.4964599 , 0.32742463, 0.25429793])
 ```
 
-Haarpy allows you to obtain this (and many other!) overages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and simply write
+Haarpy allows you to obtain this (and many other!) overages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and write
 
 ```Python
 from sympy import Symbol
@@ -72,8 +64,7 @@ Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_
 haar_integral_unitary(("ijk","mno","ijk","mno"), d) 
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
-The averages we are calculating are obtained by using so-called Weingarten calculus. Averages over the unitary group can be written in quite general form as follows 
-Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  A convenient closed form expression has been given in Ref. [5]:
+The averages we are calculating are obtained by using so-called Weingarten calculus. Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  A convenient closed form expression for averages of unitary matrices is given by
 
 $$
 \int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\text{Wg}_U([\sigma\tau^{-1}];d)\, \tag{1} 
@@ -93,14 +84,22 @@ from haarpy import weingarten_unitary
 weingarten_unitary((1,2,3),d)
 # Output: (-2*d**2 - 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
 ```
-NEED TO EXPLAIN WHAT (1,2,3) is and how to use Sympy's Permutation!
+Here the tuples `(1,2,3)` are used to represent an element of the symmetric group.
+
 
 
 ## Haarpy functionality
 
-For each item below, explain when the integral is zero and what each weingarten function eats (a pemutation or perfect matching permutation or whatever it is)
+Haarpy implements Weingarten functions for all the classical compact groups, the circular orthogonal ensembles as well as the permutation and centered permutation groups
+
 ### Unitary group
+Unitary matrices are complex-matrices $U$ that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrices.
+One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_unitary`. The later function takes as input a permutation, specified either by a tuple or SymPy `Permutation` object.
+
 ### Orthogonal group
+Unitary matrices are real-matrices $O$ that satisfy $O O^T = I_d$ where $I_d$ is the identity matrices. One can calculate averages over the orthogonal Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_orthogonal`. The later function takes as input a ????
+
+
 ### Unitary-Symplectic group
 ### Circular Orthogonal ensemble
 ### Circular Symplectic ensemble
