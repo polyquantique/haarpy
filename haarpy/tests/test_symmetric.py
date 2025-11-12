@@ -16,10 +16,10 @@ Symmetric tests
 """
 
 import pytest
-from math import factorial
+from math import factorial, prod
 from itertools import permutations
-from random import seed
-from sympy.combinatorics import Permutation
+from random import seed, shuffle
+from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
 import haarpy as ap
 
@@ -44,7 +44,7 @@ seed(137)
     ],
 )
 def test_get_conjugacy_class(degree, cycle, conjugacy):
-    """Test the normal usage of get_conjugacy_class"""
+    "Test the normal usage of get_conjugacy_class"
     assert ap.get_conjugacy_class(cycle, degree) == conjugacy
 
 
@@ -58,14 +58,14 @@ def test_get_conjugacy_class(degree, cycle, conjugacy):
     ],
 )
 def test_get_conjugacy_class_degree_type_error(degree, cycle):
-    """Test the degree parameter TypeError"""
+    "Test the degree parameter TypeError"
     with pytest.raises(TypeError, match=".*degree must be of type int.*"):
         ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize("degree", range(-3, 1))
 def test_get_conjugacy_class_degree_value_error(degree):
-    """Test the degree parameter ValueError"""
+    "Test the degree parameter ValueError"
     with pytest.raises(
         ValueError,
         match=".*The degree you have provided is too low. It must be an integer greater than 0.*",
@@ -82,7 +82,7 @@ def test_get_conjugacy_class_degree_value_error(degree):
     ],
 )
 def test_get_conjugacy_class_cycle_type_error(degree, cycle):
-    """Test the cycle parameter TypeError"""
+    "Test the cycle parameter TypeError"
     with pytest.raises(
         TypeError,
         match=".*Permutation must be of type sympy.combinatorics.permutations.Permutation.*",
@@ -100,7 +100,7 @@ def test_get_conjugacy_class_cycle_type_error(degree, cycle):
     ],
 )
 def test_get_conjugacy_class_cycle_value_error(degree, cycle):
-    """Test the cycle parameter ValueError if permutation maximum value is greater than the degree"""
+    "Test the cycle parameter ValueError if permutation maximum value is greater than the degree"
     with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
         ap.get_conjugacy_class(cycle, degree)
 
@@ -118,7 +118,7 @@ def test_get_conjugacy_class_cycle_value_error(degree, cycle):
     ],
 )
 def test_derivative_tableaux(tableau, add_unit, partition, result):
-    """Test the normal usage of derivative_tableaux"""
+    "Test the normal usage of derivative_tableaux"
     assert tuple(ap.derivative_tableaux(tableau, add_unit, partition)) == result
 
 
@@ -170,7 +170,7 @@ def test_derivative_tableaux(tableau, add_unit, partition, result):
     ],
 )
 def test_semi_standard_young_tableaux(partition, conjugacy_class, result):
-    """Test the normal usage of semi_standard_young_tableaux"""
+    "Test the normal usage of semi_standard_young_tableaux"
     assert ap.semi_standard_young_tableaux(partition, conjugacy_class) == result
 
 
@@ -283,6 +283,196 @@ def test_irrep_dimension_murn_naka_rule(partition):
     "Reconcil irrep_dimension and murn_naka_rule for the identity conjugacy class"
     conjugacy_identity = sum(partition) * (1,)
     assert ap.irrep_dimension(partition) == ap.murn_naka_rule(partition, conjugacy_identity)
+
+
+@pytest.mark.parametrize("degree", range(1,8))
+def test_sorting_permutation_single_len(degree):
+    "Test that the size of the permutation is the size of the sorted sequence"
+    sample_size = 10
+    shuffled_sequence = list(range(degree))
+    for _ in range(sample_size):
+        shuffle(shuffled_sequence)
+        permutation = ap.sorting_permutation(tuple(shuffled_sequence))
+        assert permutation.size == len(shuffled_sequence)
+
+
+@pytest.mark.parametrize("degree", range(1,8))
+def test_sorting_permutation_single_shuffle(degree):
+    "Test that the sorting permutation properly sorts the shuffled sequence"
+    sample_size = 10
+    sorted_sequence = list(range(degree))
+    for _ in range(sample_size):
+        shuffled_sequence = sorted_sequence.copy()
+        shuffle(shuffled_sequence)
+        permutation = ap.sorting_permutation(tuple(shuffled_sequence))
+        assert permutation(shuffled_sequence) == sorted_sequence
+
+
+@pytest.mark.parametrize("degree", range(1,8))
+def test_sorting_permutation_double_shuffle(degree):
+    "Test that the sorting permutation properly sorts the shuffled sequence"
+    sample_size = 10
+    sorted_sequence = list(range(degree))
+    for _ in range(sample_size):
+        first_sequence = sorted_sequence.copy()
+        second_sequence = sorted_sequence.copy()
+        shuffle(first_sequence)
+        shuffle(second_sequence)
+        permutation = ap.sorting_permutation(
+            tuple(first_sequence),
+            tuple(second_sequence),
+        )
+        assert permutation(first_sequence) == second_sequence
+
+
+@pytest.mark.parametrize("degree", range(3,8))
+def test_sorting_permutation_type_error(degree):
+    "Type error for more than 2 inputs"
+    sequence = tuple(range(degree))
+    with pytest.raises(TypeError):
+        ap.sorting_permutation(
+            *[tuple(sequence) for _ in range(degree)]
+        )
+
+
+@pytest.mark.parametrize(
+    "seq1, seq2",
+    [
+        ((1,2,3),(0,1,2)),
+        ((0,0,0,0), (0,0,0)),
+    ]
+)
+def test_sorting_permutation_value_error(seq1, seq2):
+    "Value error for different inputs"
+    with pytest.raises(
+        ValueError,
+        match = "Incompatible sequences"
+    ):
+        ap.sorting_permutation(seq1, seq2)
+
+
+@pytest.mark.parametrize('degree', range(1,8))
+def test_young_subgroup_order(degree):
+    "Test the order of the Young subgroup"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        young = ap.young_subgroup(partition)
+        assert (
+            young.order()
+            == prod(SymmetricGroup(part).order() for part in partition)
+        )
+
+
+@pytest.mark.parametrize('degree', range(2,8))
+def test_young_subgroup_stabilizer(degree):
+    "Test the stabilizer property of the Young subgroup"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        if partition == degree*(1,):
+            continue
+        sequence = [i for i, j in enumerate(partition) for _ in range(j)]
+        young = ap.young_subgroup(partition)
+        assert young.random()(sequence) == sequence
+
+
+@pytest.mark.parametrize(
+    "partition",
+    [
+        {1,2,3},
+        'abc',
+        {1:1, 2:2},
+        (2,2,0),
+        (1,-1,2),
+        (2,2,'a'),
+    ],
+)
+def test_young_subgroup_type_error(partition):
+    "Young subgroup TypeError"
+    with pytest.raises(TypeError):
+        ap.young_subgroup(partition)
+
+
+@pytest.mark.parametrize(
+        "seq1, seq2",
+        [
+            ((0,1),(0,2)),
+            ((0,0,0), (0,0)),
+            ((0,1,2,3,4), (0,1,2,3,3)),
+        ]
+)
+def test_stabilizer_coset_empty(seq1, seq2):
+    "test cases for which there are no stabilizing permutation"
+    assert not len(tuple(ap.stabilizer_coset(seq1, seq2)))
+
+
+@pytest.mark.parametrize("degree", range(2,6))
+def test_stabilizer_coset_size(degree):
+    "Test the size of the stabilizer coset"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq2 = seq1.copy()
+        shuffle(seq1)
+        shuffle(seq2)
+        order = sum(1 for _ in ap.stabilizer_coset(tuple(seq1), tuple(seq2)))
+        assert (
+            order
+            == prod(SymmetricGroup(part).order() for part in partition)
+        )
+    
+
+@pytest.mark.parametrize("degree", range(2,8))
+def test_stabilizer_coset_permutation(degree):
+    "Test the set of permutations"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq2 = seq1.copy()
+        shuffle(seq1)
+        shuffle(seq2)
+        assert all(
+            perm(seq1) == seq2
+            for perm in ap.stabilizer_coset(tuple(seq1), tuple(seq2))
+        )
+
+
+@pytest.mark.parametrize("degree", range(2,6))
+def test_stabilizer_coset_brute_force(degree):
+    "Test the set of permutations against brute force"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq2 = seq1.copy()
+        shuffle(seq1)
+        shuffle(seq2)
+        stabilizer = tuple(ap.stabilizer_coset(tuple(seq1), tuple(seq2)))
+        assert all(perm in stabilizer
+            for perm in SymmetricGroup(degree).generate()
+            if perm(seq1) == seq2
+        )       
+
+
+@pytest.mark.parametrize("degree", range(2,8))
+def test_stabilizer_coset_single(degree):
+    "Test the set of permutations for single input"
+    for partition in partitions(degree):
+        partition = tuple(key for key, value in partition.items() for _ in range(value))
+        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        shuffle(seq1)
+        assert all(
+            perm(seq1) == seq1
+            for perm in ap.stabilizer_coset(tuple(seq1))
+        )
+
+
+@pytest.mark.parametrize("degree", range(3,8))
+def test_stabilizer_coset_type_error(degree):
+    "Type error for more than 2 inputs"
+    sequence = tuple(range(degree))
+    with pytest.raises(TypeError):
+        ap.stabilizer_coset(
+            *[tuple(sequence) for _ in range(degree)]
+        )
 
 
 @pytest.mark.parametrize("degree", range(1, 8))

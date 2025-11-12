@@ -22,9 +22,14 @@ from itertools import product
 from collections import Counter
 from fractions import Fraction
 from sympy import Symbol, Expr, fraction, simplify, factor
-from sympy.combinatorics import Permutation, SymmetricGroup
+from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class, murn_naka_rule, irrep_dimension
+from haarpy import (
+    get_conjugacy_class,
+    murn_naka_rule,
+    irrep_dimension,
+    stabilizer_coset,
+)
 
 
 @lru_cache
@@ -150,27 +155,14 @@ def haar_integral_unitary(
     if len(seq_i) != len(seq_j) or len(seq_i_prime) != len(seq_j_prime):
         raise ValueError("Wrong tuple format")
 
-    if sorted(seq_i) != sorted(seq_i_prime) or sorted(seq_j) != sorted(seq_j_prime):
-        return 0
-
     degree = len(seq_i)
-    seq_i, seq_j = list(seq_i), list(seq_j)
-
-    permutation_i = (
-        perm
-        for perm in SymmetricGroup(degree).generate_schreier_sims()
-        if perm(seq_i_prime) == seq_i
-    )
-
-    permutation_j = (
-        perm
-        for perm in SymmetricGroup(degree).generate_schreier_sims()
-        if perm(seq_j_prime) == seq_j
-    )
 
     class_mapping = Counter(
         get_conjugacy_class(cycle_i * ~cycle_j, degree)
-        for cycle_i, cycle_j in product(permutation_i, permutation_j)
+        for cycle_i, cycle_j in product(
+            stabilizer_coset(seq_i, seq_i_prime),
+            stabilizer_coset(seq_j, seq_j_prime),
+        )
     )
 
     integral = sum(

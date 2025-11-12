@@ -19,7 +19,12 @@ from math import factorial, prod
 from functools import lru_cache
 from typing import Generator
 from fractions import Fraction
-from sympy.combinatorics import Permutation, PermutationGroup
+from sympy.combinatorics import (
+    Permutation,
+    PermutationGroup,
+    SymmetricGroup,
+    DirectProduct,
+)
 from haarpy import perfect_matchings, join_operation
 
 
@@ -232,6 +237,83 @@ def irrep_dimension(partition: tuple[int]) -> int:
     dimension = Fraction(numerator, denominator) * factorial(sum(partition))
 
     return dimension.numerator
+
+
+@lru_cache
+def sorting_permutation(*sequence: tuple[int]) -> Permutation:
+    """Returns the sorting permutation of a given sequence
+
+    Args:
+        sequence (tuple[int]): a sequence of unorderd elements
+
+    Returns:
+        Permutation: the sorting permutation
+
+    Raise:
+        ValueError: for incompatible sequence inputs
+        TypeError: if more than two sequences are passed as arguments
+    """
+    if len(sequence) == 1:
+        return Permutation(
+            sorted(range(len(sequence[0])), key=lambda k: sequence[0][k])
+        )
+    if len(sequence) == 2:
+        if sorted(sequence[0]) != sorted(sequence[1]):
+            raise ValueError("Incompatible sequences")
+        return ~sorting_permutation(sequence[1]) * sorting_permutation(sequence[0])
+
+    raise TypeError
+
+
+def young_subgroup(partition: tuple[int]) -> PermutationGroup:
+    """Returns the Young subgroup of a given input partition
+    See `<https://en.wikipedia.org/wiki/Young_subgroup>`_
+
+    Args:
+        partition (tuple[int]): A partition
+
+    Returns:
+        PermutationGroup: the associated Young subgroup
+
+    Raise:
+        TypeError: if partition is not a tuple or a list
+        TypeError: if partition is not made of positive integers
+    """
+    if not isinstance(partition, (tuple, list)):
+        raise TypeError
+    if not all(isinstance(part, int) and part > 0 for part in partition):
+        raise TypeError
+    return DirectProduct(*[SymmetricGroup(part) for part in partition])
+
+
+def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
+    """Returns all permutations that, when acting on sequence[0], return sequence[1]
+
+    Args:
+        *sequence (tuple): the sequences acted upon
+
+    Returns:
+        Generator[Permutation]: permutations that, when acting on sequence[0], return sequence[1]
+
+    Raise:
+        TypeError: if the sequence argument contains more than two sequences
+    """
+    if len(sequence) == 1:
+        sequence = tuple(sequence[0] for _ in range(2))
+    elif len(sequence) == 2:
+        if sorted(sequence[0]) != sorted(sequence[1]):
+            return ()
+    else:
+        raise TypeError
+
+    young_partition = tuple(sequence[0].count(i) for i in sorted(set(sequence[0])))
+
+    return (
+        ~sorting_permutation(sequence[1])
+        * permutation
+        * sorting_permutation(sequence[0])
+        for permutation in young_subgroup(young_partition).generate()
+    )
 
 
 @lru_cache
