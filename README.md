@@ -72,9 +72,20 @@ Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_
 haar_integral_unitary(("ijk","mno","ijk","mno"), d) 
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
-The averages we are calculating are obtained by using so-called Weingarten calculus. Averages over the unitary group can be written in quite general form as follows $\int dU U_{i_1 j_1} \cdots U_{i_n j_n}U^*_{i'_1 j'_1}\cdots U^*_{i'_n j'_n} =  \sum_{\sigma,\tau\in S_n}\delta_{i_1 i'_{\sigma(1)}}\cdots \delta_{i_n i'_{\sigma(n)}} \delta_{j_1 j'_{\tau(1)}}\cdots \delta_{j_n j'_{\tau(n)}} W_{\sigma \tau^{-1}}(d)$
+The averages we are calculating are obtained by using so-called Weingarten calculus. Averages over the unitary group can be written in quite general form as follows 
+Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  A convenient closed form expression has been given in Ref. [5]:
 
-where $W_{\sigma, \tau}(d)$ is the (unitary) Weingarten function associated with the permutation $\sigma \tau^{-1}$ and $d$ is the dimensionality of the unitary matrices involved.
+$$
+\int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\text{Wg}_U([\sigma\tau^{-1}];d)\, \tag{1} 
+$$
+
+where $\text{Wg}_U([\sigma\tau^{-1}];d)$ is the unitary Weingarten function,  $U$ is a Haar-random $d\times d$ unitary matrix, $dU$ is the Haar measure over $U(d)$, and  $[\sigma]$ is the class of element $\sigma$.  The sum in Eq. (1) is a sum over all $\sigma\in S_p$ and all the $\tau\in S_p$ so that
+
+$$   (i^\prime_{\sigma(1)},\ldots,i^\prime_{\sigma(p)})=(i_1,\ldots,i_p)\, \\
+(j^\prime_{\tau(1)},\ldots,j^\prime_{\tau(p)})=(j_1,\ldots,j_p)\, 
+$$
+
+with the integral $0$ if the $i',i$, $j'$ or $j$ strings have different lengths.  In other words, expectation of polynomials of entries of unitary matrices are given by a sum of Weingarten functions. 
 
 One can access directly the Weingarten functions by calling
 ```Python
