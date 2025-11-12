@@ -24,7 +24,7 @@
 
 <br>
 
-Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) namely the orthogonal, unitary and (complex-)symplectic groups, as well as the circular orthogonal and symplectic orthogonal ensembles. 
+Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) namely the orthogonal, unitary and (complex-)symplectic groups, the circular orthogonal and circular symplectic ensembles and the group of permutation matrices.
 
 
 ## Haarpy in action
@@ -54,8 +54,10 @@ from sympy import Symbol
 from haarpy import haar_integral_unitary
 
 d = Symbol("d")
-haar_integral_unitary(("i","j","i","j"),d)   
+haar_integral_unitary(("i","j","i","j"),d)
 # Output: 1/d
+haar_integral_unitary(("i","j","i","j"),3) # We can also put inters
+# Output: 1/3
 ```
 Notice the order of the indices! The first `"i"` and `"j"` are the indices of $U$ while the second pair of `"i"` and `"j"` are the indices of $U^*$.
 
@@ -102,7 +104,14 @@ One can calculate averages over the orthogonal Haar measure using `haar_integral
 
 
 ### Unitary-Symplectic group
-Unitary-symplectic matrices $S$ are complex-unitary matrices of even size that are also symplectic, that is they satisfy $S \Omega S^T = \Omega$ where $\Omega = \left(\begin{smallmatrix} 0_d & I_d \\ -I_d & 0_d \end{smallmatrix} \right)$ is the symplectic form. Weingarten functions of this group take as input ???? and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
+Unitary-symplectic matrices $S$ are complex-unitary matrices of even size that are also symplectic, that is they satisfy $S \Omega S^T = \Omega$ where 
+
+$$
+\Omega = \left(\begin{array}{cc} 0_d & I_d \\ 
+-I_d & 0_d \end{array}\right)
+$$ 
+
+is the symplectic form. Weingarten functions of this group take as input ???? and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
 
 
 ### Circular Orthogonal ensemble
