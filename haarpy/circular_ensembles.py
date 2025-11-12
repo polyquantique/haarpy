@@ -20,8 +20,13 @@ from functools import lru_cache
 from typing import Union
 from collections import Counter
 from sympy import Symbol, Expr, fraction, factor, simplify
-from sympy.combinatorics import Permutation, SymmetricGroup
-from haarpy import weingarten_orthogonal, weingarten_symplectic, coset_type
+from sympy.combinatorics import Permutation
+from haarpy import (
+    weingarten_orthogonal,
+    weingarten_symplectic,
+    coset_type,
+    stabilizer_coset,
+)
 
 
 @lru_cache
@@ -84,22 +89,12 @@ def haar_integral_circular_orthogonal(
         raise ValueError("Wrong tuple format")
 
     seq_i, seq_j = sequences
-    degree = len(seq_i)
 
-    if degree % 2 or len(seq_j) % 2:
+    if len(seq_i) % 2 or len(seq_j) % 2:
         raise ValueError("Wrong tuple format")
 
-    if len(seq_j) != degree:
-        return 0
-
-    if sorted(seq_i) != sorted(seq_j):
-        return 0
-
-    seq_j = list(seq_j)
     coset_mapping = Counter(
-        coset_type(permutation)
-        for permutation in SymmetricGroup(degree).generate()
-        if permutation(seq_i) == seq_j
+        coset_type(permutation) for permutation in stabilizer_coset(seq_i, seq_j)
     )
 
     integral = sum(

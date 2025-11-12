@@ -145,7 +145,7 @@ def join_operation(
     the join operation yields the least upper bound of both partitions
 
     Ex.
-    ((0,1), (2,), (3,4)) ∨ ((0,2), (1,), (3,), (,4)) = ((0,1,2), (3,4))
+    ((0,1), (2,), (3,4)) ∨ ((0,2), (1,), (3,), (4,)) = ((0,1,2), (3,4))
 
     Args:
         partition_1 (tuple[tuple[int]]): partition of a set
