@@ -90,21 +90,38 @@ Here the tuples `(1,2,3)` are used to represent an element of the symmetric grou
 
 ## Haarpy functionality
 
-Haarpy implements Weingarten functions for all the classical compact groups, the circular orthogonal ensembles as well as the permutation and centered permutation groups
+Haarpy implements Weingarten functions for all the classical compact groups, the circular orthogonal ensembles as well as the permutation and centered permutation groups. 
 
 ### Unitary group
-Unitary matrices are complex-matrices $U$ that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrices.
+Unitary matrices $U$ are complex-matrices $U$ that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrices. Here we use $U^\dagger$ to indicate the conjugate-transpose of the unitary matrix $U$.
 One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_unitary`. The later function takes as input a permutation, specified either by a tuple or SymPy `Permutation` object.
 
 ### Orthogonal group
-Unitary matrices are real-matrices $O$ that satisfy $O O^T = I_d$ where $I_d$ is the identity matrices. One can calculate averages over the orthogonal Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_orthogonal`. The later function takes as input a ????
+Orthogonal matrices $O$ are real-matrices $O$ that satisfy $O O^T = I_d$ where $I_d$ is the identity matrices. Here we use $U^T$ to indicate the transpose of the unitary matrix $U$.
+One can calculate averages over the orthogonal Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_orthogonal`. The later function takes as input a ????
 
 
 ### Unitary-Symplectic group
+Unitary-symplectic matrices $S$ are complex-unitary matrices of even size that are also symplectic, that is they satisfy $S \Omega S^T = \Omega$ where $\Omega = \left(\begin{smallmatrix} 0_d & I_d \\ -I_d & 0_d \end{smallmatrix} \right)$ is the symplectic form. Weingarten functions of this group take as input ???? and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
+
+
 ### Circular Orthogonal ensemble
+Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ is a Haar-random unitary matrix, then $V = U U^T$ is a COE random matrix. One can calculate averages over the COE using `haar_integral_circular_unitary` and obtain their associated Weingarten function using `weingarten_circula_orthogonal`. The later function takes as input a ????
+
+
 ### Circular Symplectic ensemble
+Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary matrix, then $R = S S^T$ is a CSE random matrix. Weingarten functions of this ensemble take as input ???? and can be calculated using `weingarten_circula_symplectic`. Functionality to calculate averages will be added in the near term.
+
+### Permutation and centered permutation groups
+Weingarten functions associated with these group have been [recently introduced](add_link_here). Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated Weingarten function can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
+
+
 ### Other useful functionality
-List the other things that happen order the hood: murn_naka, young subgroup, accounting with tableaux etc etc...
+Under the hood, haarpy implements a number of group-theoretic machinery that can be useful in other contexts, this include 
+* Murn_naka as `murn_naka_rule`
+* Young subgroup ``
+
+
 
 ## Installation
 Haarpy requires Python version 3.9 or later. Installation can be done through the pip command
@@ -127,7 +144,7 @@ Please cite as:
 ```
 @misc{cardin2024haarpy,
   author={Cardin, Yanic and de Guise, Hubert and Quesada, Nicol{\'a}s},
-  title={Haarpy, a Python library for the symbolic calculation of Weingarten functions},
+  title={Haarpy, a Python library for the Weingarten calculus and integration of classical compact groups and ensembles},
   year={2024},
   publisher={GitHub},
   journal={GitHub repository},
