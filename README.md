@@ -24,7 +24,7 @@
 
 <br>
 
-Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) namely the orthogonal, unitary and (complex-)symplectic groups, the circular orthogonal and circular symplectic ensembles and the group of permutation matrices.
+Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) namely the orthogonal, unitary and unitary-symplectic groups, the circular orthogonal and circular symplectic ensembles and the group of permutation matrices.
 
 
 ## Haarpy in action
@@ -95,12 +95,12 @@ Here the tuples `(1,2,3)` are used to represent an element of the symmetric grou
 Haarpy implements Weingarten functions for all the classical compact groups, the circular orthogonal ensembles as well as the permutation and centered permutation groups. 
 
 ### Unitary group
-Unitary matrices $U$ are complex-matrices $U$ that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrices. Here we use $U^\dagger$ to indicate the conjugate-transpose of the unitary matrix $U$.
+Unitary matrices $U$ are complex-matrices that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrix. Here we use $U^\dagger$ to indicate the conjugate-transpose of the matrix $U$.
 One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_unitary`. The later function takes as input a permutation, specified either by a tuple or SymPy `Permutation` object.
 
 ### Orthogonal group
-Orthogonal matrices $O$ are real-matrices $O$ that satisfy $O O^T = I_d$ where $I_d$ is the identity matrices. Here we use $U^T$ to indicate the transpose of the unitary matrix $U$.
-One can calculate averages over the orthogonal Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_orthogonal`. The later function takes as input a ????
+Orthogonal matrices $O$ are real-matrices $O$ that satisfy $O O^T = I_d$. Here we use $O^T$ to indicate the transpose of the matrix $O$.
+One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated Weingarten function using `weingarten_orthogonal`. The later function takes as input a ????
 
 
 ### Unitary-Symplectic group
@@ -119,7 +119,7 @@ Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ i
 
 
 ### Circular Symplectic ensemble
-Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary matrix, then $R = S S^T$ is a CSE random matrix. Weingarten functions of this ensemble take as input ???? and can be calculated using `weingarten_circula_symplectic`. Functionality to calculate averages will be added in the near term.
+Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary-symplectic matrix, then $R = S S^T$ is a CSE random matrix. Weingarten functions of this ensemble take as input ???? and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
 
 ### Permutation and centered permutation groups
 Weingarten functions associated with these group have been [recently introduced](add_link_here). Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated Weingarten function can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
@@ -153,7 +153,7 @@ Please cite as:
 ```
 @misc{cardin2024haarpy,
   author={Cardin, Yanic and de Guise, Hubert and Quesada, Nicol{\'a}s},
-  title={Haarpy, a Python library for the Weingarten calculus and integration of classical compact groups and ensembles},
+  title={Haarpy, a Python library for Weingarten calculus and integration of classical compact groups and ensembles},
   year={2024},
   publisher={GitHub},
   journal={GitHub repository},
