@@ -262,7 +262,7 @@ def test_haar_integral_hand(sequences, weingarten_map):
     ],
 )
 def test_haar_integral_wrong_format(sequence):
-    """Test wrong tuple format ValueError"""
+    "Test wrong tuple format ValueError"
     dimension = Symbol("d")
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_unitary(sequence, dimension)

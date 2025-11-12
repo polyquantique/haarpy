@@ -318,7 +318,7 @@ def test_weingarten_orthogonal_numeric(permutation, dimension, num, denum):
 
 @pytest.mark.parametrize("degree", range(3))
 def test_weingarten_orthognal_degree_error(degree):
-    """Value error assertion for symmetric group of odd degree"""
+    "Value error assertion for symmetric group of odd degree"
     for conjugacy_class in SymmetricGroup(2*degree+1).conjugacy_classes():
         with pytest.raises(
             ValueError, match=".*The degree of the symmetric group S_2k should be even*"

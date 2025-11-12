@@ -267,6 +267,7 @@ def sorting_permutation(*sequence: tuple[int]) -> Permutation:
 
 def young_subgroup(partition: tuple[int]) -> PermutationGroup:
     """Returns the Young subgroup of a given input partition
+    See `<https://en.wikipedia.org/wiki/Young_subgroup>`_
 
     Args:
         partition (tuple[int]): A partition

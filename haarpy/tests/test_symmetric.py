@@ -44,7 +44,7 @@ seed(137)
     ],
 )
 def test_get_conjugacy_class(degree, cycle, conjugacy):
-    """Test the normal usage of get_conjugacy_class"""
+    "Test the normal usage of get_conjugacy_class"
     assert ap.get_conjugacy_class(cycle, degree) == conjugacy
 
 
@@ -58,14 +58,14 @@ def test_get_conjugacy_class(degree, cycle, conjugacy):
     ],
 )
 def test_get_conjugacy_class_degree_type_error(degree, cycle):
-    """Test the degree parameter TypeError"""
+    "Test the degree parameter TypeError"
     with pytest.raises(TypeError, match=".*degree must be of type int.*"):
         ap.get_conjugacy_class(cycle, degree)
 
 
 @pytest.mark.parametrize("degree", range(-3, 1))
 def test_get_conjugacy_class_degree_value_error(degree):
-    """Test the degree parameter ValueError"""
+    "Test the degree parameter ValueError"
     with pytest.raises(
         ValueError,
         match=".*The degree you have provided is too low. It must be an integer greater than 0.*",
@@ -82,7 +82,7 @@ def test_get_conjugacy_class_degree_value_error(degree):
     ],
 )
 def test_get_conjugacy_class_cycle_type_error(degree, cycle):
-    """Test the cycle parameter TypeError"""
+    "Test the cycle parameter TypeError"
     with pytest.raises(
         TypeError,
         match=".*Permutation must be of type sympy.combinatorics.permutations.Permutation.*",
@@ -100,7 +100,7 @@ def test_get_conjugacy_class_cycle_type_error(degree, cycle):
     ],
 )
 def test_get_conjugacy_class_cycle_value_error(degree, cycle):
-    """Test the cycle parameter ValueError if permutation maximum value is greater than the degree"""
+    "Test the cycle parameter ValueError if permutation maximum value is greater than the degree"
     with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
         ap.get_conjugacy_class(cycle, degree)
 
@@ -118,7 +118,7 @@ def test_get_conjugacy_class_cycle_value_error(degree, cycle):
     ],
 )
 def test_derivative_tableaux(tableau, add_unit, partition, result):
-    """Test the normal usage of derivative_tableaux"""
+    "Test the normal usage of derivative_tableaux"
     assert tuple(ap.derivative_tableaux(tableau, add_unit, partition)) == result
 
 
@@ -170,7 +170,7 @@ def test_derivative_tableaux(tableau, add_unit, partition, result):
     ],
 )
 def test_semi_standard_young_tableaux(partition, conjugacy_class, result):
-    """Test the normal usage of semi_standard_young_tableaux"""
+    "Test the normal usage of semi_standard_young_tableaux"
     assert ap.semi_standard_young_tableaux(partition, conjugacy_class) == result
 
 
