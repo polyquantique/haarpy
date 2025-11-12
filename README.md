@@ -73,7 +73,7 @@ haar_integral_unitary(("ijk","mno","ijk","mno"), d)
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
 The averages we are calculating are obtained by using so-called Weingarten calculus. Averages over the unitary group can be written in quite general form as follows
-$ \int dU U_{i_1j_1}\cdots U_{i_nj_n}U^*_{i^'_1 j^'_1}\cdots U^*_{i^'_n j^'_n} =  \sum_{\sigma,\tau\in S_n}\delta_{i_1 i^'_{\sigma(1)}}\cdots\delta_{i_ni^'_{\sigma(n)}} \delta_{j_1j'_{\tau(1)}}\cdots\delta_{j_nj^'_{\tau(n)}}W_{\sigma \tau^{-1}}(d)$
+$ \int dU U_{i_1j_1}\cdots U_{i_nj_n}U^*_{i'_1 j'_1}\cdots U^*_{i'_n j'_n} =  \sum_{\sigma,\tau\in S_n}\delta_{i_1 i'_{\sigma(1)}}\cdots\delta_{i_ni'_{\sigma(n)}} \delta_{j_1j'_{\tau(1)}}\cdots\delta_{j_nj'_{\tau(n)}}W_{\sigma \tau^{-1}}(d)$
 where $W_{\sigma, \tau}(d)$ is the (unitary) Weingarten function associated with the permutation $\sigma \tau^{-1}$ and $d$ is the dimensionality of the unitary matrices involved.
 
 One can access directly the Weingarten functions by calling
