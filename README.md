@@ -36,7 +36,7 @@ from scipy.stats import unitary_group
 np.random.seed(137)
 shots = 1000
 
-# For unitary matrices of size between 2 and 4 produce 1000 shots and calculate the average 
+# For unitary matrices of size between 2 and 4 produce 1000 shots and calculate the average
 # value of the absolute value squared of the 0,1 entry
 np.array(
     [
@@ -54,16 +54,16 @@ from sympy import Symbol
 from haarpy import haar_integral_unitary
 
 d = Symbol("d")
-haar_integral_unitary(("i","j","i","j"),d)
+haar_integral_unitary(("i", "j", "i", "j"), d)
 # Output: 1/d
-haar_integral_unitary(("i","j","i","j"),3) # We can also put inters
+haar_integral_unitary(("i", "j", "i", "j"), 3)  # We can also put integers
 # Output: 1/3
 ```
 Notice the order of the indices! The first `"i"` and `"j"` are the indices of $U$ while the second pair of `"i"` and `"j"` are the indices of $U^*$.
 
 Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_{k,o} U_{i,m}^* U_{j,n}^* U_{k,p}^*$ $= \int dU |U_{i,m} U_{j,n} U_{k,o}|^2$ we simply do
 ```
-haar_integral_unitary(("ijk","mno","ijk","mno"), d) 
+haar_integral_unitary(("ijk", "mno", "ijk", "mno"), d)
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
 The averages we are calculating are obtained by using so-called Weingarten calculus. Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  A convenient closed form expression for averages of unitary matrices is given by
@@ -83,10 +83,11 @@ with the integral $0$ if the $i',i$, $j'$ or $j$ strings have different lengths.
 One can access directly the Weingarten functions by calling
 ```Python
 from haarpy import weingarten_unitary
-weingarten_unitary((1,2,3),d)
+
+weingarten_unitary((1, 2, 3), d)
 # Output: (-2*d**2 - 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
 ```
-Here the tuples `(1,2,3)` are used to represent an element of the symmetric group.
+Here the tuples `(1, 2, 3)` are used to represent ???
 
 
 
