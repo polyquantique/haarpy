@@ -113,7 +113,7 @@ One can calculate averages over the unitary Haar measure using `haar_integral_un
 
 ### Orthogonal group
 Orthogonal matrices $O$ are real-matrices $O$ that satisfy $O O^T = I_d$. Here we use $O^T$ to indicate the transpose of the matrix $O$.
-One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated [Weingarten function](https://doi.org/10.1007/s00220-006-1554-3) using `weingarten_orthogonal`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the unitary group specified either by a SymPy `Symbol` or by an integer.
+One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated [Weingarten function](https://doi.org/10.1007/s00220-006-1554-3) using `weingarten_orthogonal`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the orthogonal group specified either by a SymPy `Symbol` or by an integer.
 
 
 ### Unitary-Symplectic group
@@ -128,7 +128,7 @@ is the symplectic form. [Weingarten functions](https://doi.org/10.1007/s00220-00
 
 
 ### Circular Orthogonal ensemble
-Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ is a Haar-random unitary matrix, then $V = U U^T$ is a COE random matrix. One can calculate averages over the COE using `haar_integral_circular_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1142/S2010326313500019) using `weingarten_circula_orthogonal`. The later function takes as input a ????
+Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ is a Haar-random unitary matrix, then $V = U U^T$ is a COE random matrix. One can calculate averages over the COE using `haar_integral_circular_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1142/S2010326313500019) using `weingarten_circula_orthogonal`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the ensemble matrices specified either by a SymPy `Symbol` or by an integer.
 
 
 ### Circular Symplectic ensemble
