@@ -172,6 +172,7 @@ def haar_integral_symplectic(
         ValueError: If sequences doesn't contain 2 tuples
         ValueError: If tuples i and j are of different length
         TypeError: If the symplectic_dimension is not int
+        ValueError: If all sequence indices are not between 1 and dimension
     """
     if len(sequences) != 2:
         raise ValueError("Wrong tuple format")
@@ -187,6 +188,12 @@ def haar_integral_symplectic(
             "Unlike other compact groups, "
             "the symplectic group dimension must be an integer to compute the integral."
         )
+
+    if not (
+        all(1 <= i <= symplectic_dimension for i in seq_i)
+        and all(1 <= j <= symplectic_dimension for j in seq_j)
+    ):
+        raise ValueError
 
     if degree % 2:
         return 0

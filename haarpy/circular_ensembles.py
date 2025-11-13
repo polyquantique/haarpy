@@ -15,6 +15,7 @@
 Circular ensembles Python interface
 """
 
+from math import prod
 from fractions import Fraction
 from functools import lru_cache
 from typing import Union
@@ -107,3 +108,71 @@ def haar_integral_circular_orthogonal(
         integral = factor(numerator) / factor(denominator)
 
     return integral
+
+
+@lru_cache
+def haar_integral_circular_symplectic(
+    sequences: tuple[tuple[int]], group_dimension: int
+) -> Fraction:
+    """Returns integral over circular symplectic ensemble polynomial
+    sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple[tuple[int]]) : Indices of matrix elements
+        group_dimension (Symbol) : Dimension of the orthogonal group
+
+    Returns:
+        Expr : Integral under the Haar measure
+
+    Raise:
+        ValueError : If sequences doesn't contain 2 tuples
+        ValueError : If tuples i and j are of odd size
+        TypeError : If group_dimension is not an int
+        ValueError: If all sequence indices are not between 1 and dimension
+    """
+    if len(sequences) != 2:
+        raise ValueError("Wrong tuple format")
+
+    seq_i, seq_j = sequences
+
+    if len(seq_i) % 2 or len(seq_j) % 2:
+        raise ValueError("Wrong tuple format")
+
+    if not isinstance(group_dimension, int):
+        raise TypeError(
+            "Unlike other ensembles, "
+            "the CSE dimension must be an integer to compute the integral."
+        )
+
+    if not (
+        all(1 <= i <= group_dimension for i in seq_i)
+        and all(1 <= j <= group_dimension for j in seq_j)
+    ):
+        raise ValueError
+
+    coefficient = prod(
+        -1 if 1 <= i <= group_dimension else 1 for i in (seq_i + seq_j)[::2]
+    )
+
+    shifted_i = tuple(
+        (
+            i + group_dimension
+            if 1 <= i <= group_dimension and index % 2 == 0
+            else i - group_dimension if index % 2 == 0 else i
+        )
+        for index, i in enumerate(seq_i)
+    )
+
+    shifted_j = tuple(
+        (
+            i + group_dimension
+            if 1 <= i <= group_dimension and index % 2 == 0
+            else i - group_dimension if index % 2 == 0 else i
+        )
+        for index, i in enumerate(seq_j)
+    )
+
+    return coefficient * sum(
+        weingarten_circular_symplectic(permutation, group_dimension)
+        for permutation in stabilizer_coset(shifted_i, shifted_j)
+    )
