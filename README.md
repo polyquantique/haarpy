@@ -28,7 +28,7 @@ Haarpy is a Python library for the symbolic calculation of [Weingarten functions
 
 
 ## Haarpy in action
-To introduce the main functionality of Haarpy consider the following problem: imagine that you can generate unitary matrices at random, you would like to estimate the average of $|U_{i,j}|^2$ which we write mathematically as $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. We could obtain this average by using the random matrix functionality of SciPy as follows:
+To introduce the main functionality of Haarpy consider the following problem: imagine that you can generate unitary matrices at random (from the Haar measure); you would like to estimate the average of $|U_{i,j}|^2$ which we write mathematically as $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. We could obtain this average by using the random matrix functionality of SciPy as follows:
 ```Python
 import numpy as np
 from scipy.stats import unitary_group
@@ -66,7 +66,7 @@ Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_
 haar_integral_unitary(("ijk", "mno", "ijk", "mno"), d)
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
-The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  A convenient closed form expression for averages of unitary matrices is given by
+The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Unitary Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  A convenient closed form expression for averages of unitary matrices is given by
 
 $$
 \int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\text{Wg}_U([\sigma\tau^{-1}];d)\, \quad [1]
@@ -105,7 +105,7 @@ weingarten_unitary((3,2,1), d)
 
 ## Haarpy functionality
 
-Haarpy implements Weingarten functions for all the classical compact groups, the circular orthogonal ensembles as well as the permutation and centered permutation groups. 
+Haarpy implements Weingarten functions for all the classical compact groups, the circular orthogonal and circular symplectic ensembles as well as the permutation and centered permutation groups. 
 
 ### Unitary group
 Unitary matrices $U$ are complex-matrices that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrix. Here we use $U^\dagger$ to indicate the conjugate-transpose of the matrix $U$.
@@ -132,20 +132,20 @@ Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ i
 
 
 ### Circular Symplectic ensemble
-Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary-symplectic matrix, then $R = S S^T$ is a CSE random matrix. [Weingarten functions](https://doi.org/10.1142/S2010326313500019) of this ensemble take as input an element of the symmetric group as well as the dimension of the symplectic group and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
+Circular symplectic matrices $R$ are obtained by drawing a Haar-random unitary $U$ of even size and calculating $R = -U \Omega U^T \Omega$. [Weingarten functions](https://doi.org/10.1142/S2010326313500019) of this ensemble take as input an element of the symmetric group as well as the dimension of the symplectic group and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
 
 ### Permutation and centered permutation groups
 Weingarten functions associated with these group have been recently introduced. Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated [Weingarten function](https://doi.org/10.48550/arXiv.2503.18453) can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
 
 
 ### Other useful functionality
-Under the hood, haarpy implements a number of group-theoretic machinery that can be useful in other contexts, this include 
-* the [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) as `murn_naka_rule` for the characters irreducible representations of the symmetric group;
-* the dimension of the symmetric group irreps as `irrep_dimension`;
-* the dimension of the representations of the unitary group as `representation_dimension`;
-* the [hyperoctahedral group](https://en.wikipedia.org/wiki/Hyperoctahedral_group) as `hyperoctral`;
-* the [Young subgroup](https://en.wikipedia.org/wiki/Young_subgroup) as `young_subgroup`;
-* the set of all permutations $\sigma\in S_p$ such that $\mathbf{i}^\sigma = \mathbf{i}^\prime$ as `stabilizer_coset`.
+Under the hood, haarpy implements a number of group-theoretic machinery that can be useful in other contexts, including 
+* The [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) as `murn_naka_rule` for the characters irreducible representations of the symmetric group;
+* The dimension of the symmetric group irreps as `irrep_dimension`;
+* The dimension of the representations of the unitary group as `representation_dimension`;
+* The [hyperoctahedral group](https://en.wikipedia.org/wiki/Hyperoctahedral_group) as `hyperoctahedral`;
+* The [Young subgroup](https://en.wikipedia.org/wiki/Young_subgroup) as `young_subgroup`;
+* The set of all permutations $\sigma\in S_p$ such that $\mathbf{i}^\sigma = \mathbf{i}^\prime$ as `stabilizer_coset`.
 
 
 ## Installation
@@ -158,10 +158,6 @@ pip install haarpy
 Haarpy has the following dependencies:
 * [Python](https://www.python.org/) >= 3.9
 * [SymPy](https://www.sympy.org) >= 1.12
-
-
-## Documentation
-Haarpy documentation is available online on [Read the Docs]().
 
 
 ## How to cite this work
