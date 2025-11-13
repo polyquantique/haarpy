@@ -76,8 +76,8 @@ where $\text{Wg}_U([\sigma\tau^{-1}];d)$ is the unitary Weingarten function,  $U
 
 $$
 \begin{aligned}
-  (i^\prime_{\sigma(1)},\ldots,i^\prime_{\sigma(p)})&=(i_1,\ldots,i_p),\\
-  (j^\prime_{\tau(1)},\ldots,j^\prime_{\tau(p)})&=(j_1,\ldots,j_p), 
+  (i_{\sigma(1)},\ldots,i_{\sigma(p)})&=(i_1^\prime,\ldots,i_p^\prime),\\
+  (j_{\tau(1)},\ldots,j_{\tau(p)})&=(j_1^\prime,\ldots,j_p^\prime), 
 \end{aligned}
 $$
 
@@ -145,7 +145,7 @@ Under the hood, haarpy implements a number of group-theoretic machinery that can
 * the dimension of the representations of the unitary group as `representation_dimension`;
 * the [hyperoctahedral group](https://en.wikipedia.org/wiki/Hyperoctahedral_group) as `hyperoctral`;
 * the [Young subgroup](https://en.wikipedia.org/wiki/Young_subgroup) as `young_subgroup`;
-* the set of all permutations such that $\{\sigma\in S_p : \mathbf{i}^\sigma = \mathbf{i}^\prime\}$ as `stabilizer_coset`, for two sequences $\mathbf{i}$ and $\mathbf{i}^\prime$.
+* the set of all permutations such that $\left\{\sigma\in S_p : \mathbf{i}^\sigma = \mathbf{i}^\prime\right\}$ as `stabilizer_coset`, for two sequences $\mathbf{i}$ and $\mathbf{i}^\prime$.
 
 
 ## Installation
