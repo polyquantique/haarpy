@@ -34,6 +34,7 @@ Functions
     weingarten_centered_permutation
     haar_integral_unitary
     haar_integral_orthogonal
+    haar_integral_symplectic
     haar_integral_circular_orthogonal
     haar_integral_permutation
     haar_integral_centered_permutation
@@ -104,6 +105,7 @@ from .orthogonal import (
 from .symplectic import (
     twisted_spherical_function,
     weingarten_symplectic,
+    haar_integral_symplectic,
 )
 
 from .circular_ensembles import (
@@ -132,6 +134,7 @@ __all__ = [
     "weingarten_centered_permutation",
     "haar_integral_unitary",
     "haar_integral_orthogonal",
+    "haar_integral_symplectic",
     "haar_integral_circular_orthogonal",
     "haar_integral_permutation",
     "haar_integral_centered_permutation",

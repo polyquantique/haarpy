@@ -17,11 +17,18 @@ Symplectic group Python interface
 
 from math import prod
 from fractions import Fraction
+from itertools import product
 from functools import lru_cache
 from sympy import Symbol, factorial, factor, fraction, simplify
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class, murn_naka_rule, hyperoctahedral, irrep_dimension
+from haarpy import (
+    get_conjugacy_class,
+    murn_naka_rule,
+    hyperoctahedral,
+    irrep_dimension,
+    hyperoctahedral_transversal,
+)
 
 
 @lru_cache
@@ -145,3 +152,69 @@ def weingarten_symplectic(
         weingarten = simplify(factor(numerator) / factor(denominator))
 
     return weingarten
+
+
+@lru_cache
+def haar_integral_symplectic(
+    sequences: tuple[tuple[int]],
+    symplectic_dimension: int,
+) -> Fraction:
+    """Returns integral over symplectic group polynomial sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple[tuple[int]]): Indices of matrix elements
+        symplectic_dimension (int): Dimension of the symplectic group
+
+    Returns:
+        Expr: Integral under the Haar measure
+
+    Raise:
+        ValueError: If sequences doesn't contain 2 tuples
+        ValueError: If tuples i and j are of different length
+        TypeError: If the symplectic_dimension is not int
+    """
+    if len(sequences) != 2:
+        raise ValueError("Wrong tuple format")
+
+    seq_i, seq_j = sequences
+    degree = len(seq_i)
+
+    if degree != len(seq_j):
+        raise ValueError("Wrong tuple format")
+
+    if not isinstance(symplectic_dimension, int):
+        raise TypeError(
+            "Unlike other compact groups, "
+            "the symplectic group dimension must be an integer to compute the integral."
+        )
+
+    if degree % 2:
+        return 0
+
+    def twisted_delta(seq, permutation, n):
+        return prod(
+            (
+                1
+                if 1 <= i <= n and j == i + n
+                else -1 if 1 <= j <= n and i == j + n else 0
+            )
+            for i, j in zip(permutation(seq)[::2], permutation(seq)[1::2])
+        )
+
+    permutation_i = (
+        (twisted_delta(seq_i, permutation, symplectic_dimension), permutation)
+        for permutation in hyperoctahedral_transversal(degree)
+    )
+
+    permutation_j = (
+        (twisted_delta(seq_j, permutation, symplectic_dimension), permutation)
+        for permutation in hyperoctahedral_transversal(degree)
+    )
+
+    return sum(
+        perm_i[0]
+        * perm_j[0]
+        * weingarten_symplectic(perm_j[1] * ~perm_i[1], symplectic_dimension)
+        for perm_i, perm_j in product(permutation_i, permutation_j)
+        if perm_i[0] * perm_j[0]
+    )
