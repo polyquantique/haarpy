@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="haarpy.svg">
+  <img src="https://raw.githubusercontent.com/polyquantique/haarpy/master/haarpy.svg">
 </p>
 
 <div align="center">
@@ -74,8 +74,11 @@ $$
 
 where $\text{Wg}_U([\sigma\tau^{-1}];d)$ is the unitary Weingarten function,  $U$ is a Haar-random $d\times d$ unitary matrix, $dU$ is the Haar measure over $U(d)$, and  $[\sigma]$ is the class of element $\sigma$.  The sum in Eq. (1) is a sum over all $\sigma\in S_p$ and all the $\tau\in S_p$ so that
 
-$$   (i^\prime_{\sigma(1)},\ldots,i^\prime_{\sigma(p)})=(i_1,\ldots,i_p)\, \\
-(j^\prime_{\tau(1)},\ldots,j^\prime_{\tau(p)})=(j_1,\ldots,j_p)\, 
+$$
+\begin{aligned}
+  (i^\prime_{\sigma(1)},\ldots,i^\prime_{\sigma(p)})&=(i_1,\ldots,i_p),\\
+  (j^\prime_{\tau(1)},\ldots,j^\prime_{\tau(p)})&=(j_1,\ldots,j_p), 
+\end{aligned}
 $$
 
 with the integral $0$ if the $i',i$, $j'$ or $j$ strings have different lengths.  In other words, expectation of polynomials of entries of unitary matrices are given by a sum of Weingarten functions. 
@@ -137,9 +140,12 @@ Weingarten functions associated with these group have been recently introduced. 
 
 ### Other useful functionality
 Under the hood, haarpy implements a number of group-theoretic machinery that can be useful in other contexts, this include 
-* Murn_naka as `murn_naka_rule`
-* Young subgroup ``
-
+* the [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) as `murn_naka_rule` for the characters irreducible representations of the symmetric group;
+* the dimension of the symmetric group irreps as `irrep_dimension`;
+* the dimension of the representations of the unitary group as `representation_dimension`;
+* the [hyperoctahedral group](https://en.wikipedia.org/wiki/Hyperoctahedral_group) as `hyperoctral`;
+* the [Young subgroup](https://en.wikipedia.org/wiki/Young_subgroup) as `young_subgroup`;
+* the set of all permutations such that $\{\sigma\in S_p : \mathbf{i}^\sigma = \mathbf{i}^\prime\}$ as `stabilizer_coset`, for two sequences $\mathbf{i}$ and $\mathbf{i}^\prime$.
 
 
 ## Installation
