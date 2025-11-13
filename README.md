@@ -106,11 +106,11 @@ Haarpy implements Weingarten functions for all the classical compact groups, the
 
 ### Unitary group
 Unitary matrices $U$ are complex-matrices that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrix. Here we use $U^\dagger$ to indicate the conjugate-transpose of the matrix $U$.
-One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1155/S107379280320917X) using `weingarten_unitary`. The later function takes as input a permutation, specified either by a tuple or SymPy `Permutation` object.
+One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1155/S107379280320917X) using `weingarten_unitary`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a conjugacy class specified by a tuple, as well as the dimension of the unitary group specified either by a SymPy `Symbol` or by an integer.
 
 ### Orthogonal group
 Orthogonal matrices $O$ are real-matrices $O$ that satisfy $O O^T = I_d$. Here we use $O^T$ to indicate the transpose of the matrix $O$.
-One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated [Weingarten function](https://doi.org/10.1007/s00220-006-1554-3) using `weingarten_orthogonal`. The later function takes as input a ????
+One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated [Weingarten function](https://doi.org/10.1007/s00220-006-1554-3) using `weingarten_orthogonal`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the unitary group specified either by a SymPy `Symbol` or by an integer.
 
 
 ### Unitary-Symplectic group
