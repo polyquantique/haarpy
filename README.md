@@ -143,7 +143,7 @@ Weingarten functions associated with these group have been recently introduced. 
 
 ### Other useful functionality
 Under the hood, haarpy implements a number of group-theoretic machinery that can be useful in other contexts, including 
-* The [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) as `murn_naka_rule` for the characters irreducible representations of the symmetric group;
+* The [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) as `murn_naka_rule` for the characters of the irreducible representations of the symmetric group;
 * The dimension of the symmetric group irreps as `irrep_dimension`;
 * The dimension of the representations of the unitary group as `representation_dimension`;
 * The [hyperoctahedral group](https://en.wikipedia.org/wiki/Hyperoctahedral_group) as `hyperoctahedral`;
