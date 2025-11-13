@@ -24,6 +24,9 @@
 
 <br>
 
+
+
+
 Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) namely the orthogonal, unitary and unitary-symplectic groups, the circular orthogonal and circular symplectic ensembles and the group of permutation matrices.
 
 
@@ -47,7 +50,7 @@ np.array(
 # Output: array([0.4964599 , 0.32742463, 0.25429793])
 ```
 
-Haarpy allows you to obtain this (and many other!) overages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and write
+Haarpy allows you to obtain this (and many other!) averages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and write
 
 ```Python
 from sympy import Symbol
@@ -109,11 +112,11 @@ Haarpy implements Weingarten functions for all the classical compact groups, the
 
 ### Unitary group
 Unitary matrices $U$ are complex-matrices that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrix. Here we use $U^\dagger$ to indicate the conjugate-transpose of the matrix $U$.
-One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1155/S107379280320917X) using `weingarten_unitary`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a conjugacy class specified by a tuple, as well as the dimension of the unitary group specified either by a SymPy `Symbol` or by an integer.
+One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1155/S107379280320917X) using `weingarten_unitary`. The latter function takes as input a permutation specified by a SymPy `Permutation` object or a conjugacy class specified by a tuple, as well as the dimension of the unitary group specified either by a SymPy `Symbol` or by an integer.
 
 ### Orthogonal group
 Orthogonal matrices $O$ are real-matrices $O$ that satisfy $O O^T = I_d$. Here we use $O^T$ to indicate the transpose of the matrix $O$.
-One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated [Weingarten function](https://doi.org/10.1007/s00220-006-1554-3) using `weingarten_orthogonal`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the orthogonal group specified either by a SymPy `Symbol` or by an integer.
+One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated [Weingarten function](https://doi.org/10.1007/s00220-006-1554-3) using `weingarten_orthogonal`. The latter function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the orthogonal group specified either by a SymPy `Symbol` or by an integer.
 
 
 ### Unitary-Symplectic group
@@ -128,7 +131,7 @@ is the symplectic form. [Weingarten functions](https://doi.org/10.1007/s00220-00
 
 
 ### Circular Orthogonal ensemble
-Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ is a Haar-random unitary matrix, then $V = U U^T$ is a COE random matrix. One can calculate averages over the COE using `haar_integral_circular_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1142/S2010326313500019) using `weingarten_circula_orthogonal`. The later function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the ensemble matrices specified either by a SymPy `Symbol` or by an integer.
+Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ is a Haar-random unitary matrix, then $V = U U^T$ is a COE random matrix. One can calculate averages over the COE using `haar_integral_circular_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1142/S2010326313500019) using `weingarten_circular_orthogonal`. The latter function takes as input a permutation specified by a SymPy `Permutation` object or a coset-type specified by a tuple, as well as the dimension of the ensemble matrices specified either by a SymPy `Symbol` or by an integer.
 
 
 ### Circular Symplectic ensemble
