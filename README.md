@@ -124,7 +124,7 @@ $$
 -I_d & 0_d \end{array}\right)
 $$ 
 
-is the symplectic form. [Weingarten functions](https://doi.org/10.1007/s00220-006-1554-3) of this group take as input ???? and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
+is the symplectic form. [Weingarten functions](https://doi.org/10.1007/s00220-006-1554-3) of this group take as input an element of the symmetric group as well as the dimension of the symplectic group and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
 
 
 ### Circular Orthogonal ensemble
@@ -132,7 +132,7 @@ Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ i
 
 
 ### Circular Symplectic ensemble
-Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary-symplectic matrix, then $R = S S^T$ is a CSE random matrix. [Weingarten functions](https://doi.org/10.1142/S2010326313500019) of this ensemble take as input ???? and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
+Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary-symplectic matrix, then $R = S S^T$ is a CSE random matrix. [Weingarten functions](https://doi.org/10.1142/S2010326313500019) of this ensemble take as input an element of the symmetric group as well as the dimension of the symplectic group and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
 
 ### Permutation and centered permutation groups
 Weingarten functions associated with these group have been recently introduced. Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated [Weingarten function](https://doi.org/10.48550/arXiv.2503.18453) can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
