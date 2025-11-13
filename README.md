@@ -85,15 +85,19 @@ The general average above in Eq. (1) can be compute in haarpy as
 haar_integral_unitary(("i_1 i_2 ... i_p","j_1 j_2 ... j_p","i_1' i_2' ... i_p'","j_1' j_2' ... j_p'"), d)
 ```
 
-One can access directly the Weingarten functions by calling
+One can access directly the Weingarten functions of a given permutation of the symmetric group by calling
 ```Python
+from sympy.combinatorics import Permutation
 from haarpy import weingarten_unitary
 
-weingarten_unitary((1, 2, 3), d)
+weingarten_unitary(Permutation(5)(4,3)(2,1,0), d)
 # Output: (-2*d**2 - 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
 ```
-Here the tuples `(1, 2, 3)` are used to represent ???
-
+Equivalently, since the unitary Weingarten function is a class function, one can call the previous using the cycle-type of any given permutation, i.e., the partition that labels its conjugacy class.
+```Python
+weingarten_unitary((3,2,1), d)
+# Output: (-2*d**2 - 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
+```
 
 
 ## Haarpy functionality
@@ -102,11 +106,11 @@ Haarpy implements Weingarten functions for all the classical compact groups, the
 
 ### Unitary group
 Unitary matrices $U$ are complex-matrices that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrix. Here we use $U^\dagger$ to indicate the conjugate-transpose of the matrix $U$.
-One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated Weingarten function using `weingarten_unitary`. The later function takes as input a permutation, specified either by a tuple or SymPy `Permutation` object.
+One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1155/S107379280320917X) using `weingarten_unitary`. The later function takes as input a permutation, specified either by a tuple or SymPy `Permutation` object.
 
 ### Orthogonal group
 Orthogonal matrices $O$ are real-matrices $O$ that satisfy $O O^T = I_d$. Here we use $O^T$ to indicate the transpose of the matrix $O$.
-One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated Weingarten function using `weingarten_orthogonal`. The later function takes as input a ????
+One can calculate averages over the orthogonal Haar measure using `haar_integral_orthogonal` and obtain their associated [Weingarten function](https://doi.org/10.1007/s00220-006-1554-3) using `weingarten_orthogonal`. The later function takes as input a ????
 
 
 ### Unitary-Symplectic group
@@ -117,19 +121,18 @@ $$
 -I_d & 0_d \end{array}\right)
 $$ 
 
-is the symplectic form. Weingarten functions of this group take as input ???? and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
+is the symplectic form. [Weingarten functions](https://doi.org/10.1007/s00220-006-1554-3) of this group take as input ???? and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
 
 
 ### Circular Orthogonal ensemble
-Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ is a Haar-random unitary matrix, then $V = U U^T$ is a COE random matrix. One can calculate averages over the COE using `haar_integral_circular_unitary` and obtain their associated Weingarten function using `weingarten_circula_orthogonal`. The later function takes as input a ????
+Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ is a Haar-random unitary matrix, then $V = U U^T$ is a COE random matrix. One can calculate averages over the COE using `haar_integral_circular_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1142/S2010326313500019) using `weingarten_circula_orthogonal`. The later function takes as input a ????
 
 
 ### Circular Symplectic ensemble
-Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary-symplectic matrix, then $R = S S^T$ is a CSE random matrix. Weingarten functions of this ensemble take as input ???? and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
+Circular symplectic matrices $R$ are simply symmetric unitary-symplectic matrices. If $S$ is a Haar-random unitary-symplectic matrix, then $R = S S^T$ is a CSE random matrix. [Weingarten functions](https://doi.org/10.1142/S2010326313500019) of this ensemble take as input ???? and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
 
 ### Permutation and centered permutation groups
-Weingarten functions associated with these group have been [recently introduced](  
-https://doi.org/10.48550/arXiv.2503.18453). Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated Weingarten function can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
+Weingarten functions associated with these group have been recently introduced. Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated [Weingarten function](https://doi.org/10.48550/arXiv.2503.18453) can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
 
 
 ### Other useful functionality
