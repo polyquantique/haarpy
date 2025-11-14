@@ -69,7 +69,7 @@ Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_
 haar_integral_unitary(("ijk", "mno", "ijk", "mno"), d)
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
-The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Unitary Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  For four sequences $\mathbf{i}=\left(i_1,\dots,i_p\right)$, $\mathbf{j}=\left(j_1,\dots,j_p\right)$, $\mathbf{i}^\prime=\left(i_1^\prime,\dots,i_p^\prime\right)$ and $\mathbf{j}^\prime=\left(j_1^\prime,\dots,j_p^\prime\right)$, a convenient closed form expression for averages of unitary matrices is given by
+The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Unitary Weingarten functions depend only on a conjugacy class of the symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  For four sequences $\mathbf{i}=\left(i_1,\dots,i_p\right)$, $\mathbf{j}=\left(j_1,\dots,j_p\right)$, $\mathbf{i}^\prime=\left(i_1^\prime,\dots,i_p^\prime\right)$ and $\mathbf{j}^\prime=\left(j_1^\prime,\dots,j_p^\prime\right)$, a convenient closed form expression for averages of unitary matrices is given by
 
 $$
 \int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\delta_\sigma(\mathbf{i},\mathbf{i}^\prime)\delta_\tau(\mathbf{j},\mathbf{j}^\prime)\text{Wg}_U([\sigma\tau^{-1}];d)\, \quad [1]
@@ -105,6 +105,7 @@ weingarten_unitary((3,2,1), d)
 
 Haarpy implements Weingarten functions for all the classical compact groups, the circular orthogonal and circular symplectic ensembles as well as the permutation and centered permutation groups. 
 
+
 ### Unitary group
 Unitary matrices $U$ are complex-matrices that satisfy $U U^\dagger = I_d$ where $I_d$ is the identity matrix. Here we use $U^\dagger$ to indicate the conjugate-transpose of the matrix $U$.
 One can calculate averages over the unitary Haar measure using `haar_integral_unitary` and obtain their associated [Weingarten function](https://doi.org/10.1155/S107379280320917X) using `weingarten_unitary`. The latter function takes as input a permutation specified by a SymPy `Permutation` object or a conjugacy class specified by a tuple, as well as the dimension of the unitary group specified either by a SymPy `Symbol` or by an integer.
@@ -131,6 +132,7 @@ Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ i
 
 ### Circular Symplectic ensemble
 Circular symplectic matrices $R$ are obtained by drawing a Haar-random unitary $U$ of even size and calculating $R = -U \Omega U^T \Omega$. [Weingarten functions](https://doi.org/10.1142/S2010326313500019) of this ensemble take as input an element of the symmetric group as well as the dimension of the symplectic group and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
+
 
 ### Permutation and centered permutation groups
 Weingarten functions associated with these group have been recently introduced. Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated [Weingarten function](https://doi.org/10.48550/arXiv.2503.18453) can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
@@ -178,6 +180,7 @@ Please cite as:
 
 ## License
 Haarpy is free and open source, released under the Apache License, Version 2.0.
+
 
 ## Acknowledgements
 The authors thank the Natural Sciences and Engineering Research Council of Canada and the Ministère de l'Économie, de l'Innovation et de l'Énergie du Québec.
