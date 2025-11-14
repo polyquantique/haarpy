@@ -69,7 +69,7 @@ Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_
 haar_integral_unitary(("ijk", "mno", "ijk", "mno"), d)
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
-The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Unitary Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  A convenient closed form expression for averages of unitary matrices is given by
+The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Unitary Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  For four sequences $\mathbf{i}=\pmb{i}$, a convenient closed form expression for averages of unitary matrices is given by
 
 $$
 \int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\text{Wg}_U([\sigma\tau^{-1}];d)\, \quad [1]
