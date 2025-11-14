@@ -17,6 +17,8 @@
 
 ### Improvements
 
+* The `README` has been improved to describe the expanding capabilities of `haarpy` [(#39)](https://github.com/polyquantique/haarpy/pull/39).
+
 ### Bug fixes
 
 ### Contributors

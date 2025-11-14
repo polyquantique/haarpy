@@ -145,7 +145,7 @@ def test_weingarten_symplectic_hyperoctahedral_symbolic(half_degree):
             )
     else:
         for permutation in SymmetricGroup(2*half_degree).generate():
-            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = permutation.signature()/(4*d*(d-1)*(2*d+1))
             assert ap.weingarten_symplectic(permutation, d) == (
                 simplify((2*d-1)*coefficient) if permutation in hyperoctahedral
@@ -166,7 +166,7 @@ def test_weingarten_symplectic_hyperoctahedral_numeric(half_degree):
             )
     else:
         for permutation in SymmetricGroup(2*half_degree).generate():
-            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = Fraction(permutation.signature(),(4*7*(7-1)*(2*7+1)))
             assert ap.weingarten_symplectic(permutation, 7) == (
                 (2*7-1)*coefficient if permutation in hyperoctahedral

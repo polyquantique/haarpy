@@ -28,7 +28,7 @@ from haarpy import (
     murn_naka_rule,
     get_conjugacy_class,
     irrep_dimension,
-    hyperoctahedral,
+    HyperoctahedralGroup,
     hyperoctahedral_transversal,
     coset_type,
     coset_type_representative,
@@ -65,7 +65,7 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
         raise ValueError("Invalid partition and cyle-type")
 
     double_partition = tuple(2 * part for part in partition)
-    hyperocta = hyperoctahedral(degree // 2)
+    hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
         murn_naka_rule(
             double_partition, get_conjugacy_class(permutation * zeta, degree)
