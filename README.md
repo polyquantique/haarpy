@@ -81,7 +81,7 @@ $$\delta_\sigma(\mathbf{i},\mathbf{i}^\prime) = \prod_{s=1}^p\delta_{i_{\sigma(s
 
 In other words, expectation of polynomials of entries of unitary matrices are given by a sum of Weingarten functions. Note that the integral of Eq. (1) is trivially $0$ if sequences $\mathbf{i}$ and $\mathbf{i}^\prime$ (or equivalently $\mathbf{j}$ and $\mathbf{j}^\prime$) are of different lengths. 
 
-The general average above in Eq. (1) can be compute in haarpy as 
+The general average above in Eq. (1) can be compute in Haarpy as 
 ```Python
 haar_integral_unitary(("i_1 i_2 ... i_p","j_1 j_2 ... j_p","i_1' i_2' ... i_p'","j_1' j_2' ... j_p'"), d)
 ```
@@ -135,11 +135,11 @@ Circular symplectic matrices $R$ are obtained by drawing a Haar-random unitary $
 
 
 ### Permutation and centered permutation groups
-Weingarten functions associated with these group have been recently introduced. Integration over this discrete group can be performed using `weingarten_permutation` and `weingarten_centered_permutation` and the associated [Weingarten function](https://doi.org/10.48550/arXiv.2503.18453) can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
+Weingarten functions associated with these group have been recently introduced. Integration over this discrete group can be performed using `haar_integral_permutation` and `haar_integral_centered_permutation` and the associated [Weingarten function](https://doi.org/10.48550/arXiv.2503.18453) can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
 
 
 ### Other useful functionality
-Under the hood, haarpy implements a number of group-theoretic machinery that can be useful in other contexts, including 
+Under the hood, Haarpy implements a number of group-theoretic machinery that can be useful in other contexts, including 
 * The [Murnaghan-Nakayama rule](https://en.wikipedia.org/wiki/Murnaghan%E2%80%93Nakayama_rule) as `murn_naka_rule` for the characters of the irreducible representations of the symmetric group;
 * The dimension of the symmetric group irreps as `irrep_dimension`;
 * The dimension of the representations of the unitary group as `representation_dimension`;
