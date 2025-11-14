@@ -75,7 +75,7 @@ $$
 \int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\delta_\sigma(\mathbf{i},\mathbf{i}^\prime)\delta_\tau(\mathbf{j},\mathbf{j}^\prime)\text{Wg}_U([\sigma\tau^{-1}];d)\, \quad [1]
 $$
 
-where $\text{Wg}_U([\sigma\tau^{-1}];d)$ is the unitary Weingarten function,  $U$ is a Haar-random $d\times d$ unitary matrix, $dU$ is the Haar measure over $U(d)$, $[\sigma]$ is the class of element $\sigma$, and
+where $\text{Wg}_U([\sigma\tau^{-1}];d)$ is the unitary Weingarten function,  $U$ is a Haar-random $d\times d$ unitary matrix, $dU$ is the Haar measure over $U(d)$, $[\sigma]$ is the conjugacy class of element $\sigma$, and
 
 $$\delta_\sigma(\mathbf{i},\mathbf{i}^\prime) = \prod_{s=1}^p\delta_{i_{\sigma(s)},i_s^\prime}.$$
 
