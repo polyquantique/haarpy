@@ -69,22 +69,17 @@ Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_
 haar_integral_unitary(("ijk", "mno", "ijk", "mno"), d)
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
-The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Unitary Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  For four sequences $\mathbf{i}=\pmb{i}$, a convenient closed form expression for averages of unitary matrices is given by
+The averages we are calculating are obtained by using so-called [Weingarten calculus](https://doi.org/10.1155/S107379280320917X). Unitary Weingarten functions depend only on a class of symmetric group $S_p$ and on the dimension $d$ of the unitaries that are averaged.  For four sequences $\mathbf{i}=\left(i_1,\dots,i_p\right)$, $\mathbf{j}=\left(j_1,\dots,j_p\right)$, $\mathbf{i}^\prime=\left(i_1^\prime,\dots,i_p^\prime\right)$ and $\mathbf{j}^\prime=\left(j_1^\prime,\dots,j_p^\prime\right)$, a convenient closed form expression for averages of unitary matrices is given by
 
 $$
-\int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\text{Wg}_U([\sigma\tau^{-1}];d)\, \quad [1]
+\int dU \ U_{i_1j_1}\ldots U_{i_pj_p} \left(U_{i^\prime_1j^\prime_1}\ldots U_{i^\prime_p,j^\prime_p}\right)^{\ast}   =\sum_{\sigma,\tau\in S_p}\delta_\sigma(\mathbf{i},\mathbf{i}^\prime)\delta_\tau(\mathbf{j},\mathbf{j}^\prime)\text{Wg}_U([\sigma\tau^{-1}];d)\, \quad [1]
 $$
 
-where $\text{Wg}_U([\sigma\tau^{-1}];d)$ is the unitary Weingarten function,  $U$ is a Haar-random $d\times d$ unitary matrix, $dU$ is the Haar measure over $U(d)$, and  $[\sigma]$ is the class of element $\sigma$.  The sum in Eq. (1) is a sum over all $\sigma\in S_p$ and all the $\tau\in S_p$ so that
+where $\text{Wg}_U([\sigma\tau^{-1}];d)$ is the unitary Weingarten function,  $U$ is a Haar-random $d\times d$ unitary matrix, $dU$ is the Haar measure over $U(d)$, and  $[\sigma]$ is the class of element $\sigma$. Here $\delta_\sigma(\mathbf{i},\mathbf{i}^\prime)$ is defined as
 
-$$
-\begin{aligned}
-  (i_{\sigma(1)},\ldots,i_{\sigma(p)})&=(i_1^\prime,\ldots,i_p^\prime),\\
-  (j_{\tau(1)},\ldots,j_{\tau(p)})&=(j_1^\prime,\ldots,j_p^\prime), 
-\end{aligned}
-$$
+$$\delta_\sigma(\mathbf{i},\mathbf{i}^\prime) = \prod_{s=1}^p\delta_{i_{\sigma(s)},i_s^\prime}.$$
 
-with the integral $0$ if the $i',i$, $j'$ or $j$ strings have different lengths.  In other words, expectation of polynomials of entries of unitary matrices are given by a sum of Weingarten functions. 
+In other words, expectation of polynomials of entries of unitary matrices are given by a sum of Weingarten functions. Note that the integral of Eq. (1) is trivially $0$ if sequences $\mathbf{i}$ and $\mathbf{i}^\prime$ (or equivalently $\mathbf{j}$ and $\mathbf{j}^\prime$) are of different lengths. 
 
 The general average above in Eq. (1) can be compute in haarpy as 
 ```Python
