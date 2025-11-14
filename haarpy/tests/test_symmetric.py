@@ -356,7 +356,7 @@ def test_young_subgroup_order(degree):
     "Test the order of the Young subgroup"
     for partition in partitions(degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        young = ap.young_subgroup(partition)
+        young = ap.YoungSubgroup(partition)
         assert (
             young.order()
             == prod(SymmetricGroup(part).order() for part in partition)
@@ -371,7 +371,7 @@ def test_young_subgroup_stabilizer(degree):
         if partition == degree*(1,):
             continue
         sequence = [i for i, j in enumerate(partition) for _ in range(j)]
-        young = ap.young_subgroup(partition)
+        young = ap.YoungSubgroup(partition)
         assert young.random()(sequence) == sequence
 
 
@@ -389,7 +389,7 @@ def test_young_subgroup_stabilizer(degree):
 def test_young_subgroup_type_error(partition):
     "Young subgroup TypeError"
     with pytest.raises(TypeError):
-        ap.young_subgroup(partition)
+        ap.YoungSubgroup(partition)
 
 
 @pytest.mark.parametrize(
@@ -478,7 +478,7 @@ def test_stabilizer_coset_type_error(degree):
 @pytest.mark.parametrize("degree", range(1, 8))
 def test_hyperoctahedral_order(degree):
     "Hyperoctahedral order test"
-    assert ap.hyperoctahedral(degree).order() == 2**degree * factorial(degree)
+    assert ap.HyperoctahedralGroup(degree).order() == 2**degree * factorial(degree)
 
 
 @pytest.mark.parametrize(
@@ -493,7 +493,7 @@ def test_hyperoctahedral_order(degree):
 def test_hyperoctahedral_type_error(degree):
     "Hyperoctahedral TypeError for wrong degree type"
     with pytest.raises(TypeError):
-        ap.hyperoctahedral(degree)
+        ap.HyperoctahedralGroup(degree)
 
 
 @pytest.mark.parametrize("degree", range(2, 12, 2))

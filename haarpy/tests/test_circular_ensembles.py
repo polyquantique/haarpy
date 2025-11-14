@@ -36,7 +36,7 @@ def test_weingarten_circular_orthogonal_hyperoctahedral_symbolic(half_degree):
             assert ap.weingarten_circular_orthogonal(permutation, d) == 1/(d+1)
     else:
         for permutation in SymmetricGroup(2*half_degree).generate():
-            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = 1/(d*(d+1)*(d+3))
             assert ap.weingarten_circular_orthogonal(permutation, d) == (
                 simplify((d+2)*coefficient) if permutation in hyperoctahedral
@@ -55,7 +55,7 @@ def test_weingarten_circular_orthogonal_hyperoctahedral_numeric(half_degree):
             assert ap.weingarten_circular_orthogonal(permutation, 7) == 1/(7+1)
     else:
         for permutation in SymmetricGroup(2*half_degree).generate():
-            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = Fraction(1,(7*(7+1)*(7+3)))
             assert ap.weingarten_circular_orthogonal(permutation, 7) == (
                 simplify((7+2)*coefficient) if permutation in hyperoctahedral
@@ -76,7 +76,7 @@ def test_weingarten_circular_symplectic_hyperoctahedral_symbolic(half_degree):
             )
     else:
         for permutation in SymmetricGroup(2*half_degree).generate():
-            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = permutation.signature()/(d*(2*d-1)*(2*d-3))
             assert ap.weingarten_circular_symplectic(permutation, d) == (
                 simplify((d-1)*coefficient) if permutation in hyperoctahedral
@@ -98,7 +98,7 @@ def test_weingarten_circular_symplectic_hyperoctahedral_numeric(half_degree):
             )
     else:
         for permutation in SymmetricGroup(2*half_degree).generate():
-            hyperoctahedral = ap.hyperoctahedral(half_degree)
+            hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = Fraction(permutation.signature(), (7*(2*7-1)*(2*7-3)))
             assert ap.weingarten_circular_symplectic(permutation, 7) == (
                 simplify((7-1)*coefficient) if permutation in hyperoctahedral

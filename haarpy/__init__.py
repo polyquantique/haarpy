@@ -45,9 +45,9 @@ Functions
     irrep_dimension
     representation_dimension
     sorting_permutation
-    young_subgroup
+    YoungSubgroup
     stabilizer_coset
-    hyperoctahedral
+    HyperoctahedralGroup
     hyperoctahedral_transversal
     zonal_spherical_function
     coset_type
@@ -81,9 +81,9 @@ from .symmetric import (
     murn_naka_rule,
     irrep_dimension,
     sorting_permutation,
-    young_subgroup,
+    YoungSubgroup,
     stabilizer_coset,
-    hyperoctahedral,
+    HyperoctahedralGroup,
     hyperoctahedral_transversal,
     coset_type,
     coset_type_representative,
@@ -143,9 +143,9 @@ __all__ = [
     "irrep_dimension",
     "representation_dimension",
     "sorting_permutation",
-    "young_subgroup",
+    "YoungSubgroup",
     "stabilizer_coset",
-    "hyperoctahedral",
+    "HyperoctahedralGroup",
     "hyperoctahedral_transversal",
     "zonal_spherical_function",
     "coset_type",

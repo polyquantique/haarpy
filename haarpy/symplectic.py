@@ -21,7 +21,12 @@ from functools import lru_cache
 from sympy import Symbol, factorial, factor, fraction, simplify
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class, murn_naka_rule, hyperoctahedral, irrep_dimension
+from haarpy import (
+    get_conjugacy_class,
+    murn_naka_rule,
+    HyperoctahedralGroup,
+    irrep_dimension,
+)
 
 
 @lru_cache
@@ -58,7 +63,7 @@ def twisted_spherical_function(
         raise ValueError("Incompatible partition and permutation")
 
     duplicate_partition = tuple(part for part in partition for _ in range(2))
-    hyperocta = hyperoctahedral(degree // 2)
+    hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
         murn_naka_rule(
             duplicate_partition, get_conjugacy_class(~zeta * permutation, degree)

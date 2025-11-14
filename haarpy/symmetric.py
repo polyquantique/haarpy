@@ -265,9 +265,9 @@ def sorting_permutation(*sequence: tuple[int]) -> Permutation:
     raise TypeError
 
 
-def young_subgroup(partition: tuple[int]) -> PermutationGroup:
+def YoungSubgroup(partition: tuple[int]) -> PermutationGroup:
     """Returns the Young subgroup of a given input partition
-    See `<https://en.wikipedia.org/wiki/Young_subgroup>`_
+    See `<https://en.wikipedia.org/wiki/YoungSubgroup>`_
 
     Args:
         partition (tuple[int]): A partition
@@ -312,12 +312,12 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
         ~sorting_permutation(sequence[1])
         * permutation
         * sorting_permutation(sequence[0])
-        for permutation in young_subgroup(young_partition).generate()
+        for permutation in YoungSubgroup(young_partition).generate()
     )
 
 
 @lru_cache
-def hyperoctahedral(degree: int) -> PermutationGroup:
+def HyperoctahedralGroup(degree: int) -> PermutationGroup:
     """Return the hyperoctahedral group
 
     Args:
