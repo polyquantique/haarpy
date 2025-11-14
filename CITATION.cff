@@ -11,7 +11,7 @@ authors:
   given-names: "Nicolás"
   orcid: "https://orcid.org/0000-0002-0175-1688"
 title: "haarpy"
-version: 0.0.5
+version: 0.0.6
 doi:
 date-released: 2024-06-21
 url: "https://github.com/polyquantique/haarpy"
