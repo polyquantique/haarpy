@@ -187,7 +187,7 @@ def about():
         Python version:            3.12.3
         Platform info:             Linux-6.8.0-31-generic-x86_64-with-glibc2.39
         Installation path:         /home/username/haarpy
-        Haarpy version:            0.0.5
+        Haarpy version:            0.0.6
         SymPy version:             1.12
     """
     # pylint: disable=import-outside-toplevel

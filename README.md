@@ -170,7 +170,7 @@ Please cite as:
   publisher={GitHub},
   journal={GitHub repository},
   howpublished = {\url{https://github.com/polyquantique/haarpy}},
-  version = {0.0.5}
+  version = {0.0.6}
 }
 ```
 
