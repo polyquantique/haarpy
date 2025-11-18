@@ -40,7 +40,7 @@ np.random.seed(137)
 shots = 1000
 
 # For unitary matrices of size between 2 and 4 produce 1000 shots and calculate the average
-# value of the absolute value squared of the 0,1 entry
+# of the absolute value squared of the 0,1 entry
 np.array(
     [
         np.mean([np.abs(unitary_group.rvs(dim=dim)[0, 1]) ** 2 for _ in range(shots)])
