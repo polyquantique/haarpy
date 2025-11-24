@@ -85,7 +85,6 @@ The general average above in Eq. (1) can be compute in Haarpy as
 ```Python
 haar_integral_unitary(("i_1 i_2 ... i_p","j_1 j_2 ... j_p","i_1' i_2' ... i_p'","j_1' j_2' ... j_p'"), d)
 ```
-Note that the notation above is schematic and you should use characters (`chr`) without subindices to label the entries of the matrix.
 
 One can access directly the Weingarten functions of a given permutation of the symmetric group by calling
 ```Python
