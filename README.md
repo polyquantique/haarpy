@@ -27,7 +27,7 @@
 
 
 
-Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) namely the orthogonal, unitary and unitary-symplectic groups, the circular orthogonal and circular symplectic ensembles and the group of permutation matrices.
+Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) (orthogonal, unitary and symplectic) their associated [circular ensembles](https://en.wikipedia.org/wiki/Circular_ensemble) and the group of permutation matrices.
 
 
 ## Haarpy in action
@@ -50,7 +50,7 @@ np.array(
 # Output: array([0.4964599 , 0.32742463, 0.25429793])
 ```
 
-Haarpy allows you to obtain this (and many other!) averages analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and write
+Haarpy allows you to obtain this average (and many others!) analytically. We first recall that the expression we are trying to calculate is $\int dU |U_{i,j}|^2 = \int dU U_{i,j} U_{i,j}^*$. With this expression in mind we can use Sympy to create a symbolic variable $d$ for the dimension of the unitary and write
 
 ```Python
 from sympy import Symbol
