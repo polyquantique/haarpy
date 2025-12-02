@@ -16,6 +16,7 @@ Symplectic tests
 """
 
 from math import factorial
+from random import seed, randint, choice
 from fractions import Fraction
 from sympy import Symbol, simplify
 from sympy.combinatorics import Permutation, SymmetricGroup
@@ -23,6 +24,7 @@ from sympy.utilities.iterables import partitions
 import pytest
 import haarpy as ap
 
+seed(137)
 d = Symbol('d')
 
 
@@ -132,6 +134,38 @@ def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, part
     assert convolution == orthogonality
 
 
+@pytest.mark.parametrize(
+    "permutation, partition",
+    [
+        (Permutation(3,), [2,]),
+        ((3,1), (1,1)),
+        (Permutation(5,)(0,1), 'a'),
+        ('a', (3,)),
+        (Permutation(5,)(0,3,4), 7),
+        (7, (1,1,1)),
+    ],
+)
+def test_twisted_spherical_function_type_error(permutation, partition):
+    "Test type error for for wrong input formats"
+    with pytest.raises(TypeError):
+        ap.twisted_spherical_function(permutation, partition)
+
+
+@pytest.mark.parametrize(
+    "permutation, partition",
+    [
+        (Permutation(3,), (2,2)),
+        (Permutation(3,), (1,1,1)),
+        (Permutation(4,), (2,1)),
+        (Permutation(4,), (1,1,1)),
+    ],
+)
+def test_twisted_spherical_function_degree_value_error(permutation, partition):
+    "Test value error for for wrong input formats"
+    with pytest.raises(ValueError):
+        ap.twisted_spherical_function(permutation, partition)
+
+
 @pytest.mark.parametrize("half_degree", range(1,3))
 def test_weingarten_symplectic_hyperoctahedral_symbolic(half_degree):
     """Symbolic validation of symplectic Weingarten function against results shown in
@@ -204,36 +238,6 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
 
 
 @pytest.mark.parametrize(
-    "permutation, partition",
-    [
-        (Permutation(3,), [2,]),
-        ((3,1), (1,1)),
-        (Permutation(5,)(0,1), 'a'),
-        ('a', (3,)),
-        (Permutation(5,)(0,3,4), 7),
-        (7, (1,1,1)),
-    ],
-)
-def test_twisted_spherical_function_type_error(permutation, partition):
-    with pytest.raises(TypeError):
-        ap.twisted_spherical_function(permutation, partition)
-
-
-@pytest.mark.parametrize(
-    "permutation, partition",
-    [
-        (Permutation(3,), (2,2)),
-        (Permutation(3,), (1,1,1)),
-        (Permutation(4,), (2,1)),
-        (Permutation(4,), (1,1,1)),
-    ],
-)
-def test_twisted_spherical_function_degree_value_error(permutation, partition):
-    with pytest.raises(ValueError):
-        ap.twisted_spherical_function(permutation, partition)
-
-
-@pytest.mark.parametrize(
     "permutation",
     [
         (Permutation(2)),
@@ -243,5 +247,125 @@ def test_twisted_spherical_function_degree_value_error(permutation, partition):
     ]
 )
 def test_weingarten_symplectic_degree_value_error(permutation):
+    "Test value error for odd symmetric group degree"
     with pytest.raises(ValueError, match = "The degree of the symmetric group S_2k should be even"):
-        ap.weingarten_symplectic(permutation, d) 
+        ap.weingarten_symplectic(permutation, d)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,2,3,4),(1,2,3,4),(1,2,3,4)),
+        ((1,2,3,4),),
+        ((1,2,3,4), (1,2,3,4,5,6)),
+        ((1,2,3,4,5,6), (1,2,3,4,5,6,7)),
+    ]
+)
+def test_haar_integral_symplectic_value_error_wrong_tuple(sequences):
+    "Value error for wrong sequence format"
+    with pytest.raises(
+        ValueError,
+        match="Wrong sequence format"
+    ):
+        ap.haar_integral_symplectic(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        (('a','b','c','d'), (1,2,3,4)),
+        ((1,1,d+1,d+1), (1,1,1,1)),
+    ]
+)
+def test_haar_integral_symplectic_type_error_integer_dimension(sequences):
+    "Type error for integer dimension with not integer sequences"
+    dimension = randint(1,99)
+    with pytest.raises(TypeError):
+        ap.haar_integral_symplectic(sequences, dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences, dimension",
+    [
+        (((1,3),(1,3)), 1),
+        (((1,2,3,5),(1,2,3,4)), 2),
+        (((1,2,3,41),(1,2,3,41)), 20),
+    ]
+)
+def test_haar_integral_symplectic_value_error_outside_dimension_range(sequences, dimension):
+    "Value error for sequences values outside dimension range"
+    with pytest.raises(
+        ValueError,
+        match="The matrix indices are outside the dimension range",
+    ):
+        ap.haar_integral_symplectic(sequences, dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,2,3,4),(1,2,3,'a')),
+        ((1,2,3,4), (1,2,3,{1,2})),
+        ((1,2,3,4),(1,2,3,4*d)),
+        ((1,2,3,2*d+1), (1,2,3,4)),
+        ((1,2,3,4), (1,2,3,d**2)),
+        ((1,2,3,4), (1,2,3,1+d**2+d)),
+        ((1,2,3,4), (1,2,3, d + Symbol('s'))),
+    ]
+)
+def test_haar_integral_symplectic_type_error_wrong_format(sequences):
+    "Type error for symbolic dimension with wrong sequence format"
+    with pytest.raises(TypeError):
+        ap.haar_integral_symplectic(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "dimension",
+    [
+        'a',
+        [1,2],
+        {1,2},
+        3.0,
+    ]
+)
+def test_haar_integral_symplectic_wrong_dimension_format(dimension):
+    "Type error if the symplectic dimension is not an int nor a symbol"
+    with pytest.raises(TypeError):
+        ap.haar_integral_symplectic(((1,2,3,4),(1,2,3,4)), dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,1,1),(1,1,1)),
+        ((1,1,1,1,1),(1,1,1,1,1)),
+        ((1,1+d,1+d),(1,1+d,1+d)),
+        ((1,1,1,1),(1,1,1,1)),
+        ((1,1,d+1,d+2),(1,1,d+1,d+1)),
+        ((1,d,d,2*d),(1,d+1,d,2*d)),
+    ]
+)
+def test_haar_integral_symplectic_zero_cases(sequences):
+    "Test cases that yield zero"
+    assert not ap.haar_integral_symplectic(sequences, d)
+
+
+@pytest.mark.parametrize("half_degree", range(1,4))
+def test_haar_integral_symplectic_weingarten_reconciliation(half_degree):
+    "Test single permutation moments match the symplectic weingarten function"
+    seq_dim = tuple(i+d for i in range(half_degree))
+    perm_base = tuple(2*i for i in range(half_degree))
+    seq_dim_base = tuple(i+d for i in range(half_degree))
+    sequence = tuple(i+1 for pair in zip(range(half_degree), seq_dim_base) for i in pair)
+    
+    for permutation in SymmetricGroup(half_degree).generate():
+        perm_half = permutation([2*i+1 for i in range(half_degree)])
+        perm = Permutation([i for pair in zip(perm_base, perm_half) for i in pair])
+
+        perm_dim = permutation(seq_dim)
+        perm_sequence = tuple(i+1 for pair in zip(range(half_degree), perm_dim) for i in pair)
+
+        assert (
+            ap.haar_integral_symplectic((sequence, perm_sequence), d)
+            == ap.weingarten_symplectic(perm, d)
+        )

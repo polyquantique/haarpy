@@ -17,11 +17,11 @@ Symplectic group Python interface
 
 from math import prod
 from fractions import Fraction
-from itertools import product
 from functools import lru_cache
-from sympy import Symbol, factorial, factor, fraction, simplify
+from sympy import Symbol, factorial, factor, fraction, simplify, Expr
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
+from sympy.core.numbers import Integer
 from haarpy import (
     get_conjugacy_class,
     murn_naka_rule,
@@ -156,14 +156,14 @@ def weingarten_symplectic(
 
 @lru_cache
 def haar_integral_symplectic(
-    sequences: tuple[tuple[int]],
-    symplectic_dimension: int,
-) -> Fraction:
+    sequences: tuple[tuple[Expr]],
+    symplectic_dimension: Symbol,
+) -> Expr:
     """Returns integral over symplectic group polynomial sampled at random from the Haar measure
 
     Args:
-        sequences (tuple[tuple[int]]): Indices of matrix elements
-        symplectic_dimension (int): Dimension of the symplectic group
+        sequences (tuple[tuple[Expr]]): Indices of matrix elements
+        symplectic_dimension (Symbol): Dimension of the symplectic group
 
     Returns:
         Expr: Integral under the Haar measure
@@ -175,53 +175,104 @@ def haar_integral_symplectic(
         ValueError: If all sequence indices are not between 1 and dimension
     """
     if len(sequences) != 2:
-        raise ValueError("Wrong tuple format")
+        raise ValueError("Wrong sequence format")
 
     seq_i, seq_j = sequences
+
     degree = len(seq_i)
 
     if degree != len(seq_j):
-        raise ValueError("Wrong tuple format")
+        raise ValueError("Wrong sequence format")
 
-    if not isinstance(symplectic_dimension, int):
-        raise TypeError(
-            "Unlike other compact groups, "
-            "the symplectic group dimension must be an integer to compute the integral."
+    if isinstance(symplectic_dimension, int):
+        if not all(isinstance(i, int) for i in seq_i + seq_j):
+            raise TypeError
+        if not all(1 <= i <= 2 * symplectic_dimension for i in seq_i + seq_j):
+            raise ValueError("The matrix indices are outside the dimension range")
+        seq_i_position = tuple(0 if i <= symplectic_dimension else 1 for i in seq_i)
+        seq_j_position = tuple(0 if j <= symplectic_dimension else 1 for j in seq_j)
+        seq_i_value = tuple(
+            i if i <= symplectic_dimension else i - symplectic_dimension for i in seq_i
         )
+        seq_j_value = tuple(
+            j if j <= symplectic_dimension else j - symplectic_dimension for j in seq_j
+        )
+    elif isinstance(symplectic_dimension, Symbol):
+        if not all(isinstance(i, (int, Expr)) for i in seq_i + seq_j):
+            raise TypeError
 
-    if not (
-        all(1 <= i <= symplectic_dimension for i in seq_i)
-        and all(1 <= j <= symplectic_dimension for j in seq_j)
-    ):
-        raise ValueError
+        if not all(
+            (
+                len(xpr.as_ordered_terms()) == 2
+                and xpr.as_ordered_terms()[0] == symplectic_dimension
+                and isinstance(xpr.as_ordered_terms()[1], Integer)
+            )
+            or xpr == symplectic_dimension
+            or xpr == 2 * symplectic_dimension
+            for xpr in seq_i + seq_j
+            if isinstance(xpr, Expr)
+        ):
+            raise TypeError
+        seq_i_position = tuple(
+            0 if isinstance(i, int) or i == symplectic_dimension else 1 for i in seq_i
+        )
+        seq_j_position = tuple(
+            0 if isinstance(j, int) or j == symplectic_dimension else 1 for j in seq_j
+        )
+        seq_i_value = tuple(
+            (
+                i
+                if isinstance(i, int)
+                else 0 if i in (symplectic_dimension, 2*symplectic_dimension)
+                else i.as_ordered_terms()[1]
+            )
+            for i in seq_i
+        )
+        seq_j_value = tuple(
+            (
+                j
+                if isinstance(j, int)
+                else 0 if j in (symplectic_dimension, 2*symplectic_dimension)
+                else j.as_ordered_terms()[1]
+            )
+            for j in seq_j
+        )
+    else:
+        raise TypeError
 
     if degree % 2:
         return 0
 
-    def twisted_delta(seq, permutation, n):
-        return prod(
-            (
-                1
-                if 1 <= i <= n and j == i + n
-                else -1 if 1 <= j <= n and i == j + n else 0
+    def twisted_delta(seq_value, seq_pos, perm):
+        return (
+            0
+            if not all(
+                i1 == i2 for i1, i2 in zip(perm(seq_value)[::2], perm(seq_value)[1::2])
             )
-            for i, j in zip(permutation(seq)[::2], permutation(seq)[1::2])
+            else prod(
+                i2 - i1 for i1, i2 in zip(perm(seq_pos)[::2], perm(seq_pos)[1::2])
+            )
         )
 
-    permutation_i = (
-        (twisted_delta(seq_i, permutation, symplectic_dimension), permutation)
-        for permutation in hyperoctahedral_transversal(degree)
+    permutation_i_tuple = tuple(
+        (perm, twisted_delta(seq_i_value, seq_i_position, perm))
+        for perm in hyperoctahedral_transversal(degree)
+    )
+    permutation_j_tuple = tuple(
+        (perm, twisted_delta(seq_j_value, seq_j_position, perm))
+        for perm in hyperoctahedral_transversal(degree)
     )
 
-    permutation_j = (
-        (twisted_delta(seq_j, permutation, symplectic_dimension), permutation)
-        for permutation in hyperoctahedral_transversal(degree)
+    integral = sum(
+        perm_i[1]
+        * perm_j[1]
+        * weingarten_symplectic(perm_j[0] * ~perm_i[0], symplectic_dimension)
+        for perm_i, perm_j in zip(permutation_i_tuple, permutation_j_tuple)
+        if perm_i[1] * perm_j[1]
     )
 
-    return sum(
-        perm_i[0]
-        * perm_j[0]
-        * weingarten_symplectic(perm_j[1] * ~perm_i[1], symplectic_dimension)
-        for perm_i, perm_j in product(permutation_i, permutation_j)
-        if perm_i[0] * perm_j[0]
-    )
+    if isinstance(symplectic_dimension, Expr):
+        numerator, denominator = fraction(simplify(integral))
+        integral = factor(numerator) / factor(denominator)
+
+    return integral
