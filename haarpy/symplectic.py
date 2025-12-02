@@ -18,6 +18,7 @@ Symplectic group Python interface
 from math import prod
 from fractions import Fraction
 from functools import lru_cache
+from itertools import product
 from sympy import Symbol, factorial, factor, fraction, simplify, Expr
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
@@ -267,7 +268,7 @@ def haar_integral_symplectic(
         perm_i[1]
         * perm_j[1]
         * weingarten_symplectic(perm_j[0] * ~perm_i[0], symplectic_dimension)
-        for perm_i, perm_j in zip(permutation_i_tuple, permutation_j_tuple)
+        for perm_i, perm_j in product(permutation_i_tuple, permutation_j_tuple)
         if perm_i[1] * perm_j[1]
     )
 

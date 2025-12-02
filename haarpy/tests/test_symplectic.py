@@ -350,22 +350,18 @@ def test_haar_integral_symplectic_zero_cases(sequences):
     assert not ap.haar_integral_symplectic(sequences, d)
 
 
-@pytest.mark.parametrize("half_degree", range(1,4))
+@pytest.mark.parametrize("half_degree", range(1,5))
 def test_haar_integral_symplectic_weingarten_reconciliation(half_degree):
     "Test single permutation moments match the symplectic weingarten function"
-    seq_dim = tuple(i+d for i in range(half_degree))
-    perm_base = tuple(2*i for i in range(half_degree))
     seq_dim_base = tuple(i+d for i in range(half_degree))
     sequence = tuple(i+1 for pair in zip(range(half_degree), seq_dim_base) for i in pair)
-    
-    for permutation in SymmetricGroup(half_degree).generate():
-        perm_half = permutation([2*i+1 for i in range(half_degree)])
-        perm = Permutation([i for pair in zip(perm_base, perm_half) for i in pair])
 
-        perm_dim = permutation(seq_dim)
-        perm_sequence = tuple(i+1 for pair in zip(range(half_degree), perm_dim) for i in pair)
+    for perm in ap.hyperoctahedral_transversal(2*half_degree):
+        inv_perm = ~perm
+        perm_sequence = tuple(inv_perm(sequence))
 
         assert (
             ap.haar_integral_symplectic((sequence, perm_sequence), d)
             == ap.weingarten_symplectic(perm, d)
         )
+
