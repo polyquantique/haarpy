@@ -25,7 +25,7 @@ from sympy.utilities.iterables import partitions
 from haarpy import (
     get_conjugacy_class,
     murn_naka_rule,
-    hyperoctahedral,
+    HyperoctahedralGroup,
     irrep_dimension,
     hyperoctahedral_transversal,
 )
@@ -65,7 +65,7 @@ def twisted_spherical_function(
         raise ValueError("Incompatible partition and permutation")
 
     duplicate_partition = tuple(part for part in partition for _ in range(2))
-    hyperocta = hyperoctahedral(degree // 2)
+    hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
         murn_naka_rule(
             duplicate_partition, get_conjugacy_class(~zeta * permutation, degree)
