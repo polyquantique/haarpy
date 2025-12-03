@@ -135,7 +135,7 @@ def haar_integral_circular_symplectic(
         TypeError: If symbolic sequences have the wrong format
     """
     if len(sequences) != 2:
-        raise ValueError("Wrong tuple format")
+        raise ValueError("Wrong sequence format")
 
     seq_i, seq_j = sequences
 

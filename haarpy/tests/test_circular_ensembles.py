@@ -16,6 +16,7 @@ Circular ensembles tests
 """
 
 from math import prod
+from random import randint
 from fractions import Fraction
 import numpy as np
 from sympy import Symbol, simplify, factorial, factorial2
@@ -302,3 +303,99 @@ def test_haar_integral_circular_symplectic_monte_carlo_symbolic(seq_i, seq_j, ha
             abs(monte_carlo_integral.real) < epsilon
             and abs(monte_carlo_integral.imag) < epsilon
         )
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,2,3,4),(1,2,3,4),(1,2,3,4)),
+        ((1,2,3,4),),
+        ((1,2,3,4,5), (1,2,3,4,5)),
+        ((1,2,3,4,5,6), (1,2,3,4,5,6,7)),
+    ]
+)
+def test_haar_integral_circular_symplectic_value_error_wrong_tuple(sequences):
+    "Value error for wrong sequence format"
+    with pytest.raises(
+        ValueError,
+        match="Wrong sequence format"
+    ):
+        ap.haar_integral_circular_symplectic(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        (('a','b','c','d'), (1,2,3,4)),
+        ((1,1,d+1,d+1), (1,1,1,1)),
+    ]
+)
+def test_haar_integral_circular_symplectic_type_error_integer_dimension(sequences):
+    "Type error for integer dimension with not integer sequences"
+    dimension = randint(1,99)
+    with pytest.raises(TypeError):
+        ap.haar_integral_circular_symplectic(sequences, dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences, dimension",
+    [
+        (((1,3),(1,3)), 1),
+        (((1,2,3,5),(1,2,3,4)), 2),
+        (((1,2,3,41),(1,2,3,41)), 20),
+    ]
+)
+def test_haar_integral_circular_symplectic_value_error_outside_dimension_range(sequences, dimension):
+    "Value error for sequences values outside dimension range"
+    with pytest.raises(
+        ValueError,
+        match="The matrix indices are outside the dimension range",
+    ):
+        ap.haar_integral_circular_symplectic(sequences, dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,2,3,4),(1,2,3,'a')),
+        ((1,2,3,4), (1,2,3,{1,2})),
+        ((1,2,3,4),(1,2,3,4*d)),
+        ((1,2,3,2*d+1), (1,2,3,4)),
+        ((1,2,3,d+1), (1,2,3,4.0)),
+        ((1,2,3,4), (1,2,3,d**2)),
+        ((1,2,3,4), (1,2,3,1+d**2+d)),
+        ((1,2,3,4), (1,2,3, d + Symbol('s'))),
+    ]
+)
+def test_haar_integral_circular_symplectic_type_error_wrong_format(sequences):
+    "Type error for symbolic dimension with wrong sequence format"
+    with pytest.raises(TypeError):
+        ap.haar_integral_circular_symplectic(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "dimension",
+    [
+        'a',
+        [1,2],
+        {1,2},
+        3.0,
+    ]
+)
+def test_haar_integral_circular_symplectic_wrong_dimension_format(dimension):
+    "Type error if the symplectic dimension is not an int nor a symbol"
+    with pytest.raises(TypeError):
+        ap.haar_integral_circular_symplectic(((1,2,3,4),(1,2,3,4)), dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences, dimension",
+    [
+        (((1,1),(1,1,1,1)), d),
+        (((1,1,d+1,d+2),(1,1)), d),
+        (((0,0,0,0), (0,0,0,0,2,2)), 2),
+    ]
+)
+def test_haar_integral_circular_symplectic_zero_cases(sequences, dimension):
+    "Test cases that yield zero"
+    assert not ap.haar_integral_circular_symplectic(sequences, dimension)
