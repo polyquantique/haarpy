@@ -36,6 +36,7 @@ Functions
     haar_integral_orthogonal
     haar_integral_symplectic
     haar_integral_circular_orthogonal
+    haar_integral_circular_symplectic
     haar_integral_permutation
     haar_integral_centered_permutation
     get_conjugacy_class
@@ -112,6 +113,7 @@ from .circular_ensembles import (
     weingarten_circular_orthogonal,
     weingarten_circular_symplectic,
     haar_integral_circular_orthogonal,
+    haar_integral_circular_symplectic,
 )
 
 from .permutation import (
@@ -136,6 +138,7 @@ __all__ = [
     "haar_integral_orthogonal",
     "haar_integral_symplectic",
     "haar_integral_circular_orthogonal",
+    "haar_integral_circular_symplectic",
     "haar_integral_permutation",
     "haar_integral_centered_permutation",
     "get_conjugacy_class",
