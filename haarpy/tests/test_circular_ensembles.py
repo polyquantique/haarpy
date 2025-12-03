@@ -17,8 +17,10 @@ Circular ensembles tests
 
 from math import prod
 from fractions import Fraction
+import numpy as np
 from sympy import Symbol, simplify, factorial, factorial2
 from sympy.combinatorics import SymmetricGroup
+from scipy.stats import unitary_group
 import pytest
 import haarpy as ap
 
@@ -194,3 +196,109 @@ def test_haar_integral_coe_value_error(sequences):
     "Test haar integral value error"
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_circular_orthogonal(sequences, d)
+
+
+@pytest.mark.parametrize(
+    'seq_i, seq_j, half_dim',
+    [
+        ((0,0,0,0),(0,0,0,0), 2),
+        ((0,3,0,3),(0,3,0,3), 2),
+        ((0,0,0,3),(0,3,0,0), 2),
+        ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
+        ((5,5,5,5,5,5),(5,5,5,5,5,5), 3),
+        ((2,2,5,5,5,5),(2,2,5,5,5,5), 3),
+        ((2,2,5,5,5,5),(2,5,5,2,5,5), 3),
+        ((2,2,5,5,3,3),(2,2,5,5,3,3), 3),
+        ((7,7,0,0,0,0,0,0),(7,0,0,7,0,0,0,0), 4),
+    ]
+)
+def test_haar_integral_circular_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dim):
+    "Test haar integral circular symplectic moments against Monte Carlo simulation numeric"
+    sample_size = int(1e4)
+    epsilon_real = 1e4
+    epsilon = 1e6
+
+    integral = float(ap.haar_integral_circular_symplectic((seq_i, seq_j), half_dim))
+
+    unitary_gen = (unitary_group.rvs(2*half_dim) for _ in range(sample_size))
+
+    I = np.eye(half_dim, dtype=np.complex128)
+    Z = np.zeros((half_dim, half_dim), dtype=np.complex128)
+    J = np.block([[Z, I],[-I, Z]])
+    
+    cse_gen = (J @ U.T @ J.T @ U for U in unitary_gen)
+
+    monte_carlo_integral = sum(
+        prod(
+            cse[i-1, j-1]
+            for i, j in zip(seq_i, seq_j)
+        )
+        for cse in cse_gen
+    ) / sample_size
+
+    if integral:
+        assert (
+            abs((integral-monte_carlo_integral.real)/integral) < epsilon_real
+            and abs(monte_carlo_integral.imag) < epsilon
+            and integral != 0
+        )
+    else:
+        assert (
+            abs(monte_carlo_integral.real) < epsilon
+            and abs(monte_carlo_integral.imag) < epsilon
+        )
+
+
+@pytest.mark.parametrize(
+    'seq_i, seq_j, half_dim',
+    [
+        ((0,0,0,0),(0,0,0,0), 2),
+        ((0,1+d,0,1+d),(0,1+d,0,1+d), 2),
+        ((0,0,0,1+d),(0,1+d,0,0), 2),
+        ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
+        ((d+2,d+2,d+2,d+2,d+2,d+2),(d+2,d+2,d+2,d+2,d+2,d+2), 3),
+        ((2,2,d+2,d+2,d+2,d+2),(2,2,d+2,d+2,d+2,d+2), 3),
+        ((2,2,d+2,d+2,d+2,d+2),(2,d+2,d+2,2,d+2,d+2), 3),
+        ((2,2,d+2,d+2,d,d),(2,2,d+2,d+2,d,d), 3),
+        ((d+3,d+3,0,0,0,0,0,0),(d+3,0,0,d+3,0,0,0,0), 4),
+    ]
+)
+def test_haar_integral_circular_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dim):
+    "Test haar integral circular symplectic moments against Monte Carlo simulation symbolic"
+    sample_size = int(1e4)
+    epsilon_real = 1e4
+    epsilon = 1e6
+
+    integral = ap.haar_integral_circular_symplectic((seq_i, seq_j), d)
+    integral = float(integral.subs(d, half_dim))
+
+    seq_i = tuple(i if isinstance(i, int) else i.subs(d, half_dim) for i in seq_i)
+    seq_j = tuple(i if isinstance(i, int) else i.subs(d, half_dim) for i in seq_j)
+
+    unitary_gen = (unitary_group.rvs(2*half_dim) for _ in range(sample_size))
+
+    I = np.eye(half_dim, dtype=np.complex128)
+    Z = np.zeros((half_dim, half_dim), dtype=np.complex128)
+    J = np.block([[Z, I],[-I, Z]])
+    
+    cse_gen = (J @ U.T @ J.T @ U for U in unitary_gen)
+
+    monte_carlo_integral = sum(
+        prod(
+            cse[i-1, j-1]
+            for i, j in zip(seq_i, seq_j)
+        )
+        for cse in cse_gen
+    ) / sample_size
+
+    if integral:
+        assert (
+            abs((integral-monte_carlo_integral.real)/integral) < epsilon_real
+            and abs(monte_carlo_integral.imag) < epsilon
+            and integral != 0
+        )
+    else:
+        assert (
+            abs(monte_carlo_integral.real) < epsilon
+            and abs(monte_carlo_integral.imag) < epsilon
+        )
