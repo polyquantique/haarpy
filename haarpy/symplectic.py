@@ -172,8 +172,10 @@ def haar_integral_symplectic(
     Raise:
         ValueError: If sequences doesn't contain 2 tuples
         ValueError: If tuples i and j are of different length
-        TypeError: If the symplectic_dimension is not int
-        ValueError: If all sequence indices are not between 1 and dimension
+        TypeError: If the symplectic_dimension is not int nor Symbol
+        TypeError: If dimension is int and sequence is not
+        ValueError: If all sequence indices are not between 0 and 2*dimension - 1
+        TypeError: If symbolic sequences have the wrong format
     """
     if len(sequences) != 2:
         raise ValueError("Wrong sequence format")
@@ -188,15 +190,15 @@ def haar_integral_symplectic(
     if isinstance(symplectic_dimension, int):
         if not all(isinstance(i, int) for i in seq_i + seq_j):
             raise TypeError
-        if not all(1 <= i <= 2 * symplectic_dimension for i in seq_i + seq_j):
+        if not all(0 <= i <= 2 * symplectic_dimension - 1 for i in seq_i + seq_j):
             raise ValueError("The matrix indices are outside the dimension range")
-        seq_i_position = tuple(0 if i <= symplectic_dimension else 1 for i in seq_i)
-        seq_j_position = tuple(0 if j <= symplectic_dimension else 1 for j in seq_j)
+        seq_i_position = tuple(0 if i < symplectic_dimension else 1 for i in seq_i)
+        seq_j_position = tuple(0 if j < symplectic_dimension else 1 for j in seq_j)
         seq_i_value = tuple(
-            i if i <= symplectic_dimension else i - symplectic_dimension for i in seq_i
+            i if i < symplectic_dimension else i - symplectic_dimension for i in seq_i
         )
         seq_j_value = tuple(
-            j if j <= symplectic_dimension else j - symplectic_dimension for j in seq_j
+            j if j < symplectic_dimension else j - symplectic_dimension for j in seq_j
         )
     elif isinstance(symplectic_dimension, Symbol):
         if not all(isinstance(i, (int, Expr)) for i in seq_i + seq_j):
@@ -209,23 +211,18 @@ def haar_integral_symplectic(
                 and isinstance(xpr.as_ordered_terms()[1], Integer)
             )
             or xpr == symplectic_dimension
-            or xpr == 2 * symplectic_dimension
             for xpr in seq_i + seq_j
             if isinstance(xpr, Expr)
         ):
             raise TypeError
-        seq_i_position = tuple(
-            0 if isinstance(i, int) or i == symplectic_dimension else 1 for i in seq_i
-        )
-        seq_j_position = tuple(
-            0 if isinstance(j, int) or j == symplectic_dimension else 1 for j in seq_j
-        )
+        seq_i_position = tuple(0 if isinstance(i, int) else 1 for i in seq_i)
+        seq_j_position = tuple(0 if isinstance(j, int) else 1 for j in seq_j)
+
         seq_i_value = tuple(
             (
                 i
                 if isinstance(i, int)
-                else 0 if i in (symplectic_dimension, 2*symplectic_dimension)
-                else i.as_ordered_terms()[1]
+                else 0 if i == symplectic_dimension else i.as_ordered_terms()[1]
             )
             for i in seq_i
         )
@@ -233,8 +230,7 @@ def haar_integral_symplectic(
             (
                 j
                 if isinstance(j, int)
-                else 0 if j in (symplectic_dimension, 2*symplectic_dimension)
-                else j.as_ordered_terms()[1]
+                else 0 if j == symplectic_dimension else j.as_ordered_terms()[1]
             )
             for j in seq_j
         )
