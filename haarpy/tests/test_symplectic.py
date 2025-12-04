@@ -487,8 +487,10 @@ def test_haar_integral_symplectic_wrong_dimension_format(dimension):
         (((1,1,1,1),(1,1,1,1)), d),
         (((1,1,d+1,d+2),(1,1,d+1,d+1)), d),
         (((1,0,0,d),(1,d+1,0,d)), d),
+        (((0,0,0), (0,0,0)), 2),
         (((0,0,0,0), (0,0,0,0)), 2),
         (((1,2,3,3), (1,2,3,3)), 4),
+        (((1,1,5,5,5), (1,1,5,5,5)), 4),
     ]
 )
 def test_haar_integral_symplectic_zero_cases(sequences, dimension):
