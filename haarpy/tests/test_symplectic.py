@@ -278,7 +278,7 @@ def test_weingarten_symplectic_degree_value_error(permutation):
 )
 def test_haar_integral_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dimension):
     "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    epsilon_real = 5e-2
+    epsilon_real = 2e-2
     epsilon_imag = 1e-6
 
     half_length = len(seq_i) // 2
@@ -312,7 +312,7 @@ def test_haar_integral_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dimens
 )
 def test_haar_integral_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dimension):
     "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    epsilon_real = 5e-2
+    epsilon_real = 2e-2
     epsilon_imag = 1e-6
 
     half_length = len(seq_i) // 2

@@ -180,6 +180,7 @@ def haar_integral_circular_symplectic(
                 len(xpr.as_ordered_terms()) == 2
                 and xpr.as_ordered_terms()[0] == half_dimension
                 and isinstance(xpr.as_ordered_terms()[1], Integer)
+                and xpr.as_ordered_terms()[1] > 0
             )
             or xpr == half_dimension
             for xpr in seq_i + seq_j
