@@ -20,7 +20,6 @@ from random import randint
 from fractions import Fraction
 from sympy import Symbol, simplify, factorial, factorial2
 from sympy.combinatorics import SymmetricGroup
-from scipy.stats import unitary_group
 import pytest
 import haarpy as ap
 
