@@ -16,6 +16,7 @@ Circular ensembles tests
 """
 
 from math import prod
+from random import randint
 from fractions import Fraction
 from sympy import Symbol, simplify, factorial, factorial2
 from sympy.combinatorics import SymmetricGroup
@@ -24,6 +25,20 @@ import haarpy as ap
 
 d = Symbol('d')
 
+monte_carlo_cse_dict = {
+    ((0, 0), (0, 0), 1) : (1+0j),
+    ((0, 1), (0, 1), 1) : (6.202449849650142e-34+0j),
+    ((0, 1, 2, 3), (0, 1, 2, 3), 2) : (0.16670734637771975+0j),
+    ((0, 0, 0, 0), (0, 0, 0, 0), 2) : (0.16594246254246486+0j),
+    ((0, 3, 0, 3), (0, 3, 0, 3), 2) : (0.16705053183343524+0j),
+    ((0, 0, 0, 3), (0, 3, 0, 0), 2) : (0.08309679067762976+0j),
+    ((0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), 3) : (0.028659601947427615+0j),
+    ((5, 5, 5, 5, 5, 5), (5, 5, 5, 5, 5, 5), 3) : (0.028909295959926393+0j),
+    ((2, 2, 5, 5, 5, 5), (2, 2, 5, 5, 5, 5), 3) : (0.028304583571937526+0j),
+    ((2, 2, 5, 5, 5, 5), (2, 5, 5, 2, 5, 5), 3) : (-2.6504451440099176e-37-7.700460878474545e-38j),
+    ((2, 2, 5, 5, 3, 3), (2, 2, 5, 5, 3, 3), 3) : (0.015927428707892998+0j),
+    ((7, 7, 0, 0, 0, 0, 0, 0), (7, 0, 0, 7, 0, 0, 0, 0), 4) : (-0.00023053596111631466-2.3274900374779226e-06j),
+}
 
 @pytest.mark.parametrize("half_degree", range(1,3))
 def test_weingarten_circular_orthogonal_hyperoctahedral_symbolic(half_degree):
@@ -194,3 +209,180 @@ def test_haar_integral_coe_value_error(sequences):
     "Test haar integral value error"
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_circular_orthogonal(sequences, d)
+
+
+@pytest.mark.parametrize(
+    'seq_i, seq_j, half_dim',
+    [
+        ((0,0),(0,0), 1),
+        ((0,1),(0,1), 1),
+        ((0,1,2,3),(0,1,2,3), 2),
+        ((0,0,0,0),(0,0,0,0), 2),
+        ((0,3,0,3),(0,3,0,3), 2),
+        ((0,0,0,3),(0,3,0,0), 2),
+        ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
+        ((5,5,5,5,5,5),(5,5,5,5,5,5), 3),
+        ((2,2,5,5,5,5),(2,2,5,5,5,5), 3),
+        ((2,2,5,5,5,5),(2,5,5,2,5,5), 3),
+        ((2,2,5,5,3,3),(2,2,5,5,3,3), 3),
+        ((7,7,0,0,0,0,0,0),(7,0,0,7,0,0,0,0), 4),
+    ]
+)
+def test_haar_integral_circular_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dim):
+    "Test haar integral circular symplectic moments against Monte Carlo simulation numeric"
+    epsilon_real = 5e-2
+    epsilon = 1e-5
+
+    integral = float(ap.haar_integral_circular_symplectic((seq_i, seq_j), half_dim))
+
+    mc_integral = monte_carlo_cse_dict[(seq_i, seq_j, half_dim)]
+
+    if integral:
+        assert (
+            abs((integral-mc_integral.real)/integral) < epsilon_real
+            and abs(mc_integral.imag) < epsilon
+        )
+    else:
+        assert (
+            abs(mc_integral.real) < epsilon
+            and abs(mc_integral.imag) < epsilon
+        )
+
+
+@pytest.mark.parametrize(
+    'seq_i, seq_j, half_dim',
+    [
+        ((0,0),(0,0), 1),
+        ((0,d),(0,d), 1),
+        ((0,1,d,d+1),(0,1,d,d+1), 2),
+        ((0,0,0,0),(0,0,0,0), 2),
+        ((0,1+d,0,1+d),(0,1+d,0,1+d), 2),
+        ((0,0,0,1+d),(0,1+d,0,0), 2),
+        ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
+        ((d+2,d+2,d+2,d+2,d+2,d+2),(d+2,d+2,d+2,d+2,d+2,d+2), 3),
+        ((2,2,d+2,d+2,d+2,d+2),(2,2,d+2,d+2,d+2,d+2), 3),
+        ((2,2,d+2,d+2,d+2,d+2),(2,d+2,d+2,2,d+2,d+2), 3),
+        ((2,2,d+2,d+2,d,d),(2,2,d+2,d+2,d,d), 3),
+        ((d+3,d+3,0,0,0,0,0,0),(d+3,0,0,d+3,0,0,0,0), 4),
+    ]
+)
+def test_haar_integral_circular_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dim):
+    "Test haar integral circular symplectic moments against Monte Carlo simulation symbolic"
+    epsilon_real = 5e-2
+    epsilon = 1e-5
+
+    integral = ap.haar_integral_circular_symplectic((seq_i, seq_j), d)
+    integral = float(integral.subs(d, half_dim))
+
+    seq_i = tuple(i if isinstance(i, int) else i.subs(d, half_dim) for i in seq_i)
+    seq_j = tuple(i if isinstance(i, int) else i.subs(d, half_dim) for i in seq_j)
+
+    mc_integral = monte_carlo_cse_dict[((seq_i, seq_j, half_dim))]
+
+    if integral:
+        assert (
+            abs((integral-mc_integral.real)/integral) < epsilon_real
+            and abs(mc_integral.imag) < epsilon
+        )
+    else:
+        assert (
+            abs(mc_integral.real) < epsilon
+            and abs(mc_integral.imag) < epsilon
+        )
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,2,3,4),(1,2,3,4),(1,2,3,4)),
+        ((1,2,3,4),),
+        ((1,2,3,4,5), (1,2,3,4,5)),
+        ((1,2,3,4,5,6), (1,2,3,4,5,6,7)),
+    ]
+)
+def test_haar_integral_circular_symplectic_value_error_wrong_tuple(sequences):
+    "Value error for wrong sequence format"
+    with pytest.raises(
+        ValueError,
+        match="Wrong sequence format"
+    ):
+        ap.haar_integral_circular_symplectic(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        (('a','b','c','d'), (1,2,3,4)),
+        ((1,1,d+1,d+1), (1,1,1,1)),
+    ]
+)
+def test_haar_integral_circular_symplectic_type_error_integer_dimension(sequences):
+    "Type error for integer dimension with not integer sequences"
+    dimension = randint(1,99)
+    with pytest.raises(TypeError):
+        ap.haar_integral_circular_symplectic(sequences, dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences, dimension",
+    [
+        (((1,3),(1,3)), 1),
+        (((1,2,3,5),(1,2,3,4)), 2),
+        (((1,2,3,41),(1,2,3,41)), 20),
+    ]
+)
+def test_haar_integral_circular_symplectic_value_error_outside_dimension_range(sequences, dimension):
+    "Value error for sequences values outside dimension range"
+    with pytest.raises(
+        ValueError,
+        match="The matrix indices are outside the dimension range",
+    ):
+        ap.haar_integral_circular_symplectic(sequences, dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((1,2,3,4),(1,2,3,'a')),
+        ((1,2,3,4), (1,2,3,{1,2})),
+        ((1,2,3,4),(1,2,3,4*d)),
+        ((1,2,3,2*d+1), (1,2,3,4)),
+        ((1,2,3,d+1), (1,2,3,4.0)),
+        ((1,2,3,d-1), (1,2,3,4)),
+        ((1,2,3,4), (1,2,3,d**2)),
+        ((1,2,3,4), (1,2,3,1+d**2+d)),
+        ((1,2,3,4), (1,2,3, d + Symbol('s'))),
+    ]
+)
+def test_haar_integral_circular_symplectic_type_error_wrong_format(sequences):
+    "Type error for symbolic dimension with wrong sequence format"
+    with pytest.raises(TypeError):
+        ap.haar_integral_circular_symplectic(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "dimension",
+    [
+        'a',
+        [1,2],
+        {1,2},
+        3.0,
+    ]
+)
+def test_haar_integral_circular_symplectic_wrong_dimension_format(dimension):
+    "Type error if the symplectic dimension is not an int nor a symbol"
+    with pytest.raises(TypeError):
+        ap.haar_integral_circular_symplectic(((1,2,3,4),(1,2,3,4)), dimension)
+
+
+@pytest.mark.parametrize(
+    "sequences, dimension",
+    [
+        (((1,1),(1,1,1,1)), d),
+        (((1,1,d+1,d+2),(1,1)), d),
+        (((0,0,0,0), (0,0,0,0,2,2)), 2),
+    ]
+)
+def test_haar_integral_circular_symplectic_zero_cases(sequences, dimension):
+    "Test cases that yield zero"
+    assert not ap.haar_integral_circular_symplectic(sequences, dimension)

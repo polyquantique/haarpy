@@ -1,4 +1,4 @@
-# Copyright 2024 Polyquantique
+# Copyright 2025 Polyquantique
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,9 @@ Functions
     weingarten_centered_permutation
     haar_integral_unitary
     haar_integral_orthogonal
+    haar_integral_symplectic
     haar_integral_circular_orthogonal
+    haar_integral_circular_symplectic
     haar_integral_permutation
     haar_integral_centered_permutation
     get_conjugacy_class
@@ -104,12 +106,14 @@ from .orthogonal import (
 from .symplectic import (
     twisted_spherical_function,
     weingarten_symplectic,
+    haar_integral_symplectic,
 )
 
 from .circular_ensembles import (
     weingarten_circular_orthogonal,
     weingarten_circular_symplectic,
     haar_integral_circular_orthogonal,
+    haar_integral_circular_symplectic,
 )
 
 from .permutation import (
@@ -132,7 +136,9 @@ __all__ = [
     "weingarten_centered_permutation",
     "haar_integral_unitary",
     "haar_integral_orthogonal",
+    "haar_integral_symplectic",
     "haar_integral_circular_orthogonal",
+    "haar_integral_circular_symplectic",
     "haar_integral_permutation",
     "haar_integral_centered_permutation",
     "get_conjugacy_class",

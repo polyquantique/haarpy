@@ -18,14 +18,17 @@ Symplectic group Python interface
 from math import prod
 from fractions import Fraction
 from functools import lru_cache
-from sympy import Symbol, factorial, factor, fraction, simplify
+from itertools import product
+from sympy import Symbol, factorial, factor, fraction, simplify, Expr
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
+from sympy.core.numbers import Integer
 from haarpy import (
     get_conjugacy_class,
     murn_naka_rule,
     HyperoctahedralGroup,
     irrep_dimension,
+    hyperoctahedral_transversal,
 )
 
 
@@ -75,17 +78,15 @@ def twisted_spherical_function(
 
 
 @lru_cache
-def weingarten_symplectic(
-    permutation: Permutation, symplectic_dimension: Symbol
-) -> Symbol:
+def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> Expr:
     """Returns the symplectic Weingarten function
 
     Args:
         permutation (Permutation): A permutation of the symmetric group S_2k
-        symplectic_dimension (int): The dimension of the symplectic group
+        half_dimension (Symbol): Half the dimension of the symplectic group
 
     Returns:
-        Symbol : The Weingarten function
+        Expr : The Weingarten function
 
     Raise:
         ValueError : If the degree 2k of the symmetric group S_2k is not a factor of 2
@@ -112,14 +113,14 @@ def weingarten_symplectic(
     )
     coefficient_gen = (
         prod(
-            2 * symplectic_dimension - 2 * i + j
+            2 * half_dimension - 2 * i + j
             for i in range(len(partition))
             for j in range(partition[i])
         )
         for partition in partition_tuple
     )
 
-    if isinstance(symplectic_dimension, int):
+    if isinstance(half_dimension, int):
         weingarten = sum(
             Fraction(
                 irrep_dim * zonal_spherical,
@@ -150,3 +151,125 @@ def weingarten_symplectic(
         weingarten = simplify(factor(numerator) / factor(denominator))
 
     return weingarten
+
+
+@lru_cache
+def haar_integral_symplectic(
+    sequences: tuple[tuple[Expr]],
+    half_dimension: Symbol,
+) -> Expr:
+    """Returns integral over symplectic group polynomial sampled at random from the Haar measure
+
+    Args:
+        sequences (tuple[tuple[Expr]]): Indices of matrix elements
+        half_dimension (Symbol): Half the dimension of the symplectic group
+
+    Returns:
+        Expr: Integral under the Haar measure
+
+    Raise:
+        ValueError: If sequences doesn't contain 2 tuples
+        ValueError: If tuples i and j are of different length
+        TypeError: If the half_dimension is not int nor Symbol
+        TypeError: If dimension is int and sequence is not
+        ValueError: If all sequence indices are not between 0 and 2*dimension - 1
+        TypeError: If sequence containt something else than Expr
+        TypeError: If symbolic sequences have the wrong format
+    """
+    if len(sequences) != 2:
+        raise ValueError("Wrong sequence format")
+
+    seq_i, seq_j = sequences
+
+    degree = len(seq_i)
+
+    if degree != len(seq_j):
+        raise ValueError("Wrong sequence format")
+
+    if isinstance(half_dimension, int):
+        if not all(isinstance(i, int) for i in seq_i + seq_j):
+            raise TypeError
+        if not all(0 <= i <= 2 * half_dimension - 1 for i in seq_i + seq_j):
+            raise ValueError("The matrix indices are outside the dimension range")
+        if degree % 2:
+            return 0
+        seq_i_position = tuple(0 if i < half_dimension else 1 for i in seq_i)
+        seq_j_position = tuple(0 if j < half_dimension else 1 for j in seq_j)
+        seq_i_value = tuple(
+            i if i < half_dimension else i - half_dimension for i in seq_i
+        )
+        seq_j_value = tuple(
+            j if j < half_dimension else j - half_dimension for j in seq_j
+        )
+    elif isinstance(half_dimension, Symbol):
+        if not all(isinstance(i, (int, Expr)) for i in seq_i + seq_j):
+            raise TypeError
+
+        if not all(
+            (
+                len(xpr.as_ordered_terms()) == 2
+                and xpr.as_ordered_terms()[0] == half_dimension
+                and isinstance(xpr.as_ordered_terms()[1], Integer)
+            )
+            or xpr == half_dimension
+            for xpr in seq_i + seq_j
+            if isinstance(xpr, Expr)
+        ):
+            raise TypeError
+        if degree % 2:
+            return 0
+        seq_i_position = tuple(0 if isinstance(i, int) else 1 for i in seq_i)
+        seq_j_position = tuple(0 if isinstance(j, int) else 1 for j in seq_j)
+
+        seq_i_value = tuple(
+            (
+                i
+                if isinstance(i, int)
+                else 0 if i == half_dimension else i.as_ordered_terms()[1]
+            )
+            for i in seq_i
+        )
+        seq_j_value = tuple(
+            (
+                j
+                if isinstance(j, int)
+                else 0 if j == half_dimension else j.as_ordered_terms()[1]
+            )
+            for j in seq_j
+        )
+    else:
+        raise TypeError
+
+    def twisted_delta(seq_value, seq_pos, perm):
+        return (
+            0
+            if not all(
+                i1 == i2 for i1, i2 in zip(perm(seq_value)[::2], perm(seq_value)[1::2])
+            )
+            else prod(
+                i2 - i1 for i1, i2 in zip(perm(seq_pos)[::2], perm(seq_pos)[1::2])
+            )
+        )
+
+    permutation_i_tuple = tuple(
+        (perm, twisted_delta(seq_i_value, seq_i_position, perm))
+        for perm in hyperoctahedral_transversal(degree)
+    )
+    permutation_j_tuple = tuple(
+        (perm, twisted_delta(seq_j_value, seq_j_position, perm))
+        for perm in hyperoctahedral_transversal(degree)
+    )
+
+    integral = sum(
+        perm_i[1]
+        * perm_j[1]
+        * weingarten_symplectic(perm_j[0] * ~perm_i[0], half_dimension)
+        for perm_i, perm_j in product(permutation_i_tuple, permutation_j_tuple)
+        if perm_i[1] * perm_j[1]
+    )
+
+    if isinstance(half_dimension, Expr):
+        numerator, denominator = fraction(simplify(integral))
+        integral = factor(numerator) / factor(denominator)
+
+    return integral
