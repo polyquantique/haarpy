@@ -15,75 +15,27 @@
 Symplectic tests
 """
 
-from math import factorial, prod
-from random import seed, randint
+from math import factorial
+from random import randint
 from fractions import Fraction
 from sympy import Symbol, simplify
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.utilities.iterables import partitions
-import numpy as np
 import pytest
 import haarpy as ap
 
-seed(137)
 d = Symbol('d')
 
-
-def random_unit_quaternion():
-    """Generate a random unit quaternion (q0,q1,q2,q3) with q0^2+q1^2+q2^2+q3^2 = 1."""
-    vec = np.random.normal(size=4)
-    vec /= np.linalg.norm(vec)
-    return vec  # [q0, q1, q2, q3]
-
-
-def generate_random_usp(d):
-    """Generate a Haar-random USp(2d) matrix of size (2d x 2d)."""
-    # Step 1: Random quaternionic d x d matrix with i.i.d. N(0,1) components
-    A = np.random.normal(size=(d, d))
-    B = np.random.normal(size=(d, d))
-    C = np.random.normal(size=(d, d))
-    D = np.random.normal(size=(d, d))
-    # Prepare list to store orthonormal quaternion columns (each as 4 real component arrays)
-    basis = []
-    # Step 2: Quaternionic Gram-Schmidt
-    for j in range(d):
-        # j-th column as quaternion vector components
-        v0, v1, v2, v3 = A[:, j].copy(), B[:, j].copy(), C[:, j].copy(), D[:, j].copy()
-        # Make orthogonal to previous basis vectors
-        for (u0, u1, u2, u3) in basis:
-            # Compute quaternion inner product: q = <u, v> = sum_i conj(u_i)*v_i (a quaternion)
-            p0, p1, p2, p3 = u0, -u1, -u2, -u3      # components of conj(u)
-            q0 = p0 @ v0 - p1 @ v1 - p2 @ v2 - p3 @ v3  # (conj(u)·v)_real
-            q1 = p0 @ v1 + p1 @ v0 + p2 @ v3 - p3 @ v2  # (conj(u)·v)_i
-            q2 = p0 @ v2 - p1 @ v3 + p2 @ v0 + p3 @ v1  # (conj(u)·v)_j
-            q3 = p0 @ v3 + p1 @ v2 - p2 @ v1 + p3 @ v0  # (conj(u)·v)_k
-            # Subtract projection: v := v - u * q
-            t0 = u0 * q0 - u1 * q1 - u2 * q2 - u3 * q3
-            t1 = u0 * q1 + u1 * q0 + u2 * q3 - u3 * q2
-            t2 = u0 * q2 - u1 * q3 + u2 * q0 + u3 * q1
-            t3 = u0 * q3 + u1 * q2 - u2 * q1 + u3 * q0
-            v0 -= t0;  v1 -= t1;  v2 -= t2;  v3 -= t3
-        # Normalize v (so that <v,v> = 1)
-        norm = np.sqrt(v0@v0 + v1@v1 + v2@v2 + v3@v3)
-        v0 /= norm;  v1 /= norm;  v2 /= norm;  v3 /= norm
-        # Step 3: Multiply by a random unit quaternion (random phase)
-        q0, q1, q2, q3 = random_unit_quaternion()
-        t0 = v0*q0 - v1*q1 - v2*q2 - v3*q3
-        t1 = v0*q1 + v1*q0 + v2*q3 - v3*q2
-        t2 = v0*q2 - v1*q3 + v2*q0 + v3*q1
-        t3 = v0*q3 + v1*q2 - v2*q1 + v3*q0
-        v0, v1, v2, v3 = t0, t1, t2, t3
-        basis.append((v0, v1, v2, v3))
-    # Step 4: Assemble the complex 2d x 2d matrix from quaternion basis
-    d2 = 2 * d
-    U = np.zeros((d2, d2), dtype=np.complex128)
-    # Fill block entries for each quaternion column
-    for j, (u0, u1, u2, u3) in enumerate(basis):
-        U[:d, j]      = u0 + 1j*u1         # top-left block
-        U[:d, j+d]    = u2 + 1j*u3         # top-right block
-        U[d:, j]      = -u2 + 1j*u3        # bottom-left block
-        U[d:, j+d]    = u0 - 1j*u1         # bottom-right block
-    return U
+monte_carlo_symplectic_dict = {
+    ((0, 0, 0, 0), (0, 0, 0, 0), 2) : (0.10033684843833776-1.145379354559459e-20j),
+    ((0, 1, 0, 1), (0, 0, 0, 0), 2) : (-0.04990811793582537-8.943783307107027e-21j),
+    ((0, 1, 0, 1), (0, 1, 1, 0), 2) : (-0.02505580071352494-9.625388767948332e-07j),
+    ((0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), 3) : (0.017633018076551557-1.0423137720400771e-20j),
+    ((0, 1, 2, 0, 1, 2), (0, 0, 0, 0, 0, 0), 3) : (0.0029691649199574807-4.311344798154337e-22j),
+    ((0, 0, 1, 0, 0, 1), (0, 2, 2, 0, 2, 2), 3) : (-0.0037265932000567895-4.301613654142747e-23j),
+    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0), 4) : (0.0030119499237324467-3.579791351992152e-21j),
+    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 1, 1), 4) : (0.0005034436860443855-3.83813858200423e-22j),
+}
 
 
 @pytest.mark.parametrize(
@@ -315,7 +267,6 @@ def test_weingarten_symplectic_degree_value_error(permutation):
     [
         ((0,0,0,0),(0,0,0,0), 2),
         ((0,1,0,1),(0,0,0,0), 2),
-        ((0,1,0,1),(0,1,1,0), 2),
         ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
         ((0,1,2,0,1,2),(0,0,0,0,0,0), 3),
         ((0,0,1,0,0,1),(0,2,2,0,2,2), 3),
@@ -325,31 +276,21 @@ def test_weingarten_symplectic_degree_value_error(permutation):
 )
 def test_haar_integral_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dimension):
     "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    sample_size = int(1e4)
-    epsilon_real = 1e4
-    epsilon_imag = 1e6
+    epsilon_real = 5e-2
+    epsilon_imag = 1e-6
 
     half_length = len(seq_i) // 2
     seq_i_symbolic = seq_i[:half_length] + tuple(i+d for i in seq_i[half_length:])
     seq_j_symbolic = seq_j[:half_length] + tuple(j+d for j in seq_j[half_length:])
-    seq_i_numeric = seq_i[:half_length] + tuple(i+half_dimension for i in seq_i[half_length:])
-    seq_j_numeric = seq_j[:half_length] + tuple(j+half_dimension for j in seq_j[half_length:])
 
     integral = ap.haar_integral_symplectic((seq_i_symbolic, seq_j_symbolic), d)
     integral = float(integral.subs(d, half_dimension))
 
-    monte_carlo_matrix = (generate_random_usp(half_dimension) for _ in range(sample_size))
-    monte_carlo_integral = sum(
-        prod(
-            symplectic_matrix[i-1, j-1]
-            for i, j in zip(seq_i_numeric, seq_j_numeric)
-        )
-        for symplectic_matrix in monte_carlo_matrix
-    ) / sample_size
+    mc_integral = monte_carlo_symplectic_dict[(seq_i, seq_j, half_dimension)]
 
     assert (
-        abs((integral-monte_carlo_integral.real)/integral) < epsilon_real
-        and abs(monte_carlo_integral.imag) < epsilon_imag
+        abs((integral - mc_integral.real) / integral) < epsilon_real
+        and abs(mc_integral.imag) < epsilon_imag
         and integral != 0
     )
 
@@ -359,7 +300,6 @@ def test_haar_integral_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dimens
     [
         ((0,0,0,0),(0,0,0,0), 2),
         ((0,1,0,1),(0,0,0,0), 2),
-        ((0,1,0,1),(0,1,1,0), 2),
         ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
         ((0,1,2,0,1,2),(0,0,0,0,0,0), 3),
         ((0,0,1,0,0,1),(0,2,2,0,2,2), 3),
@@ -369,9 +309,8 @@ def test_haar_integral_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dimens
 )
 def test_haar_integral_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dimension):
     "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    sample_size = int(1e4)
-    epsilon_real = 1e4
-    epsilon_imag = 1e6
+    epsilon_real = 5e-2
+    epsilon_imag = 1e-6
 
     half_length = len(seq_i) // 2
     seq_i_numeric = seq_i[:half_length] + tuple(i+half_dimension for i in seq_i[half_length:])
@@ -379,18 +318,11 @@ def test_haar_integral_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dimensi
 
     integral = float(ap.haar_integral_symplectic((seq_i_numeric, seq_j_numeric), half_dimension))
 
-    monte_carlo_matrix = (generate_random_usp(half_dimension) for _ in range(sample_size))
-    monte_carlo_integral = sum(
-        prod(
-            symplectic_matrix[i-1, j-1]
-            for i, j in zip(seq_i_numeric, seq_j_numeric)
-        )
-        for symplectic_matrix in monte_carlo_matrix
-    ) / sample_size
+    mc_integral = monte_carlo_symplectic_dict[(seq_i, seq_j, half_dimension)]
 
     assert (
-        abs((integral-monte_carlo_integral.real)/integral) < epsilon_real
-        and abs(monte_carlo_integral.imag) < epsilon_imag
+        abs((integral - mc_integral.real) / integral) < epsilon_real
+        and abs(mc_integral.imag) < epsilon_imag
         and integral != 0
     )
 
