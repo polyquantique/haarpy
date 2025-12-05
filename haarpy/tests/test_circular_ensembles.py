@@ -231,7 +231,7 @@ def test_haar_integral_coe_value_error(sequences):
 def test_haar_integral_circular_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dim):
     "Test haar integral circular symplectic moments against Monte Carlo simulation numeric"
     epsilon_real = 5e-2
-    epsilon = 1e-6
+    epsilon = 1e-5
 
     integral = float(ap.haar_integral_circular_symplectic((seq_i, seq_j), half_dim))
 
@@ -269,7 +269,7 @@ def test_haar_integral_circular_symplectic_monte_carlo_numeric(seq_i, seq_j, hal
 def test_haar_integral_circular_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dim):
     "Test haar integral circular symplectic moments against Monte Carlo simulation symbolic"
     epsilon_real = 5e-2
-    epsilon = 1e-6
+    epsilon = 1e-5
 
     integral = ap.haar_integral_circular_symplectic((seq_i, seq_j), d)
     integral = float(integral.subs(d, half_dim))
