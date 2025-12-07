@@ -27,15 +27,14 @@ import haarpy as ap
 d = Symbol('d')
 
 monte_carlo_symplectic_dict = {
-    ((0, 0, 0, 0), (0, 0, 0, 0), 2) : (0.09948889355794269+6.851639354662377e-21j),
-    ((0, 1, 0, 1), (0, 0, 0, 0), 2) : (0.05025720143792921+3.8747831289542884e-21j),
-    ((0, 1, 0, 1), (0, 1, 1, 0), 2) : (-0.02505580071352494-9.625388767948332e-07j),
-    ((0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), 3) : (0.018000029928256993+2.5207244033791384e-21j),
-    ((0, 1, 2, 0, 1, 2), (0, 0, 0, 0, 0, 0), 3) : (0.0029514164273132704-1.8345674171674893e-21j),
-    ((0, 0, 1, 0, 0, 1), (0, 2, 2, 0, 2, 2), 3) : (0.0037630369365813177+9.729122199612046e-23j),
-    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0), 4) : (0.0029909334194272684-2.5931001156985104e-21j),
-    ((0, 1, 2, 3, 0, 1, 2, 3), (0, 0, 0, 0, 0, 0, 0, 0), 4) : (0.0001260733931029849-4.471619720427258e-23j),
-    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 1, 1), 4) : (0.000502809515889242-4.1519024921401192e-22j),
+    ((0, 0, 0, 0), (0, 0, 0, 0), 2) : 1/10,
+    ((0, 1, 0, 1), (0, 0, 0, 0), 2) : 1/20,
+    ((0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), 3) : 1/56,
+    ((0, 1, 2, 0, 1, 2), (0, 0, 0, 0, 0, 0), 3) : 1/336,
+    ((0, 0, 1, 0, 0, 1), (0, 2, 2, 0, 2, 2), 3) : 5/1344,
+    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0), 4) : 1/330,
+    ((0, 1, 2, 3, 0, 1, 2, 3), (0, 0, 0, 0, 0, 0, 0, 0), 4) : 1/7920,
+    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 1, 1), 4) : 1/1980,
 }
 
 
@@ -276,58 +275,19 @@ def test_weingarten_symplectic_degree_value_error(permutation):
         ((0,0,0,0,0,0,0,0),(0,0,1,1,0,0,1,1), 4),
     ]
 )
-def test_haar_integral_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dimension):
+def test_haar_integral_symplectic_symbolic(seq_i, seq_j, half_dimension):
     "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    epsilon_real = 2e-2
-    epsilon_imag = 1e-6
 
     half_length = len(seq_i) // 2
     seq_i_symbolic = seq_i[:half_length] + tuple(i+d for i in seq_i[half_length:])
     seq_j_symbolic = seq_j[:half_length] + tuple(j+d for j in seq_j[half_length:])
 
-    integral = ap.haar_integral_symplectic((seq_i_symbolic, seq_j_symbolic), d)
-    integral = float(integral.subs(d, half_dimension))
+    integral_frac = ap.haar_integral_symplectic((seq_i_symbolic, seq_j_symbolic), d)
+    integral_num = integral_frac.subs(d, half_dimension)
 
     mc_integral = monte_carlo_symplectic_dict[(seq_i, seq_j, half_dimension)]
 
-    assert (
-        abs((integral - mc_integral.real) / integral) < epsilon_real
-        and abs(mc_integral.imag) < epsilon_imag
-        and integral != 0
-    )
-
-
-@pytest.mark.parametrize(
-    'seq_i, seq_j, half_dimension',
-    [
-        ((0,0,0,0),(0,0,0,0), 2),
-        ((0,1,0,1),(0,0,0,0), 2),
-        ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
-        ((0,1,2,0,1,2),(0,0,0,0,0,0), 3),
-        ((0,0,1,0,0,1),(0,2,2,0,2,2), 3),
-        ((0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0), 4),
-        ((0,1,2,3,0,1,2,3),(0,0,0,0,0,0,0,0), 4),
-        ((0,0,0,0,0,0,0,0),(0,0,1,1,0,0,1,1), 4),
-    ]
-)
-def test_haar_integral_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dimension):
-    "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    epsilon_real = 2e-2
-    epsilon_imag = 1e-6
-
-    half_length = len(seq_i) // 2
-    seq_i_numeric = seq_i[:half_length] + tuple(i+half_dimension for i in seq_i[half_length:])
-    seq_j_numeric = seq_j[:half_length] + tuple(j+half_dimension for j in seq_j[half_length:])
-
-    integral = float(ap.haar_integral_symplectic((seq_i_numeric, seq_j_numeric), half_dimension))
-
-    mc_integral = monte_carlo_symplectic_dict[(seq_i, seq_j, half_dimension)]
-
-    assert (
-        abs((integral - mc_integral.real) / integral) < epsilon_real
-        and abs(mc_integral.imag) < epsilon_imag
-        and integral != 0
-    )
+    assert mc_integral == float(integral_num)
 
 
 @pytest.mark.parametrize(
