@@ -168,7 +168,7 @@ def haar_integral_symplectic(
         Expr: Integral under the Haar measure
 
     Raise:
-        ValueError: If sequences doesn't contain 2 tuples
+        ValueError: If sequences don't contain 2 tuples
         ValueError: If tuples i and j are of different length
         TypeError: If the half_dimension is not int nor Symbol
         TypeError: If dimension is int and sequence is not
