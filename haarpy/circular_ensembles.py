@@ -13,6 +13,11 @@
 # limitations under the License.
 """
 Circular ensembles Python interface
+
+References
+==========
+    [1] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+        symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from math import prod
@@ -36,14 +41,36 @@ def weingarten_circular_orthogonal(
     permutation: Union[Permutation, tuple[int]],
     coe_dimension: Symbol,
 ) -> Expr:
-    """Returns the circular orthogonal ensembles Weingarten functions
+    """Returns the circular orthogonal ensemble's Weingarten functions
 
-    Args:
+    Parameters
+    ----------
         permutation (Permutation): A permutation of S_2k or its coset-type
-        coe_dimension (int): The dimension of the COE
+        coe_dimension (Symbol): The dimension of the COE
 
-    Returns:
+    Returns
+    -------
         Expr: The Weingarten function
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import weingarten_circular_orthogonal
+        
+        >>> d = Symbol('d')
+        >>> weingarten_circular_orthogonal(Permutation(3)(0,1), 4)
+        Fraction(3, 70)
+        >>> weingarten_circular_orthogonal(Permutation(3)(0,1), d)
+        (d + 2)/(d*(d + 1)*(d + 3))
+        >>> weingarten_circular_orthogonal((1,1), d)
+        (d + 2)/(d*(d + 1)*(d + 3))
+
+        Where (1,1) is the coset-type of Permutation(3)(0,1)
+        
+    See Also
+    --------
+        coset_type
     """
     return weingarten_orthogonal(permutation, coe_dimension + 1)
 
