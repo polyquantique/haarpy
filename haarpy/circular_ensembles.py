@@ -49,9 +49,7 @@ def weingarten_circular_orthogonal(
 
 
 @lru_cache
-def weingarten_circular_symplectic(
-    permutation: Permutation, cse_dimension: Symbol
-) -> Expr:
+def weingarten_circular_symplectic(permutation: Permutation, cse_dimension: Symbol) -> Expr:
     """Returns the circular symplectic ensembles Weingarten functions
 
     Args:
@@ -112,9 +110,7 @@ def haar_integral_circular_orthogonal(
 
 
 @lru_cache
-def haar_integral_circular_symplectic(
-    sequences: tuple[tuple[Expr]], half_dimension: Expr
-) -> Expr:
+def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimension: Expr) -> Expr:
     """Returns integral over circular symplectic ensemble polynomial
     sampled at random from the Haar measure
 
@@ -151,9 +147,7 @@ def haar_integral_circular_symplectic(
             raise ValueError("The matrix indices are outside the dimension range")
         if degree != len(seq_j):
             return 0
-        coefficient = prod(
-            -1 if i < half_dimension else 1 for i in (seq_i + seq_j)[::2]
-        )
+        coefficient = prod(-1 if i < half_dimension else 1 for i in (seq_i + seq_j)[::2])
         shifted_i = [
             (
                 i + half_dimension
@@ -189,9 +183,7 @@ def haar_integral_circular_symplectic(
             raise TypeError
         if degree != len(seq_j):
             return 0
-        coefficient = prod(
-            -1 if isinstance(i, int) else 1 for i in (seq_i + seq_j)[::2]
-        )
+        coefficient = prod(-1 if isinstance(i, int) else 1 for i in (seq_i + seq_j)[::2])
         shifted_i = [
             (
                 i + half_dimension

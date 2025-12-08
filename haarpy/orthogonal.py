@@ -67,9 +67,7 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
     double_partition = tuple(2 * part for part in partition)
     hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
-        murn_naka_rule(
-            double_partition, get_conjugacy_class(permutation * zeta, degree)
-        )
+        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta, degree))
         for zeta in hyperocta.generate()
     )
     return Fraction(numerator, hyperocta.order())
@@ -94,9 +92,7 @@ def weingarten_orthogonal(
         ValueError: if the degree 2k of the symmetric group S_2k is not a factor of 2
     """
     if not isinstance(orthogonal_dimension, (Expr, int)):
-        raise TypeError(
-            "orthogonal_dimension must be an instance of int or sympy.Symbol"
-        )
+        raise TypeError("orthogonal_dimension must be an instance of int or sympy.Symbol")
 
     if isinstance(permutation, (tuple, list)) and all(
         isinstance(value, int) for value in permutation
@@ -112,18 +108,14 @@ def weingarten_orthogonal(
     half_degree = degree // 2
 
     partition_tuple = tuple(
-        sum((value * (key,) for key, value in part.items()), ())
-        for part in partitions(half_degree)
+        sum((value * (key,) for key, value in part.items()), ()) for part in partitions(half_degree)
     )
     double_partition_tuple = tuple(
         tuple(2 * part for part in partition) for partition in partition_tuple
     )
-    irrep_dimension_gen = (
-        irrep_dimension(partition) for partition in double_partition_tuple
-    )
+    irrep_dimension_gen = (irrep_dimension(partition) for partition in double_partition_tuple)
     zonal_spherical_gen = (
-        zonal_spherical_function(permutation, partition)
-        for partition in partition_tuple
+        zonal_spherical_function(permutation, partition) for partition in partition_tuple
     )
     coefficient_gen = (
         prod(
@@ -168,9 +160,7 @@ def weingarten_orthogonal(
 
 
 @lru_cache
-def haar_integral_orthogonal(
-    sequences: tuple[tuple[int]], orthogonal_dimension: Symbol
-) -> Expr:
+def haar_integral_orthogonal(sequences: tuple[tuple[int]], orthogonal_dimension: Symbol) -> Expr:
     """Returns integral over orthogonal group polynomial sampled at random from the Haar measure
 
     Args:
@@ -209,8 +199,7 @@ def haar_integral_orthogonal(
     )
 
     coset_mapping = Counter(
-        coset_type(cycle_j * ~cycle_i)
-        for cycle_i, cycle_j in product(permutation_i, permutation_j)
+        coset_type(cycle_j * ~cycle_i) for cycle_i, cycle_j in product(permutation_i, permutation_j)
     )
 
     integral = sum(
