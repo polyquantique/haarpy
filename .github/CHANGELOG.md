@@ -6,6 +6,7 @@
 * Added a new module `circular_ensembles` allowing the calculation of the circular orthogonal ensembles and circular symplectic ensembles Weingarten functions [(#32)](https://github.com/polyquantique/haarpy/pull/32).
 * Added a new module `permutation` allowing the calculation of the permutation matrices and centered permuation matrices' Weingarten functions as well as their moments [(#36)](https://github.com/polyquantique/haarpy/pull/36).
 * Added a new module `partition` allowing to generate partitions of a set as well as implementing some operations on them such as the meet and the join operations [(#36)](https://github.com/polyquantique/haarpy/pull/36).
+* Added moment calculation for Haar random symplectic matrices and circular symplectic ensemble [(#43)](https://github.com/polyquantique/haarpy/pull/43).
 
 ### Breaking changes
 
