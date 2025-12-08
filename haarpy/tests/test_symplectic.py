@@ -24,33 +24,36 @@ from sympy.utilities.iterables import partitions
 import pytest
 import haarpy as ap
 
-d = Symbol('d')
+d = Symbol("d")
 
-monte_carlo_symplectic_dict = {
-    ((0, 0, 0, 0), (0, 0, 0, 0), 2) : (0.09948889355794269+6.851639354662377e-21j),
-    ((0, 1, 0, 1), (0, 0, 0, 0), 2) : (0.05025720143792921+3.8747831289542884e-21j),
-    ((0, 1, 0, 1), (0, 1, 1, 0), 2) : (-0.02505580071352494-9.625388767948332e-07j),
-    ((0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), 3) : (0.018000029928256993+2.5207244033791384e-21j),
-    ((0, 1, 2, 0, 1, 2), (0, 0, 0, 0, 0, 0), 3) : (0.0029514164273132704-1.8345674171674893e-21j),
-    ((0, 0, 1, 0, 0, 1), (0, 2, 2, 0, 2, 2), 3) : (0.0037630369365813177+9.729122199612046e-23j),
-    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0), 4) : (0.0029909334194272684-2.5931001156985104e-21j),
-    ((0, 1, 2, 3, 0, 1, 2, 3), (0, 0, 0, 0, 0, 0, 0, 0), 4) : (0.0001260733931029849-4.471619720427258e-23j),
-    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 1, 1), 4) : (0.000502809515889242-4.1519024921401192e-22j),
+
+# The values in the dictionary below were verified against Monte Carlo simulations
+# Using the code in here
+# https://github.com/XanaduAI/unicirc/blob/740cd16a2e392bdbcd47466684a58d9341532d42/unicirc/optimization.py#L300
+symplectic_dict = {
+    ((0, 0, 0, 0), (0, 0, 0, 0), 2): 1 / 10,
+    ((0, 1, 0, 1), (0, 0, 0, 0), 2): 1 / 20,
+    ((0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), 3): 1 / 56,
+    ((0, 1, 2, 0, 1, 2), (0, 0, 0, 0, 0, 0), 3): 1 / 336,
+    ((0, 0, 1, 0, 0, 1), (0, 2, 2, 0, 2, 2), 3): 5 / 1344,
+    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0), 4): 1 / 330,
+    ((0, 1, 2, 3, 0, 1, 2, 3), (0, 0, 0, 0, 0, 0, 0, 0), 4): 1 / 7920,
+    ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 1, 1), 4): 1 / 1980,
 }
 
 
 @pytest.mark.parametrize(
-        "partition",
-        [
-            ((1,1)),
-            ((2,)),
-            ((1,1,1)),
-            ((2,1)),
-            ((3,)),
-            ((1,1,1,1)),
-            ((2,2)),
-            ((3,1,1)),
-        ]
+    "partition",
+    [
+        ((1, 1)),
+        ((2,)),
+        ((1, 1, 1)),
+        ((2, 1)),
+        ((3,)),
+        ((1, 1, 1, 1)),
+        ((2, 2)),
+        ((3, 1, 1)),
+    ],
 )
 def test_twisted_spherical_image(partition):
     """Validates that the twisted spherical function is the image of the zonal spherical function
@@ -58,9 +61,7 @@ def test_twisted_spherical_image(partition):
     symmetric spaces: <https://arxiv.org/abs/1301.5401>`_
     """
     half_degree = sum(partition)
-    conjugate_partition = tuple(
-        sum(1 for i in partition if i > j) for j in range(partition[0])
-    )
+    conjugate_partition = tuple(sum(1 for i in partition if i > j) for j in range(partition[0]))
     for coset_type in partitions(half_degree):
         coset_type = tuple(key for key, value in coset_type.items() for _ in range(value))
         coset_type_permutation = ap.coset_type_representative(coset_type)
@@ -76,21 +77,21 @@ def test_twisted_spherical_image(partition):
 @pytest.mark.parametrize(
     "permutation, partition1, partition2",
     [
-        (Permutation(3), (1,1), (2,)),
-        (Permutation(3)(0,1), (1,1), (2,)),
-        (Permutation(0,1,2,3), (1,1), (2,)),
-        (Permutation(3)(0,1,2), (1,1), (2,)),
-        (Permutation(0,1,2,3,4,5), (3,), (2,1)),
-        (Permutation(5)(0,4), (3,), (1,1,1)),
-        (Permutation(5)(0,4), (3,), (2,1)),
-        (Permutation(5)(0,1,2,3,4), (3,), (1,1,1)),
-        (Permutation(5)(0,1,2,3,4), (1,1,1), (2,1)),
-        (Permutation(5)(0,1,2,3,4), (3,), (2,1)),
-        (Permutation(5), (3,), (1,1,1)),
-        (Permutation(5), (3,), (2,1)),
-        (Permutation(5), (2,1), (1,1,1)),
-        (Permutation(7), (2,1,1), (2,2)),
-        (Permutation(7)(0,1), (2,1,1), (2,2)),
+        (Permutation(3), (1, 1), (2,)),
+        (Permutation(3)(0, 1), (1, 1), (2,)),
+        (Permutation(0, 1, 2, 3), (1, 1), (2,)),
+        (Permutation(3)(0, 1, 2), (1, 1), (2,)),
+        (Permutation(0, 1, 2, 3, 4, 5), (3,), (2, 1)),
+        (Permutation(5)(0, 4), (3,), (1, 1, 1)),
+        (Permutation(5)(0, 4), (3,), (2, 1)),
+        (Permutation(5)(0, 1, 2, 3, 4), (3,), (1, 1, 1)),
+        (Permutation(5)(0, 1, 2, 3, 4), (1, 1, 1), (2, 1)),
+        (Permutation(5)(0, 1, 2, 3, 4), (3,), (2, 1)),
+        (Permutation(5), (3,), (1, 1, 1)),
+        (Permutation(5), (3,), (2, 1)),
+        (Permutation(5), (2, 1), (1, 1, 1)),
+        (Permutation(7), (2, 1, 1), (2, 2)),
+        (Permutation(7)(0, 1), (2, 1, 1), (2, 2)),
     ],
 )
 def test_twisted_spherical_orthogonality_transversal_zero(permutation, partition1, partition2):
@@ -126,7 +127,7 @@ def test_twisted_spherical_orthogonality_transversal_zero(permutation, partition
 )
 def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, partition):
     """Orthogonality relation for the twisted spherical function
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
     degree = permutation.size
@@ -138,7 +139,7 @@ def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, part
     )
     duplicate_partition = tuple(part for part in partition for _ in range(2))
     orthogonality = (
-        Fraction(factorial(degree), 2**half_degree*factorial(half_degree))
+        Fraction(factorial(degree), 2**half_degree * factorial(half_degree))
         * ap.twisted_spherical_function(permutation, partition)
         / ap.irrep_dimension(duplicate_partition)
     )
@@ -177,45 +178,43 @@ def test_twisted_spherical_function_degree_value_error(permutation, partition):
         ap.twisted_spherical_function(permutation, partition)
 
 
-@pytest.mark.parametrize("half_degree", range(1,3))
+@pytest.mark.parametrize("half_degree", range(1, 3))
 def test_weingarten_symplectic_hyperoctahedral_symbolic(half_degree):
     """Symbolic validation of symplectic Weingarten function against results shown in
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
     if half_degree == 1:
-        for permutation in SymmetricGroup(2*half_degree).generate():
-            assert ap.weingarten_symplectic(permutation, d) == (
-                permutation.signature()/(2*d)
-            )
+        for permutation in SymmetricGroup(2 * half_degree).generate():
+            assert ap.weingarten_symplectic(permutation, d) == (permutation.signature() / (2 * d))
     else:
-        for permutation in SymmetricGroup(2*half_degree).generate():
+        for permutation in SymmetricGroup(2 * half_degree).generate():
             hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
-            coefficient = permutation.signature()/(4*d*(d-1)*(2*d+1))
+            coefficient = permutation.signature() / (4 * d * (d - 1) * (2 * d + 1))
             assert ap.weingarten_symplectic(permutation, d) == (
-                simplify((2*d-1)*coefficient) if permutation in hyperoctahedral
+                simplify((2 * d - 1) * coefficient)
+                if permutation in hyperoctahedral
                 else coefficient
             )
 
 
-@pytest.mark.parametrize("half_degree", range(1,3))
+@pytest.mark.parametrize("half_degree", range(1, 3))
 def test_weingarten_symplectic_hyperoctahedral_numeric(half_degree):
     """Symbolic validation of symplectic Weingarten function against results shown in
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
     if half_degree == 1:
-        for permutation in SymmetricGroup(2*half_degree).generate():
+        for permutation in SymmetricGroup(2 * half_degree).generate():
             assert ap.weingarten_symplectic(permutation, 7) == (
-                Fraction(permutation.signature(),(2*7))
+                Fraction(permutation.signature(), (2 * 7))
             )
     else:
-        for permutation in SymmetricGroup(2*half_degree).generate():
+        for permutation in SymmetricGroup(2 * half_degree).generate():
             hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
-            coefficient = Fraction(permutation.signature(),(4*7*(7-1)*(2*7+1)))
+            coefficient = Fraction(permutation.signature(), (4 * 7 * (7 - 1) * (2 * 7 + 1)))
             assert ap.weingarten_symplectic(permutation, 7) == (
-                (2*7-1)*coefficient if permutation in hyperoctahedral
-                else coefficient
+                (2 * 7 - 1) * coefficient if permutation in hyperoctahedral else coefficient
             )
 
 
@@ -224,27 +223,27 @@ def test_weingarten_symplectic_hyperoctahedral_numeric(half_degree):
     [
         (Permutation(1)),
         (Permutation(3)),
-        (Permutation(0,1,2,3)),
+        (Permutation(0, 1, 2, 3)),
         (Permutation(5)),
-        (Permutation(2,3,4,5)),
-        (Permutation(0,1,2,3,4,5)),
-        (Permutation(0,1,2,3,4,5,6,7)),
-        (Permutation(0,1,2,3,4,7)(5,6)),
-        (Permutation(0,1,2,3)(4,5,6,7)),
-        (Permutation(4,5,6,7)),
+        (Permutation(2, 3, 4, 5)),
+        (Permutation(0, 1, 2, 3, 4, 5)),
+        (Permutation(0, 1, 2, 3, 4, 5, 6, 7)),
+        (Permutation(0, 1, 2, 3, 4, 7)(5, 6)),
+        (Permutation(0, 1, 2, 3)(4, 5, 6, 7)),
+        (Permutation(4, 5, 6, 7)),
         (Permutation(7)),
-    ]
+    ],
 )
 def test_weingarten_symplectic_orthogonal_relation(permutation):
-    """Symbolic validation of the relation between the symplectic and 
+    """Symbolic validation of the relation between the symplectic and
     orthogonal Weingarten functions as seen in
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
     assert ap.weingarten_symplectic(permutation, d) == simplify(
-        (-1) ** (permutation.size//2)
+        (-1) ** (permutation.size // 2)
         * permutation.signature()
-        * ap.weingarten_orthogonal(permutation, -2*d)
+        * ap.weingarten_orthogonal(permutation, -2 * d)
     )
 
 
@@ -253,111 +252,75 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
     [
         (Permutation(2)),
         (Permutation(4)),
-        (Permutation(0,1,2,3,4)),
+        (Permutation(0, 1, 2, 3, 4)),
         (Permutation(6)),
-    ]
+    ],
 )
 def test_weingarten_symplectic_degree_value_error(permutation):
     "Test value error for odd symmetric group degree"
-    with pytest.raises(ValueError, match = "The degree of the symmetric group S_2k should be even"):
+    with pytest.raises(ValueError, match="The degree of the symmetric group S_2k should be even"):
         ap.weingarten_symplectic(permutation, d)
 
 
 @pytest.mark.parametrize(
-    'seq_i, seq_j, half_dimension',
+    "seq_i, seq_j, half_dimension",
     [
-        ((0,0,0,0),(0,0,0,0), 2),
-        ((0,1,0,1),(0,0,0,0), 2),
-        ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
-        ((0,1,2,0,1,2),(0,0,0,0,0,0), 3),
-        ((0,0,1,0,0,1),(0,2,2,0,2,2), 3),
-        ((0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0), 4),
-        ((0,1,2,3,0,1,2,3),(0,0,0,0,0,0,0,0), 4),
-        ((0,0,0,0,0,0,0,0),(0,0,1,1,0,0,1,1), 4),
-    ]
+        ((0, 0, 0, 0), (0, 0, 0, 0), 2),
+        ((0, 1, 0, 1), (0, 0, 0, 0), 2),
+        ((0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0), 3),
+        ((0, 1, 2, 0, 1, 2), (0, 0, 0, 0, 0, 0), 3),
+        ((0, 0, 1, 0, 0, 1), (0, 2, 2, 0, 2, 2), 3),
+        ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0), 4),
+        ((0, 1, 2, 3, 0, 1, 2, 3), (0, 0, 0, 0, 0, 0, 0, 0), 4),
+        ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 1, 1), 4),
+    ],
 )
-def test_haar_integral_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dimension):
-    "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    epsilon_real = 2e-2
-    epsilon_imag = 1e-6
-
+def test_haar_integral_symplectic_symbolic_numeric(seq_i, seq_j, half_dimension):
+    """Test haar integral symplectic moments against Monte Carlo simulation by calling the
+    function with both a symbolic and a numeric dimension
+    """
     half_length = len(seq_i) // 2
-    seq_i_symbolic = seq_i[:half_length] + tuple(i+d for i in seq_i[half_length:])
-    seq_j_symbolic = seq_j[:half_length] + tuple(j+d for j in seq_j[half_length:])
+    seq_i_symbolic = seq_i[:half_length] + tuple(i + d for i in seq_i[half_length:])
+    seq_j_symbolic = seq_j[:half_length] + tuple(j + d for j in seq_j[half_length:])
+    seq_i_numeric = seq_i[:half_length] + tuple(i + half_dimension for i in seq_i[half_length:])
+    seq_j_numeric = seq_j[:half_length] + tuple(j + half_dimension for j in seq_j[half_length:])
 
-    integral = ap.haar_integral_symplectic((seq_i_symbolic, seq_j_symbolic), d)
-    integral = float(integral.subs(d, half_dimension))
-
-    mc_integral = monte_carlo_symplectic_dict[(seq_i, seq_j, half_dimension)]
-
-    assert (
-        abs((integral - mc_integral.real) / integral) < epsilon_real
-        and abs(mc_integral.imag) < epsilon_imag
-        and integral != 0
+    integral_symb = float(
+        ap.haar_integral_symplectic((seq_i_symbolic, seq_j_symbolic), d).subs(d, half_dimension)
     )
-
-
-@pytest.mark.parametrize(
-    'seq_i, seq_j, half_dimension',
-    [
-        ((0,0,0,0),(0,0,0,0), 2),
-        ((0,1,0,1),(0,0,0,0), 2),
-        ((0,0,0,0,0,0),(0,0,0,0,0,0), 3),
-        ((0,1,2,0,1,2),(0,0,0,0,0,0), 3),
-        ((0,0,1,0,0,1),(0,2,2,0,2,2), 3),
-        ((0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0), 4),
-        ((0,1,2,3,0,1,2,3),(0,0,0,0,0,0,0,0), 4),
-        ((0,0,0,0,0,0,0,0),(0,0,1,1,0,0,1,1), 4),
-    ]
-)
-def test_haar_integral_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dimension):
-    "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-    epsilon_real = 2e-2
-    epsilon_imag = 1e-6
-
-    half_length = len(seq_i) // 2
-    seq_i_numeric = seq_i[:half_length] + tuple(i+half_dimension for i in seq_i[half_length:])
-    seq_j_numeric = seq_j[:half_length] + tuple(j+half_dimension for j in seq_j[half_length:])
-
-    integral = float(ap.haar_integral_symplectic((seq_i_numeric, seq_j_numeric), half_dimension))
-
-    mc_integral = monte_carlo_symplectic_dict[(seq_i, seq_j, half_dimension)]
-
-    assert (
-        abs((integral - mc_integral.real) / integral) < epsilon_real
-        and abs(mc_integral.imag) < epsilon_imag
-        and integral != 0
+    integral_num = float(
+        ap.haar_integral_symplectic((seq_i_numeric, seq_j_numeric), half_dimension)
     )
+    mc_integral = symplectic_dict[(seq_i, seq_j, half_dimension)]
+
+    assert mc_integral == integral_symb == integral_num
 
 
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((1,2,3,4),(1,2,3,4),(1,2,3,4)),
-        ((1,2,3,4),),
-        ((1,2,3,4), (1,2,3,4,5,6)),
-        ((1,2,3,4,5,6), (1,2,3,4,5,6,7)),
-    ]
+        ((1, 2, 3, 4), (1, 2, 3, 4), (1, 2, 3, 4)),
+        ((1, 2, 3, 4),),
+        ((1, 2, 3, 4), (1, 2, 3, 4, 5, 6)),
+        ((1, 2, 3, 4, 5, 6), (1, 2, 3, 4, 5, 6, 7)),
+    ],
 )
 def test_haar_integral_symplectic_value_error_wrong_tuple(sequences):
     "Value error for wrong sequence format"
-    with pytest.raises(
-        ValueError,
-        match="Wrong sequence format"
-    ):
+    with pytest.raises(ValueError, match="Wrong sequence format"):
         ap.haar_integral_symplectic(sequences, d)
 
 
 @pytest.mark.parametrize(
     "sequences",
     [
-        (('a','b','c','d'), (1,2,3,4)),
-        ((1,1,d+1,d+1), (1,1,1,1)),
-    ]
+        (("a", "b", "c", "d"), (1, 2, 3, 4)),
+        ((1, 1, d + 1, d + 1), (1, 1, 1, 1)),
+    ],
 )
 def test_haar_integral_symplectic_type_error_integer_dimension(sequences):
     "Type error for integer dimension with not integer sequences"
-    dimension = randint(1,99)
+    dimension = randint(1, 99)
     with pytest.raises(TypeError):
         ap.haar_integral_symplectic(sequences, dimension)
 
@@ -365,10 +328,10 @@ def test_haar_integral_symplectic_type_error_integer_dimension(sequences):
 @pytest.mark.parametrize(
     "sequences, dimension",
     [
-        (((1,3),(1,3)), 1),
-        (((1,2,3,5),(1,2,3,4)), 2),
-        (((1,2,3,41),(1,2,3,41)), 20),
-    ]
+        (((1, 3), (1, 3)), 1),
+        (((1, 2, 3, 5), (1, 2, 3, 4)), 2),
+        (((1, 2, 3, 41), (1, 2, 3, 41)), 20),
+    ],
 )
 def test_haar_integral_symplectic_value_error_outside_dimension_range(sequences, dimension):
     "Value error for sequences values outside dimension range"
@@ -382,15 +345,15 @@ def test_haar_integral_symplectic_value_error_outside_dimension_range(sequences,
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((1,2,3,4),(1,2,3,'a')),
-        ((1,2,3,4), (1,2,3,{1,2})),
-        ((1,2,3,4),(1,2,3,4*d)),
-        ((1,2,3,2*d+1), (1,2,3,4)),
-        ((1,2,3,d+1), (1,2,3,4.0)),
-        ((1,2,3,4), (1,2,3,d**2)),
-        ((1,2,3,4), (1,2,3,1+d**2+d)),
-        ((1,2,3,4), (1,2,3, d + Symbol('s'))),
-    ]
+        ((1, 2, 3, 4), (1, 2, 3, "a")),
+        ((1, 2, 3, 4), (1, 2, 3, {1, 2})),
+        ((1, 2, 3, 4), (1, 2, 3, 4 * d)),
+        ((1, 2, 3, 2 * d + 1), (1, 2, 3, 4)),
+        ((1, 2, 3, d + 1), (1, 2, 3, 4.0)),
+        ((1, 2, 3, 4), (1, 2, 3, d**2)),
+        ((1, 2, 3, 4), (1, 2, 3, 1 + d**2 + d)),
+        ((1, 2, 3, 4), (1, 2, 3, d + Symbol("s"))),
+    ],
 )
 def test_haar_integral_symplectic_type_error_wrong_format(sequences):
     "Type error for symbolic dimension with wrong sequence format"
@@ -401,49 +364,48 @@ def test_haar_integral_symplectic_type_error_wrong_format(sequences):
 @pytest.mark.parametrize(
     "dimension",
     [
-        'a',
-        [1,2],
-        {1,2},
+        "a",
+        [1, 2],
+        {1, 2},
         3.0,
-    ]
+    ],
 )
 def test_haar_integral_symplectic_wrong_dimension_format(dimension):
     "Type error if the symplectic dimension is not an int nor a symbol"
     with pytest.raises(TypeError):
-        ap.haar_integral_symplectic(((1,2,3,4),(1,2,3,4)), dimension)
+        ap.haar_integral_symplectic(((1, 2, 3, 4), (1, 2, 3, 4)), dimension)
 
 
 @pytest.mark.parametrize(
     "sequences, dimension",
     [
-        (((1,1,1),(1,1,1)), d),
-        (((1,1,1,1,1),(1,1,1,1,1)), d),
-        (((1,1+d,1+d),(1,1+d,1+d)), d),
-        (((1,1,1,1),(1,1,1,1)), d),
-        (((1,1,d+1,d+2),(1,1,d+1,d+1)), d),
-        (((1,0,0,d),(1,d+1,0,d)), d),
-        (((0,0,0), (0,0,0)), 2),
-        (((0,0,0,0), (0,0,0,0)), 2),
-        (((1,2,3,3), (1,2,3,3)), 4),
-        (((1,1,5,5,5), (1,1,5,5,5)), 4),
-    ]
+        (((1, 1, 1), (1, 1, 1)), d),
+        (((1, 1, 1, 1, 1), (1, 1, 1, 1, 1)), d),
+        (((1, 1 + d, 1 + d), (1, 1 + d, 1 + d)), d),
+        (((1, 1, 1, 1), (1, 1, 1, 1)), d),
+        (((1, 1, d + 1, d + 2), (1, 1, d + 1, d + 1)), d),
+        (((1, 0, 0, d), (1, d + 1, 0, d)), d),
+        (((0, 0, 0), (0, 0, 0)), 2),
+        (((0, 0, 0, 0), (0, 0, 0, 0)), 2),
+        (((1, 2, 3, 3), (1, 2, 3, 3)), 4),
+        (((1, 1, 5, 5, 5), (1, 1, 5, 5, 5)), 4),
+    ],
 )
 def test_haar_integral_symplectic_zero_cases(sequences, dimension):
     "Test cases that yield zero"
     assert not ap.haar_integral_symplectic(sequences, dimension)
 
 
-@pytest.mark.parametrize("half_degree", range(1,5))
+@pytest.mark.parametrize("half_degree", range(1, 5))
 def test_haar_integral_symplectic_weingarten_reconciliation(half_degree):
     "Test single permutation moments match the symplectic weingarten function"
-    seq_dim_base = tuple(i+d for i in range(half_degree))
-    sequence = tuple(i+1 for pair in zip(range(half_degree), seq_dim_base) for i in pair)
+    seq_dim_base = tuple(i + d for i in range(half_degree))
+    sequence = tuple(i + 1 for pair in zip(range(half_degree), seq_dim_base) for i in pair)
 
-    for perm in ap.hyperoctahedral_transversal(2*half_degree):
+    for perm in ap.hyperoctahedral_transversal(2 * half_degree):
         inv_perm = ~perm
         perm_sequence = tuple(inv_perm(sequence))
 
-        assert (
-            ap.haar_integral_symplectic((sequence, perm_sequence), d)
-            == ap.weingarten_symplectic(perm, d)
-        )
+        assert ap.haar_integral_symplectic(
+            (sequence, perm_sequence), d
+        ) == ap.weingarten_symplectic(perm, d)
