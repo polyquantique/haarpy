@@ -25,7 +25,7 @@ import haarpy as ap
 
 d = Symbol("d")
 
-# The values in the dictionary below were verified against Montecarlo simulations
+# The values in the dictionary below were verified against Monte Carlo simulations
 cse_dict = {
     ((0, 0), (0, 0), 1): 1,
     ((0, 1), (0, 1), 1): 0,
@@ -227,7 +227,6 @@ def test_haar_integral_coe_value_error(sequences):
 )
 def test_haar_integral_circular_symplectic_monte_carlo_numeric(seq_i, seq_j, half_dim):
     "Test haar integral circular symplectic moments against Monte Carlo simulation numeric"
-
     integral = ap.haar_integral_circular_symplectic((seq_i, seq_j), half_dim)
 
     mc_integral = cse_dict[(seq_i, seq_j, half_dim)]
@@ -254,11 +253,7 @@ def test_haar_integral_circular_symplectic_monte_carlo_numeric(seq_i, seq_j, hal
 )
 def test_haar_integral_circular_symplectic_monte_carlo_symbolic(seq_i, seq_j, half_dim):
     "Test haar integral circular symplectic moments against Monte Carlo simulation symbolic"
-    epsilon_real = 5e-2
-    epsilon = 1e-5
-
-    integral = ap.haar_integral_circular_symplectic((seq_i, seq_j), d)
-    integral = float(integral.subs(d, half_dim))
+    integral = ap.haar_integral_circular_symplectic((seq_i, seq_j), d).subs(d, half_dim)
 
     seq_i = tuple(i if isinstance(i, int) else i.subs(d, half_dim) for i in seq_i)
     seq_j = tuple(i if isinstance(i, int) else i.subs(d, half_dim) for i in seq_j)

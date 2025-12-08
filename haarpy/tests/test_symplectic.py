@@ -27,7 +27,7 @@ import haarpy as ap
 d = Symbol("d")
 
 
-# The values in the dictionary below were verified against Montecarlo simulations
+# The values in the dictionary below were verified against Monte Carlo simulations
 # Using the code in here
 # https://github.com/XanaduAI/unicirc/blob/740cd16a2e392bdbcd47466684a58d9341532d42/unicirc/optimization.py#L300
 symplectic_dict = {
@@ -101,7 +101,11 @@ def test_twisted_spherical_orthogonality_transversal_zero(permutation, partition
     <https://arxiv.org/abs/1301.5401>`_
     """
     degree = permutation.size
-    convolution = sum(ap.twisted_spherical_function(tau, partition1) * ap.twisted_spherical_function(permutation * ~tau, partition2) for tau in ap.hyperoctahedral_transversal(degree))
+    convolution = sum(
+        ap.twisted_spherical_function(tau, partition1)
+        * ap.twisted_spherical_function(permutation * ~tau, partition2)
+        for tau in ap.hyperoctahedral_transversal(degree)
+    )
 
     assert not convolution
 
@@ -109,36 +113,16 @@ def test_twisted_spherical_orthogonality_transversal_zero(permutation, partition
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-        (
-            Permutation(
-                3,
-            ),
-            (2,),
-        ),
-        (
-            Permutation(
-                3,
-            ),
-            (1, 1),
-        ),
-        (
-            Permutation(
-                5,
-            )(0, 1),
-            (2, 1),
-        ),
-        (Permutation(0, 1, 2, 3, 4, 5), (3,)),
-        (
-            Permutation(
-                5,
-            )(0, 3, 4),
-            (3,),
-        ),
-        (Permutation(0, 1, 2, 3, 4, 5), (1, 1, 1)),
-        (Permutation(0, 1, 2, 3, 4, 5), (2, 1)),
-        (Permutation(0, 3, 5), (2, 1)),
-        (Permutation(0, 3, 4, 5), (2, 1)),
-        (Permutation(0, 2, 3, 4, 5), (2, 1)),
+        (Permutation(3,), (2,)),
+        (Permutation(3,), (1,1)),
+        (Permutation(5,)(0,1), (2,1)),
+        (Permutation(0,1,2,3,4,5), (3,)),
+        (Permutation(5,)(0,3,4), (3,)),
+        (Permutation(0,1,2,3,4,5), (1,1,1)),
+        (Permutation(0,1,2,3,4,5), (2,1)),
+        (Permutation(0,3,5), (2,1)),
+        (Permutation(0,3,4,5), (2,1)),
+        (Permutation(0,2,3,4,5), (2,1)),
     ],
 )
 def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, partition):
@@ -148,38 +132,29 @@ def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, part
     """
     degree = permutation.size
     half_degree = degree // 2
-    convolution = sum(ap.twisted_spherical_function(tau, partition) * ap.twisted_spherical_function(permutation * ~tau, partition) for tau in ap.hyperoctahedral_transversal(degree))
+    convolution = sum(
+        ap.twisted_spherical_function(tau, partition)
+        * ap.twisted_spherical_function(permutation * ~tau, partition)
+        for tau in ap.hyperoctahedral_transversal(degree)
+    )
     duplicate_partition = tuple(part for part in partition for _ in range(2))
-    orthogonality = Fraction(factorial(degree), 2**half_degree * factorial(half_degree)) * ap.twisted_spherical_function(permutation, partition) / ap.irrep_dimension(duplicate_partition)
+    orthogonality = (
+        Fraction(factorial(degree), 2**half_degree * factorial(half_degree))
+        * ap.twisted_spherical_function(permutation, partition)
+        / ap.irrep_dimension(duplicate_partition)
+    )
     assert convolution == orthogonality
 
 
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-        (
-            Permutation(
-                3,
-            ),
-            [
-                2,
-            ],
-        ),
-        ((3, 1), (1, 1)),
-        (
-            Permutation(
-                5,
-            )(0, 1),
-            "a",
-        ),
-        ("a", (3,)),
-        (
-            Permutation(
-                5,
-            )(0, 3, 4),
-            7,
-        ),
-        (7, (1, 1, 1)),
+        (Permutation(3,), [2,]),
+        ((3,1), (1,1)),
+        (Permutation(5,)(0,1), 'a'),
+        ('a', (3,)),
+        (Permutation(5,)(0,3,4), 7),
+        (7, (1,1,1)),
     ],
 )
 def test_twisted_spherical_function_type_error(permutation, partition):
@@ -191,30 +166,10 @@ def test_twisted_spherical_function_type_error(permutation, partition):
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-        (
-            Permutation(
-                3,
-            ),
-            (2, 2),
-        ),
-        (
-            Permutation(
-                3,
-            ),
-            (1, 1, 1),
-        ),
-        (
-            Permutation(
-                4,
-            ),
-            (2, 1),
-        ),
-        (
-            Permutation(
-                4,
-            ),
-            (1, 1, 1),
-        ),
+        (Permutation(3,), (2,2)),
+        (Permutation(3,), (1,1,1)),
+        (Permutation(4,), (2,1)),
+        (Permutation(4,), (1,1,1)),
     ],
 )
 def test_twisted_spherical_function_degree_value_error(permutation, partition):
@@ -236,7 +191,11 @@ def test_weingarten_symplectic_hyperoctahedral_symbolic(half_degree):
         for permutation in SymmetricGroup(2 * half_degree).generate():
             hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = permutation.signature() / (4 * d * (d - 1) * (2 * d + 1))
-            assert ap.weingarten_symplectic(permutation, d) == (simplify((2 * d - 1) * coefficient) if permutation in hyperoctahedral else coefficient)
+            assert ap.weingarten_symplectic(permutation, d) == (
+                simplify((2 * d - 1) * coefficient)
+                if permutation in hyperoctahedral
+                else coefficient
+            )
 
 
 @pytest.mark.parametrize("half_degree", range(1, 3))
@@ -247,12 +206,16 @@ def test_weingarten_symplectic_hyperoctahedral_numeric(half_degree):
     """
     if half_degree == 1:
         for permutation in SymmetricGroup(2 * half_degree).generate():
-            assert ap.weingarten_symplectic(permutation, 7) == (Fraction(permutation.signature(), (2 * 7)))
+            assert ap.weingarten_symplectic(permutation, 7) == (
+                Fraction(permutation.signature(), (2 * 7))
+            )
     else:
         for permutation in SymmetricGroup(2 * half_degree).generate():
             hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = Fraction(permutation.signature(), (4 * 7 * (7 - 1) * (2 * 7 + 1)))
-            assert ap.weingarten_symplectic(permutation, 7) == ((2 * 7 - 1) * coefficient if permutation in hyperoctahedral else coefficient)
+            assert ap.weingarten_symplectic(permutation, 7) == (
+                (2 * 7 - 1) * coefficient if permutation in hyperoctahedral else coefficient
+            )
 
 
 @pytest.mark.parametrize(
@@ -277,7 +240,11 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
-    assert ap.weingarten_symplectic(permutation, d) == simplify((-1) ** (permutation.size // 2) * permutation.signature() * ap.weingarten_orthogonal(permutation, -2 * d))
+    assert ap.weingarten_symplectic(permutation, d) == simplify(
+        (-1) ** (permutation.size // 2)
+        * permutation.signature()
+        * ap.weingarten_orthogonal(permutation, -2 * d)
+    )
 
 
 @pytest.mark.parametrize(
@@ -308,19 +275,26 @@ def test_weingarten_symplectic_degree_value_error(permutation):
         ((0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 1, 1, 0, 0, 1, 1), 4),
     ],
 )
-def test_haar_integral_symplectic_symbolic(seq_i, seq_j, half_dimension):
-    "Test haar integral symplectic moments against Monte Carlo simulation symbolic"
-
+def test_haar_integral_symplectic_symbolic_numeric(seq_i, seq_j, half_dimension):
+    """Test haar integral symplectic moments against Monte Carlo simulation by calling the
+    function with both a symbolic and a numeric dimension
+    """
     half_length = len(seq_i) // 2
     seq_i_symbolic = seq_i[:half_length] + tuple(i + d for i in seq_i[half_length:])
     seq_j_symbolic = seq_j[:half_length] + tuple(j + d for j in seq_j[half_length:])
+    seq_i_numeric = seq_i[:half_length] + tuple(i + half_dimension for i in seq_i[half_length:])
+    seq_j_numeric = seq_j[:half_length] + tuple(j + half_dimension for j in seq_j[half_length:])
 
-    integral_frac = ap.haar_integral_symplectic((seq_i_symbolic, seq_j_symbolic), d)
-    integral_num = integral_frac.subs(d, half_dimension)
-
+    integral_symb = float(
+        ap.haar_integral_symplectic((seq_i_symbolic, seq_j_symbolic), d).subs(d, half_dimension)
+    )
+    integral_num = float(
+        ap.haar_integral_symplectic((seq_i_numeric, seq_j_numeric), half_dimension)
+    )
     mc_integral = symplectic_dict[(seq_i, seq_j, half_dimension)]
 
-    assert mc_integral == float(integral_num)
+    assert mc_integral == integral_symb == integral_num
+
 
 @pytest.mark.parametrize(
     "sequences",
@@ -432,4 +406,6 @@ def test_haar_integral_symplectic_weingarten_reconciliation(half_degree):
         inv_perm = ~perm
         perm_sequence = tuple(inv_perm(sequence))
 
-        assert ap.haar_integral_symplectic((sequence, perm_sequence), d) == ap.weingarten_symplectic(perm, d)
+        assert ap.haar_integral_symplectic(
+            (sequence, perm_sequence), d
+        ) == ap.weingarten_symplectic(perm, d)
