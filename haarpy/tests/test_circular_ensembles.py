@@ -263,7 +263,6 @@ def test_haar_integral_circular_symplectic_monte_carlo_symbolic(seq_i, seq_j, ha
     assert float(integral) == mc_integral
 
 
-
 @pytest.mark.parametrize(
     "sequences",
     [

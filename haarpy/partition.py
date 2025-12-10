@@ -78,9 +78,7 @@ def perfect_matchings(
 
 
 @lru_cache
-def partial_order(
-    partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
-) -> bool:
+def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> bool:
     """Returns True if parition_1 <= partition_2 in terms of partial order
 
     For parition_1 and partition_2, two partitions of the same set, we call
@@ -105,9 +103,7 @@ def partial_order(
 
 
 @lru_cache
-def meet_operation(
-    partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
-) -> tuple[tuple]:
+def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> tuple[tuple]:
     """Returns the greatest lower bound of the two input partitions
 
     For parition_1 and partition_2, two partitions of the same set,
@@ -136,9 +132,7 @@ def meet_operation(
 
 
 @lru_cache
-def join_operation(
-    partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
-) -> tuple[tuple]:
+def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> tuple[tuple]:
     """Returns the least upper bound of the two input partitions
 
     For parition_1 and partition_2, two partitions of the same set,
@@ -155,12 +149,7 @@ def join_operation(
         tuple[tuple[int]]: Least upper bound
     """
     parent = [
-        {
-            index
-            for value in block1
-            for index, block2 in enumerate(partition_2)
-            if value in block2
-        }
+        {index for value in block1 for index, block2 in enumerate(partition_2) if value in block2}
         for block1 in partition_1
     ]
 

@@ -68,9 +68,7 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
 
 
 @lru_cache
-def weingarten_unitary(
-    cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol
-) -> Expr:
+def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol) -> Expr:
     """Returns the Weingarten function
 
     Args:
@@ -90,17 +88,14 @@ def weingarten_unitary(
     if isinstance(cycle, Permutation):
         degree = cycle.size
         conjugacy_class = get_conjugacy_class(cycle, degree)
-    elif isinstance(cycle, (tuple, list)) and all(
-        isinstance(value, int) for value in cycle
-    ):
+    elif isinstance(cycle, (tuple, list)) and all(isinstance(value, int) for value in cycle):
         degree = sum(cycle)
         conjugacy_class = tuple(cycle)
     else:
         raise TypeError
 
     partition_tuple = tuple(
-        sum((value * (key,) for key, value in part.items()), ())
-        for part in partitions(degree)
+        sum((value * (key,) for key, value in part.items()), ()) for part in partitions(degree)
     )
     irrep_dimension_tuple = (irrep_dimension(part) for part in partition_tuple)
 
@@ -118,9 +113,7 @@ def weingarten_unitary(
                 irrep_dimension**2
                 * murn_naka_rule(partition, conjugacy_class)
                 / representation_dimension(partition, unitary_dimension)
-                for partition, irrep_dimension in zip(
-                    partition_tuple, irrep_dimension_tuple
-                )
+                for partition, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
             )
             / factorial(degree) ** 2
         )
@@ -131,9 +124,7 @@ def weingarten_unitary(
 
 
 @lru_cache
-def haar_integral_unitary(
-    sequences: tuple[tuple[int]], unitary_dimension: Symbol
-) -> Expr:
+def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbol) -> Expr:
     """Returns integral over unitary group polynomial sampled at random from the Haar measure
 
     Args:

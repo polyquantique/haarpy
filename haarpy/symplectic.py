@@ -33,9 +33,7 @@ from haarpy import (
 
 
 @lru_cache
-def twisted_spherical_function(
-    permutation: Permutation, partition: tuple[int]
-) -> float:
+def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) -> float:
     """Returns the twisted spherical function of the Gelfand pair (S_2k, H_k)
     as seen in Macdonald's "Symmetric Functions and Hall Polynomials" chapter VII
 
@@ -68,9 +66,7 @@ def twisted_spherical_function(
     duplicate_partition = tuple(part for part in partition for _ in range(2))
     hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
-        murn_naka_rule(
-            duplicate_partition, get_conjugacy_class(~zeta * permutation, degree)
-        )
+        murn_naka_rule(duplicate_partition, get_conjugacy_class(~zeta * permutation, degree))
         * zeta.signature()
         for zeta in hyperocta.generate()
     )
@@ -97,19 +93,14 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
     half_degree = degree // 2
 
     partition_tuple = tuple(
-        sum((value * (key,) for key, value in part.items()), ())
-        for part in partitions(half_degree)
+        sum((value * (key,) for key, value in part.items()), ()) for part in partitions(half_degree)
     )
     duplicate_partition_tuple = tuple(
-        tuple(part for part in partition for _ in range(2))
-        for partition in partition_tuple
+        tuple(part for part in partition for _ in range(2)) for partition in partition_tuple
     )
-    irrep_dimension_gen = (
-        irrep_dimension(partition) for partition in duplicate_partition_tuple
-    )
+    irrep_dimension_gen = (irrep_dimension(partition) for partition in duplicate_partition_tuple)
     twisted_spherical_gen = (
-        twisted_spherical_function(permutation, partition)
-        for partition in partition_tuple
+        twisted_spherical_function(permutation, partition) for partition in partition_tuple
     )
     coefficient_gen = (
         prod(
@@ -195,12 +186,8 @@ def haar_integral_symplectic(
             return 0
         seq_i_position = tuple(0 if i < half_dimension else 1 for i in seq_i)
         seq_j_position = tuple(0 if j < half_dimension else 1 for j in seq_j)
-        seq_i_value = tuple(
-            i if i < half_dimension else i - half_dimension for i in seq_i
-        )
-        seq_j_value = tuple(
-            j if j < half_dimension else j - half_dimension for j in seq_j
-        )
+        seq_i_value = tuple(i if i < half_dimension else i - half_dimension for i in seq_i)
+        seq_j_value = tuple(j if j < half_dimension else j - half_dimension for j in seq_j)
     elif isinstance(half_dimension, Symbol):
         if not all(isinstance(i, (int, Expr)) for i in seq_i + seq_j):
             raise TypeError
@@ -222,19 +209,11 @@ def haar_integral_symplectic(
         seq_j_position = tuple(0 if isinstance(j, int) else 1 for j in seq_j)
 
         seq_i_value = tuple(
-            (
-                i
-                if isinstance(i, int)
-                else 0 if i == half_dimension else i.as_ordered_terms()[1]
-            )
+            (i if isinstance(i, int) else 0 if i == half_dimension else i.as_ordered_terms()[1])
             for i in seq_i
         )
         seq_j_value = tuple(
-            (
-                j
-                if isinstance(j, int)
-                else 0 if j == half_dimension else j.as_ordered_terms()[1]
-            )
+            (j if isinstance(j, int) else 0 if j == half_dimension else j.as_ordered_terms()[1])
             for j in seq_j
         )
     else:
@@ -243,12 +222,8 @@ def haar_integral_symplectic(
     def twisted_delta(seq_value, seq_pos, perm):
         return (
             0
-            if not all(
-                i1 == i2 for i1, i2 in zip(perm(seq_value)[::2], perm(seq_value)[1::2])
-            )
-            else prod(
-                i2 - i1 for i1, i2 in zip(perm(seq_pos)[::2], perm(seq_pos)[1::2])
-            )
+            if not all(i1 == i2 for i1, i2 in zip(perm(seq_value)[::2], perm(seq_value)[1::2]))
+            else prod(i2 - i1 for i1, i2 in zip(perm(seq_pos)[::2], perm(seq_pos)[1::2]))
         )
 
     permutation_i_tuple = tuple(
@@ -261,9 +236,7 @@ def haar_integral_symplectic(
     )
 
     integral = sum(
-        perm_i[1]
-        * perm_j[1]
-        * weingarten_symplectic(perm_j[0] * ~perm_i[0], half_dimension)
+        perm_i[1] * perm_j[1] * weingarten_symplectic(perm_j[0] * ~perm_i[0], half_dimension)
         for perm_i, perm_j in product(permutation_i_tuple, permutation_j_tuple)
         if perm_i[1] * perm_j[1]
     )
