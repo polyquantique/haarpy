@@ -111,7 +111,7 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
         for partition in partition_tuple
     )
 
-    if isinstance(half_dimension, int):
+    if isinstance(half_dimension, (int, Fraction)):
         weingarten = sum(
             Fraction(
                 irrep_dim * zonal_spherical,

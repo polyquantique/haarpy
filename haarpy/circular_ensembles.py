@@ -70,7 +70,7 @@ def weingarten_circular_orthogonal(
         
     See Also
     --------
-        coset_type
+        coset_type, weingarten_orthogonal
     """
     return weingarten_orthogonal(permutation, coe_dimension + 1)
 
@@ -79,12 +79,30 @@ def weingarten_circular_orthogonal(
 def weingarten_circular_symplectic(permutation: Permutation, cse_dimension: Symbol) -> Expr:
     """Returns the circular symplectic ensembles Weingarten functions
 
-    Args:
+    Parameters
+    ----------
         permutation (Permutation): A permutation of the symmetric group S_2k
         cse_dimension (int): The dimension of the CSE
 
-    Returns:
+    Returns
+    -------
         Expr: The Weingarten function
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import weingarten_circular_symplectic
+
+        >>> d = Symbol('d')
+        >>> weingarten_circular_symplectic(Permutation(3)(0,1), 4)
+        >>> Fraction(-3, 140)
+        >>> weingarten_circular_symplectic(Permutation(3)(0,1), d)
+        >>> (1-d)/(d*(2*d-3)*(2*d-1))
+
+    See Also
+    --------
+        weingarten_symplectic
     """
     symplectic_dimension = (
         (2 * cse_dimension - 1) / 2
