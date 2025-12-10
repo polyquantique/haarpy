@@ -57,7 +57,6 @@ def weingarten_circular_orthogonal(
         >>> from sympy import Symbol
         >>> from sympy.combinatorics import Permutation
         >>> from haarpy import weingarten_circular_orthogonal
-
         >>> d = Symbol('d')
         >>> weingarten_circular_orthogonal(Permutation(3)(0,1), 4)
         Fraction(3, 70)
@@ -93,12 +92,11 @@ def weingarten_circular_symplectic(permutation: Permutation, cse_dimension: Symb
         >>> from sympy import Symbol
         >>> from sympy.combinatorics import Permutation
         >>> from haarpy import weingarten_circular_symplectic
-
         >>> d = Symbol('d')
         >>> weingarten_circular_symplectic(Permutation(3)(0,1), 4)
-        >>> Fraction(-3, 140)
+        Fraction(-3, 140)
         >>> weingarten_circular_symplectic(Permutation(3)(0,1), d)
-        >>> (1-d)/(d*(2*d-3)*(2*d-1))
+        (1 - d)/(d*(2*d - 3)*(2*d - 1))
 
     See Also
     --------
@@ -119,16 +117,35 @@ def haar_integral_circular_orthogonal(
     """Returns integral over circular orthogonal ensemble polynomial
     sampled at random from the Haar measure
 
-    Args:
+    Parameters
+    ----------
         sequences (tuple[tuple[int]]) : Indices of matrix elements
         group_dimension (Symbol) : Dimension of the orthogonal group
 
-    Returns:
+    Returns
+    -------
         Expr : Integral under the Haar measure
 
-    Raise:
-        ValueError : If sequences doesn't contain 2 tuples
-        ValueError : If tuples i and j are of odd size
+    Raise
+    -----
+        ValueError : if sequences doesn't contain 2 tuples
+        ValueError : if tuples i and j are of odd size
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_circular_orthogonal
+        >>> d = Symbol('d')
+        >>> seq_i = (0, 0, 1, 2)
+        >>> seq_j = (1, 0, 0, 2)
+        >>> haar_integral_circular_orthogonal((seq_i, seq_j), 7)
+        Fraction(-1, 280)
+        >>> haar_integral_circular_orthogonal((seq_i, seq_j), d)
+        -2/(d*(d + 1)*(d + 3))
+    
+    See Also
+    --------
+        coset_type, stabilizer_coset, weingarten_circular_orthogonal
     """
     if len(sequences) != 2:
         raise ValueError("Wrong tuple format")
@@ -159,21 +176,36 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
     """Returns integral over circular symplectic ensemble polynomial
     sampled at random from the Haar measure
 
-    Args:
+    Parameters
+    ----------
         sequences (tuple[tuple[int]]) : Indices of matrix elements
         half_dimension (Symbol) : Half the dimension of the unitary group
 
-    Returns:
+    Returns
+    -------
         Expr : Integral under the Haar measure
 
-    Raise:
-        ValueError : If sequences doesn't contain 2 tuples
-        ValueError : If tuples i and j are of odd size
-        TypeError: If dimension is int and sequence is not
-        TypeError: If the half_dimension is not int nor Symbol
-        ValueError: If all sequence indices are not between 0 and 2*dimension - 1
-        TypeError: If sequence containt something else than Expr
-        TypeError: If symbolic sequences have the wrong format
+    Raise
+    -----
+        ValueError : if sequences doesn't contain 2 tuples
+        ValueError : if tuples i and j are of odd size
+        TypeError: if dimension is int and sequence is not
+        TypeError: if the half_dimension is not int nor Symbol
+        ValueError: if all sequence indices are not between 0 and 2*dimension - 1
+        TypeError: if sequence containt something else than Expr
+        TypeError: if symbolic sequences have the wrong format
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_circular_symplectic
+        >>> d = Symbol('d')
+        >>> seq_i = (0, 0, 1, 2)
+        >>> seq_j = (1, 0, 0, 2)
+
+    See Also
+    --------
+        weingarten_circular_symplectic
     """
     if len(sequences) != 2:
         raise ValueError("Wrong sequence format")
