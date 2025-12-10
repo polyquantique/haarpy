@@ -53,9 +53,7 @@ def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
             "The degree you have provided is too low. It must be an integer greater than 0."
         )
     if not isinstance(perm, Permutation):
-        raise TypeError(
-            "Permutation must be of type sympy.combinatorics.permutations.Permutation"
-        )
+        raise TypeError("Permutation must be of type sympy.combinatorics.permutations.Permutation")
 
     if perm.size > degree:
         raise ValueError("Incompatible degree and permutation cycle")
@@ -101,8 +99,7 @@ def derivative_tableaux(
         if not current_row_length:
             if tableau[index][0] <= increment:
                 yield tuple(
-                    row if i != index + 1 else row + (increment,)
-                    for i, row in enumerate(tableau)
+                    row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau)
                 )
             return
         if (
@@ -110,8 +107,7 @@ def derivative_tableaux(
             and tableau[index][current_row_length] <= increment
         ):
             yield tuple(
-                row if i != index + 1 else row + (increment,)
-                for i, row in enumerate(tableau)
+                row if i != index + 1 else row + (increment,) for i, row in enumerate(tableau)
             )
 
 
@@ -141,9 +137,7 @@ def semi_standard_young_tableaux(
 
 
 @lru_cache
-def proper_border_strip(
-    tableau: tuple[tuple[int]], conjugacy_class: tuple[int]
-) -> bool:
+def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int]) -> bool:
     """Returns True if input Young tableau is a valid border-strip tableau
 
     Args:
@@ -174,12 +168,7 @@ def proper_border_strip(
     # 2x2 square condition
     for i in range(1, len(tableau)):
         for j in range(1, len(tableau[i])):
-            if (
-                tableau[i][j]
-                == tableau[i][j - 1]
-                == tableau[i - 1][j]
-                == tableau[i - 1][j - 1]
-            ):
+            if tableau[i][j] == tableau[i][j - 1] == tableau[i - 1][j] == tableau[i - 1][j - 1]:
                 return False
 
     return True
@@ -201,15 +190,12 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
         return 0
 
     tableaux = semi_standard_young_tableaux(partition, conjugacy_class)
-    tableaux = (
-        tableau for tableau in tableaux if proper_border_strip(tableau, conjugacy_class)
-    )
+    tableaux = (tableau for tableau in tableaux if proper_border_strip(tableau, conjugacy_class))
 
     tableaux_set = ((set(row) for row in tableau) for tableau in tableaux)
     heights = (tuple(i for row in tableau for i in row) for tableau in tableaux_set)
     heights = (
-        sum(height.count(unit) - 1 for unit in range(len(conjugacy_class)))
-        for height in heights
+        sum(height.count(unit) - 1 for unit in range(len(conjugacy_class))) for height in heights
     )
 
     character = sum((-1) ** height for height in heights)
@@ -231,9 +217,7 @@ def irrep_dimension(partition: tuple[int]) -> int:
         for i, part_i in enumerate(partition)
         for j, part_j in enumerate(partition[i + 1 :])
     )
-    denominator = prod(
-        factorial(part + len(partition) - i - 1) for i, part in enumerate(partition)
-    )
+    denominator = prod(factorial(part + len(partition) - i - 1) for i, part in enumerate(partition))
     dimension = Fraction(numerator, denominator) * factorial(sum(partition))
 
     return dimension.numerator
@@ -254,9 +238,7 @@ def sorting_permutation(*sequence: tuple[int]) -> Permutation:
         TypeError: if more than two sequences are passed as arguments
     """
     if len(sequence) == 1:
-        return Permutation(
-            sorted(range(len(sequence[0])), key=lambda k: sequence[0][k])
-        )
+        return Permutation(sorted(range(len(sequence[0])), key=lambda k: sequence[0][k]))
     if len(sequence) == 2:
         if sorted(sequence[0]) != sorted(sequence[1]):
             raise ValueError("Incompatible sequences")
@@ -309,9 +291,7 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
     young_partition = tuple(sequence[0].count(i) for i in sorted(set(sequence[0])))
 
     return (
-        ~sorting_permutation(sequence[1])
-        * permutation
-        * sorting_permutation(sequence[0])
+        ~sorting_permutation(sequence[1]) * permutation * sorting_permutation(sequence[0])
         for permutation in YoungSubgroup(young_partition).generate()
     )
 
@@ -331,9 +311,7 @@ def HyperoctahedralGroup(degree: int) -> PermutationGroup:
     """
     if not isinstance(degree, int):
         raise TypeError
-    transpositions = tuple(
-        Permutation(2 * degree - 1)(2 * i, 2 * i + 1) for i in range(degree)
-    )
+    transpositions = tuple(Permutation(2 * degree - 1)(2 * i, 2 * i + 1) for i in range(degree))
     double_transpositions = tuple(
         Permutation(2 * degree - 1)(2 * i, 2 * j)(2 * i + 1, 2 * j + 1)
         for i in range(degree)
@@ -358,8 +336,7 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
     if degree == 2:
         return (Permutation(1),)
     flatten_pmp = (
-        tuple(i for pair in pmp for i in pair)
-        for pmp in perfect_matchings(tuple(range(degree)))
+        tuple(i for pair in pmp for i in pair) for pmp in perfect_matchings(tuple(range(degree)))
     )
     return (Permutation(pmp) for pmp in flatten_pmp)
 
@@ -394,10 +371,7 @@ def coset_type(permutation: Permutation) -> tuple[int]:
     )
     return tuple(
         sorted(
-            (
-                len(block) // 2
-                for block in join_operation(base_partition, matching_partition)
-            ),
+            (len(block) // 2 for block in join_operation(base_partition, matching_partition)),
             reverse=True,
         )
     )

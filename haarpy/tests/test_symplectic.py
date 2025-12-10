@@ -113,16 +113,16 @@ def test_twisted_spherical_orthogonality_transversal_zero(permutation, partition
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-        (Permutation(3,), (2,)),
-        (Permutation(3,), (1,1)),
-        (Permutation(5,)(0,1), (2,1)),
-        (Permutation(0,1,2,3,4,5), (3,)),
-        (Permutation(5,)(0,3,4), (3,)),
-        (Permutation(0,1,2,3,4,5), (1,1,1)),
-        (Permutation(0,1,2,3,4,5), (2,1)),
-        (Permutation(0,3,5), (2,1)),
-        (Permutation(0,3,4,5), (2,1)),
-        (Permutation(0,2,3,4,5), (2,1)),
+        (Permutation(3), (2,)),
+        (Permutation(3), (1, 1)),
+        (Permutation(5)(0, 1), (2, 1)),
+        (Permutation(0, 1, 2, 3, 4, 5), (3,)),
+        (Permutation(5)(0, 3, 4), (3,)),
+        (Permutation(0, 1, 2, 3, 4, 5), (1, 1, 1)),
+        (Permutation(0, 1, 2, 3, 4, 5), (2, 1)),
+        (Permutation(0, 3, 5), (2, 1)),
+        (Permutation(0, 3, 4, 5), (2, 1)),
+        (Permutation(0, 2, 3, 4, 5), (2, 1)),
     ],
 )
 def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, partition):
@@ -149,12 +149,12 @@ def test_twisted_spherical_orthogonality_transversal_none_zero(permutation, part
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-        (Permutation(3,), [2,]),
-        ((3,1), (1,1)),
-        (Permutation(5,)(0,1), 'a'),
-        ('a', (3,)),
-        (Permutation(5,)(0,3,4), 7),
-        (7, (1,1,1)),
+        (Permutation(3), [2]),
+        ((3, 1), (1, 1)),
+        (Permutation(5)(0, 1), "a"),
+        ("a", (3,)),
+        (Permutation(5)(0, 3, 4), 7),
+        (7, (1, 1, 1)),
     ],
 )
 def test_twisted_spherical_function_type_error(permutation, partition):
@@ -166,10 +166,10 @@ def test_twisted_spherical_function_type_error(permutation, partition):
 @pytest.mark.parametrize(
     "permutation, partition",
     [
-        (Permutation(3,), (2,2)),
-        (Permutation(3,), (1,1,1)),
-        (Permutation(4,), (2,1)),
-        (Permutation(4,), (1,1,1)),
+        (Permutation(3), (2, 2)),
+        (Permutation(3), (1, 1, 1)),
+        (Permutation(4), (2, 1)),
+        (Permutation(4), (1, 1, 1)),
     ],
 )
 def test_twisted_spherical_function_degree_value_error(permutation, partition):

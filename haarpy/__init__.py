@@ -204,9 +204,7 @@ def about():
     import sympy
 
     # a QuTiP-style infobox
-    print(
-        "\nHaarpy: a Python library for the symbolic calculation of Weingarten functions."
-    )
+    print("\nHaarpy: a Python library for the symbolic calculation of Weingarten functions.")
     # print("Copyright 2018-2021 Polyquantique\n")
 
     print("Python version:            {}.{}.{}".format(*sys.version_info[0:3]))

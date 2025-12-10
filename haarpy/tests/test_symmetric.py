@@ -110,7 +110,7 @@ def test_get_conjugacy_class_cycle_value_error(degree, cycle):
     [
         (((), ()), 1, (3, 1), (((1,), ()),)),
         (((1, 2), (2, 3)), 4, (3, 2), (((1, 2, 4), (2, 3)),)),
-        (((1, 1, 1, 3), (2,)), 4, (4, 2), (((1, 1, 1, 3), (2, 4,)),)),
+        (((1, 1, 1, 3), (2,)), 4, (4, 2), (((1, 1, 1, 3), (2, 4)),)),
         (((1,), ()), 1, (3, 1), (((1, 1), ()), ((1,), (1,)))),
         (((1, 2), ()), 2, (3, 2), (((1, 2, 2), ()), ((1, 2), (2,)))),
         (((), (), ()), 1, (3, 1, 1), (((1,), (), ()),)),
@@ -285,7 +285,7 @@ def test_irrep_dimension_murn_naka_rule(partition):
     assert ap.irrep_dimension(partition) == ap.murn_naka_rule(partition, conjugacy_identity)
 
 
-@pytest.mark.parametrize("degree", range(1,8))
+@pytest.mark.parametrize("degree", range(1, 8))
 def test_sorting_permutation_single_len(degree):
     "Test that the size of the permutation is the size of the sorted sequence"
     sample_size = 10
@@ -296,7 +296,7 @@ def test_sorting_permutation_single_len(degree):
         assert permutation.size == len(shuffled_sequence)
 
 
-@pytest.mark.parametrize("degree", range(1,8))
+@pytest.mark.parametrize("degree", range(1, 8))
 def test_sorting_permutation_single_shuffle(degree):
     "Test that the sorting permutation properly sorts the shuffled sequence"
     sample_size = 10
@@ -308,7 +308,7 @@ def test_sorting_permutation_single_shuffle(degree):
         assert permutation(shuffled_sequence) == sorted_sequence
 
 
-@pytest.mark.parametrize("degree", range(1,8))
+@pytest.mark.parametrize("degree", range(1, 8))
 def test_sorting_permutation_double_shuffle(degree):
     "Test that the sorting permutation properly sorts the shuffled sequence"
     sample_size = 10
@@ -325,50 +325,42 @@ def test_sorting_permutation_double_shuffle(degree):
         assert permutation(first_sequence) == second_sequence
 
 
-@pytest.mark.parametrize("degree", range(3,8))
+@pytest.mark.parametrize("degree", range(3, 8))
 def test_sorting_permutation_type_error(degree):
     "Type error for more than 2 inputs"
     sequence = tuple(range(degree))
     with pytest.raises(TypeError):
-        ap.sorting_permutation(
-            *[tuple(sequence) for _ in range(degree)]
-        )
+        ap.sorting_permutation(*[tuple(sequence) for _ in range(degree)])
 
 
 @pytest.mark.parametrize(
     "seq1, seq2",
     [
-        ((1,2,3),(0,1,2)),
-        ((0,0,0,0), (0,0,0)),
-    ]
+        ((1, 2, 3), (0, 1, 2)),
+        ((0, 0, 0, 0), (0, 0, 0)),
+    ],
 )
 def test_sorting_permutation_value_error(seq1, seq2):
     "Value error for different inputs"
-    with pytest.raises(
-        ValueError,
-        match = "Incompatible sequences"
-    ):
+    with pytest.raises(ValueError, match="Incompatible sequences"):
         ap.sorting_permutation(seq1, seq2)
 
 
-@pytest.mark.parametrize('degree', range(1,8))
+@pytest.mark.parametrize("degree", range(1, 8))
 def test_young_subgroup_order(degree):
     "Test the order of the Young subgroup"
     for partition in partitions(degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
         young = ap.YoungSubgroup(partition)
-        assert (
-            young.order()
-            == prod(SymmetricGroup(part).order() for part in partition)
-        )
+        assert young.order() == prod(SymmetricGroup(part).order() for part in partition)
 
 
-@pytest.mark.parametrize('degree', range(2,8))
+@pytest.mark.parametrize("degree", range(2, 8))
 def test_young_subgroup_stabilizer(degree):
     "Test the stabilizer property of the Young subgroup"
     for partition in partitions(degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        if partition == degree*(1,):
+        if partition == degree * (1,):
             continue
         sequence = [i for i, j in enumerate(partition) for _ in range(j)]
         young = ap.YoungSubgroup(partition)
@@ -378,12 +370,12 @@ def test_young_subgroup_stabilizer(degree):
 @pytest.mark.parametrize(
     "partition",
     [
-        {1,2,3},
-        'abc',
-        {1:1, 2:2},
-        (2,2,0),
-        (1,-1,2),
-        (2,2,'a'),
+        {1, 2, 3},
+        "abc",
+        {1: 1, 2: 2},
+        (2, 2, 0),
+        (1, -1, 2),
+        (2, 2, "a"),
     ],
 )
 def test_young_subgroup_type_error(partition):
@@ -393,86 +385,74 @@ def test_young_subgroup_type_error(partition):
 
 
 @pytest.mark.parametrize(
-        "seq1, seq2",
-        [
-            ((0,1),(0,2)),
-            ((0,0,0), (0,0)),
-            ((0,1,2,3,4), (0,1,2,3,3)),
-        ]
+    "seq1, seq2",
+    [
+        ((0, 1), (0, 2)),
+        ((0, 0, 0), (0, 0)),
+        ((0, 1, 2, 3, 4), (0, 1, 2, 3, 3)),
+    ],
 )
 def test_stabilizer_coset_empty(seq1, seq2):
     "test cases for which there are no stabilizing permutation"
     assert not len(tuple(ap.stabilizer_coset(seq1, seq2)))
 
 
-@pytest.mark.parametrize("degree", range(2,6))
+@pytest.mark.parametrize("degree", range(2, 6))
 def test_stabilizer_coset_size(degree):
     "Test the size of the stabilizer coset"
     for partition in partitions(degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq1 = [i for i, j in enumerate(partition) for _ in range(j)]
         seq2 = seq1.copy()
         shuffle(seq1)
         shuffle(seq2)
         order = sum(1 for _ in ap.stabilizer_coset(tuple(seq1), tuple(seq2)))
-        assert (
-            order
-            == prod(SymmetricGroup(part).order() for part in partition)
-        )
-    
+        assert order == prod(SymmetricGroup(part).order() for part in partition)
 
-@pytest.mark.parametrize("degree", range(2,8))
+
+@pytest.mark.parametrize("degree", range(2, 8))
 def test_stabilizer_coset_permutation(degree):
     "Test the set of permutations"
     for partition in partitions(degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq1 = [i for i, j in enumerate(partition) for _ in range(j)]
         seq2 = seq1.copy()
         shuffle(seq1)
         shuffle(seq2)
-        assert all(
-            perm(seq1) == seq2
-            for perm in ap.stabilizer_coset(tuple(seq1), tuple(seq2))
-        )
+        assert all(perm(seq1) == seq2 for perm in ap.stabilizer_coset(tuple(seq1), tuple(seq2)))
 
 
-@pytest.mark.parametrize("degree", range(2,6))
+@pytest.mark.parametrize("degree", range(2, 6))
 def test_stabilizer_coset_brute_force(degree):
     "Test the set of permutations against brute force"
     for partition in partitions(degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq1 = [i for i, j in enumerate(partition) for _ in range(j)]
         seq2 = seq1.copy()
         shuffle(seq1)
         shuffle(seq2)
         stabilizer = tuple(ap.stabilizer_coset(tuple(seq1), tuple(seq2)))
-        assert all(perm in stabilizer
-            for perm in SymmetricGroup(degree).generate()
-            if perm(seq1) == seq2
-        )       
+        assert all(
+            perm in stabilizer for perm in SymmetricGroup(degree).generate() if perm(seq1) == seq2
+        )
 
 
-@pytest.mark.parametrize("degree", range(2,8))
+@pytest.mark.parametrize("degree", range(2, 8))
 def test_stabilizer_coset_single(degree):
     "Test the set of permutations for single input"
     for partition in partitions(degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        seq1 = [i for i,j in enumerate(partition) for _ in range(j)]
+        seq1 = [i for i, j in enumerate(partition) for _ in range(j)]
         shuffle(seq1)
-        assert all(
-            perm(seq1) == seq1
-            for perm in ap.stabilizer_coset(tuple(seq1))
-        )
+        assert all(perm(seq1) == seq1 for perm in ap.stabilizer_coset(tuple(seq1)))
 
 
-@pytest.mark.parametrize("degree", range(3,8))
+@pytest.mark.parametrize("degree", range(3, 8))
 def test_stabilizer_coset_type_error(degree):
     "Type error for more than 2 inputs"
     sequence = tuple(range(degree))
     with pytest.raises(TypeError):
-        ap.stabilizer_coset(
-            *[tuple(sequence) for _ in range(degree)]
-        )
+        ap.stabilizer_coset(*[tuple(sequence) for _ in range(degree)])
 
 
 @pytest.mark.parametrize("degree", range(1, 8))
@@ -500,7 +480,7 @@ def test_hyperoctahedral_type_error(degree):
 def test_hyperoctahedral_transversal_size(degree):
     "Test the size of the hyperoctahedral transversal set"
     size = sum(1 for _ in ap.hyperoctahedral_transversal(degree))
-    assert size == factorial(degree)/2**(degree//2)/factorial(degree//2)
+    assert size == factorial(degree) / 2 ** (degree // 2) / factorial(degree // 2)
 
 
 @pytest.mark.parametrize("degree", range(2, 12, 2))
@@ -508,9 +488,9 @@ def test_hyperoctahedral_transversal_brute_force(degree):
     "Compare permutations of the transversal set with brute force method"
     brute_force_permutations = set()
     for permutation in permutations(range(degree)):
-        if not all(permutation[2*i] < permutation[2*i+1] for i in range(degree//2)):
+        if not all(permutation[2 * i] < permutation[2 * i + 1] for i in range(degree // 2)):
             continue
-        if not all(permutation[2*i] < permutation[2*i+2] for i in range(degree//2-1)):
+        if not all(permutation[2 * i] < permutation[2 * i + 2] for i in range(degree // 2 - 1)):
             continue
         brute_force_permutations.add(Permutation(permutation))
 
@@ -525,27 +505,23 @@ def test_hyperoctahedral_transversal_value_error(degree):
         ap.hyperoctahedral_transversal(degree)
 
 
-@pytest.mark.parametrize("half_degree", range(1,10))
+@pytest.mark.parametrize("half_degree", range(1, 10))
 def test_coset_type_partition(half_degree):
     "Test that all coset-types of S_2k are partitions of k"
     sample_size = 100 if half_degree > 2 else 4
-    permutation_sample = (
-        Permutation.random(2*half_degree) for _ in range(sample_size)
-    )
+    permutation_sample = (Permutation.random(2 * half_degree) for _ in range(sample_size))
     for permutation in permutation_sample:
-        assert (
-            sum(ap.coset_type(permutation)) == half_degree
-        )
+        assert sum(ap.coset_type(permutation)) == half_degree
 
 
 @pytest.mark.parametrize(
-        "permutation",
-        [
-            [0,1,2],
-            12,
-            'abc',
-            (1,1,1),
-        ]
+    "permutation",
+    [
+        [0, 1, 2],
+        12,
+        "abc",
+        (1, 1, 1),
+    ],
 )
 def test_coset_type_type_error(permutation):
     "Test TypeError if input is not a Permutation"
@@ -553,37 +529,31 @@ def test_coset_type_type_error(permutation):
         ap.coset_type(permutation)
 
 
-@pytest.mark.parametrize("degree", range(1,11,2))
+@pytest.mark.parametrize("degree", range(1, 11, 2))
 def test_coset_type_value_error(degree):
     "Test ValueError for odd size permutations"
-    with pytest.raises(
-        ValueError,
-        match = "Coset-type are only defined for even sized permutations"
-    ):
+    with pytest.raises(ValueError, match="Coset-type are only defined for even sized permutations"):
         ap.coset_type(Permutation.random(degree))
 
 
-@pytest.mark.parametrize("half_degree", range(1,8))
+@pytest.mark.parametrize("half_degree", range(1, 8))
 def test_coset_type_coset_representative(half_degree):
-    """ Taking all partitions of integer k, finding its coset-type
+    """Taking all partitions of integer k, finding its coset-type
     representative and then finding the coset-type of this permutation
     should yield the initial partition
     """
     for partition in partitions(half_degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
-        assert (
-            ap.coset_type(ap.coset_type_representative(partition))
-            == partition
-        )
+        assert ap.coset_type(ap.coset_type_representative(partition)) == partition
 
 
 @pytest.mark.parametrize(
-        "partition",
-        [
-            ([1,2,3]),
-            ("test"),
-            (13),
-        ]
+    "partition",
+    [
+        ([1, 2, 3]),
+        ("test"),
+        (13),
+    ],
 )
 def test_coset_type_representative_type_error(partition):
     "Test TypeError for invalid permutation and partition"
@@ -591,22 +561,22 @@ def test_coset_type_representative_type_error(partition):
         ap.coset_type_representative(partition)
 
 
-@pytest.mark.parametrize("half_degree", range(2,7))
+@pytest.mark.parametrize("half_degree", range(2, 7))
 def test_coset_type_representative_in_transversal(half_degree):
-    """assert that all coset-type representative permutations of integer partition are in M_2k as seen in 
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    """assert that all coset-type representative permutations of integer partition are in M_2k as seen in
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
-    transversal = tuple(ap.hyperoctahedral_transversal(2*half_degree))
+    transversal = tuple(ap.hyperoctahedral_transversal(2 * half_degree))
     for partition in partitions(half_degree):
         partition = tuple(key for key, value in partition.items() for _ in range(value))
         assert ap.coset_type_representative(partition) in transversal
 
 
-@pytest.mark.parametrize("half_degree", range(2,7))
+@pytest.mark.parametrize("half_degree", range(2, 7))
 def test_coset_type_representative_signature(half_degree):
-    """assert that all coset-type permutations of integer partition have signature of 1 as seen in 
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces: 
+    """assert that all coset-type permutations of integer partition have signature of 1 as seen in
+    `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
     for partition in partitions(half_degree):
@@ -614,10 +584,10 @@ def test_coset_type_representative_signature(half_degree):
         assert ap.coset_type_representative(partition).signature() == 1
 
 
-@pytest.mark.parametrize("half_degree", range(2,10))
+@pytest.mark.parametrize("half_degree", range(2, 10))
 def test_coset_type_representative_identity(half_degree):
-    """ asert that the coset-type permutation of the identity partition is the identity permutation
-    as seen in `Matsumoto. Weingarten calculus for matrix ensembles associated with compact 
+    """asert that the coset-type permutation of the identity partition is the identity permutation
+    as seen in `Matsumoto. Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces: <https://arxiv.org/abs/1301.5401>`_
     """
-    assert ap.coset_type_representative(half_degree * (1,)) == Permutation(2*half_degree - 1)
+    assert ap.coset_type_representative(half_degree * (1,)) == Permutation(2 * half_degree - 1)

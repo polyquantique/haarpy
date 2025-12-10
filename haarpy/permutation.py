@@ -24,9 +24,7 @@ from haarpy import set_partitions, meet_operation, join_operation, partial_order
 
 
 @lru_cache
-def mobius_function(
-    partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
-) -> int:
+def mobius_function(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> int:
     """Return the Möbius function
     as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
     Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
@@ -42,8 +40,7 @@ def mobius_function(
     partition_set_2 = tuple(set(block) for block in partition_2)
 
     partition_intersection = tuple(
-        sum(1 for block_1 in partition_set_1 if block_1 & block_2)
-        for block_2 in partition_set_2
+        sum(1 for block_1 in partition_set_1 if block_1 & block_2) for block_2 in partition_set_2
     )
 
     return prod(
@@ -109,9 +106,7 @@ def weingarten_centered_permutation(
         Symbol : The Weingarten function
     """
     singleton_set_size = sum(
-        1
-        for block in join_operation(first_partition, second_partition)
-        if len(block) == 1
+        1 for block in join_operation(first_partition, second_partition) if len(block) == 1
     )
 
     disjoint_partition_tuple = tuple(
