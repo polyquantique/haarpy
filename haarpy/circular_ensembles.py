@@ -57,7 +57,7 @@ def weingarten_circular_orthogonal(
         >>> from sympy import Symbol
         >>> from sympy.combinatorics import Permutation
         >>> from haarpy import weingarten_circular_orthogonal
-        
+
         >>> d = Symbol('d')
         >>> weingarten_circular_orthogonal(Permutation(3)(0,1), 4)
         Fraction(3, 70)
@@ -67,7 +67,7 @@ def weingarten_circular_orthogonal(
         (d + 2)/(d*(d + 1)*(d + 3))
 
         Where (1,1) is the coset-type of Permutation(3)(0,1)
-        
+
     See Also
     --------
         coset_type, weingarten_orthogonal
