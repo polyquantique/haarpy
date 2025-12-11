@@ -57,7 +57,7 @@ def weingarten_circular_orthogonal(
         >>> from sympy import Symbol
         >>> from sympy.combinatorics import Permutation
         >>> from haarpy import weingarten_circular_orthogonal
-        >>> d = Symbol('d')
+        >>> d = Symbol("d")
         >>> weingarten_circular_orthogonal(Permutation(3)(0,1), 4)
         Fraction(3, 70)
         >>> weingarten_circular_orthogonal(Permutation(3)(0,1), d)
@@ -92,7 +92,7 @@ def weingarten_circular_symplectic(permutation: Permutation, cse_dimension: Symb
         >>> from sympy import Symbol
         >>> from sympy.combinatorics import Permutation
         >>> from haarpy import weingarten_circular_symplectic
-        >>> d = Symbol('d')
+        >>> d = Symbol("d")
         >>> weingarten_circular_symplectic(Permutation(3)(0,1), 4)
         Fraction(-3, 140)
         >>> weingarten_circular_symplectic(Permutation(3)(0,1), d)
@@ -135,7 +135,7 @@ def haar_integral_circular_orthogonal(
     --------
         >>> from sympy import Symbol
         >>> from haarpy import haar_integral_circular_orthogonal
-        >>> d = Symbol('d')
+        >>> d = Symbol("d")
         >>> seq_i, seq_j = (0, 0, 1, 2), (1, 0, 0, 2)
         >>> haar_integral_circular_orthogonal((seq_i, seq_j), 7)
         Fraction(-1, 280)
@@ -198,7 +198,7 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
     --------
         >>> from sympy import Symbol
         >>> from haarpy import haar_integral_circular_symplectic
-        >>> d = Symbol('d')
+        >>> d = Symbol("d")
         >>> seq_i_num, seq_j_num = (0, 3, 2, 1), (0, 1, 2, 3)
         >>> haar_integral_circular_symplectic((seq_i_num, seq_j_num), 2)
         Fraction(1, 6)

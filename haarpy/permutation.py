@@ -30,16 +30,24 @@ from haarpy import set_partitions, meet_operation, join_operation, partial_order
 
 @lru_cache
 def mobius_function(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> int:
-    """Return the Möbius function
-    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
-    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
+    """Returns the Möbius function of two given partitions
 
-    Args:
+    Parameters
+    ----------
         partition_1 (tuple[tuple[int]): The intersected partition
         partition_2 (tuple[tuple[int]]): The partition summed over
 
-    Returns:
+    Returns
+    -------
         int: The value of the Möbius function
+
+    Examples
+    --------
+        >>> from haarpy import mobius_function
+        >>> partition_1 = ((0, 3), (1, 2), (4,), (5,))
+        >>> partition_2 = ((0, 1, 2), (3, 4, 5))
+        >>> mobius_function(partition_1, partition_2)
+        -2
     """
     partition_set_1 = tuple(set(block) for block in partition_1)
     partition_set_2 = tuple(set(block) for block in partition_2)
@@ -61,8 +69,6 @@ def weingarten_permutation(
     dimension: Symbol,
 ) -> Symbol:
     """Returns the Weingarten function for random permutation matrices
-    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
-    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
 
     Args:
         first_partition (tuple(tuple(int))): a set partition of integer k
@@ -99,8 +105,6 @@ def weingarten_centered_permutation(
     dimension: Symbol,
 ) -> Symbol:
     """Returns the Weingarten function for centered random permutation matrices
-    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
-    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
 
     Args:
         first_partition (tuple(tuple(int))): a set partition of integer k
@@ -151,8 +155,6 @@ def haar_integral_permutation(
     dimension: Symbol,
 ) -> Symbol:
     """Returns the integral over Haar random permutation matrices
-    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
-    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
 
     Args:
         row_indices (tuple(int)) : sequence of row indices
@@ -194,8 +196,6 @@ def haar_integral_centered_permutation(
     dimension: Symbol,
 ) -> Symbol:
     """Returns the integral over Haar random centered permutation matrices
-    as seen in `Collins and Nagatsu. Weingarten Calculus for Centered Random
-    Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
 
     Args:
         row_indices (tuple(int)) : sequence of row indices

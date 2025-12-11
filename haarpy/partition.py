@@ -31,14 +31,28 @@ def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
     """Returns the partitionning of a given collection (set) of objects
     into non-empty subsets.
 
-    Args:
+    Parameters
+    ----------
         collection (tuple): An indexable iterable to be partitionned
 
-    Returns:
+    Returns
+    -------
         generator(tuple[tuple]): all partitions of the input collection
 
-    Raise:
+    Raise
+    -----
         ValueError: if the collection is not a tuple
+
+    Examples
+    --------
+        >>> from haarpy import set_partitions
+        >>> for partition in set_partitions((0,1,2)):
+        >>>     print(partition)
+        ((0, 1, 2),)
+        ((0,), (1, 2))
+        ((0, 1), (2,))
+        ((0, 2), (1,))
+        ((0,), (1,), (2,))
     """
     if not isinstance(collection, tuple):
         raise TypeError("collection must be a tuple")
@@ -59,16 +73,28 @@ def perfect_matchings(
 ) -> Generator[tuple[tuple[int]], None, None]:
     """Returns the partitions of a tuple in terms of perfect matchings.
 
-    Args:
+    Parameters
+    ----------
         seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
             Note that it must hold that ``len(s) >= 2``.
 
-    Returns:
+    Returns
+    -------
         generator: a generators that goes through all the single-double
         partitions of the tuple
 
-    Raise:
+    Raise
+    -----
         TypeError: if the seed is not a tuple
+
+    Examples
+    --------
+        >>> from haarpy import perfect_matchings
+        >>> for matching in perfect_matchings((0,1,2,3)):
+        >>>     print(matching)
+        ((0, 1), (2, 3))
+        ((0, 2), (1, 3))
+        ((0, 3), (1, 2))
     """
     if not isinstance(seed, tuple):
         raise TypeError("seed must be a tuple")
@@ -86,21 +112,31 @@ def perfect_matchings(
 
 @lru_cache
 def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> bool:
-    """Returns True if parition_1 <= partition_2 in terms of partial order
+    """Checks if parition_1 <= partition_2 in terms of partial order
 
     For parition_1 and partition_2, two partitions of the same set, we call
     parition_1 <= partition_2 if and only if each block of parition_1 is
     contained in some block of partition_2
 
-    Ex.
-    ((0,1), (2,3), (4,)) < ((0,1), (2,3,4))
+    Parameters
+    ----------
+        partition_1 (tuple[tuple[int]]): The partition of lower order
+        partition_2 (tuple[tuple[int]]): The partition of higher order
 
-    Args:
-        partition_1 tuple[tuple[int]]: The partition of lower order
-        partition_2 tuple[tuple[int]]: The partition of higher order
-
-    Returns:
+    Returns
+    -------
         bool: True if parition_1 <= partition_2
+
+    Examples
+    --------
+        >>> from haarpy import partial_order
+        >>> partition_1 = ((0, 1), (2, 3), (4,))
+        >>> partition_2 = ((0, 1), (2, 3, 4))
+        >>> partition_3 = ((0, 4), (1, 2, 3))
+        >>> partial_order(partition_1, partition_2)
+        True
+        >>> partial_order(partition_1, partition_3)
+        False
     """
     for part in partition_1:
         if all(not set(part).issubset(bigger_part) for bigger_part in partition_2):
@@ -116,15 +152,25 @@ def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
     For parition_1 and partition_2, two partitions of the same set,
     the meet operation yields the greatest lower bound of both partitions
 
-    Ex.
-    ((0,1), (2,3), (4,)) ∧ ((0,1,2), (3,4)) = ((0,1), (2,), (3,), (4,))
+    The meet operation symbol is ∧, for instance
+    ((0, 1), (2, 3), (4,)) ∧ ((0, 1, 2), (3, 4)) = ((0, 1), (2,), (3,), (4,))
 
-    Args:
+    Parameters
+    ----------
         partition_1 (tuple[tuple[int]]): partition of a set
         partition_2 (tuple[tuple[int]]): partition of a set
 
-    Return:
+    Returns
+    ------
         tuple[tuple]: Greatest lower bound
+
+    Examples
+    --------
+        >>> from haarpy import meet_operation
+        >>> partition_1 = ((0, 1), (2, 3), (4,))
+        >>> partition_2 = ((0, 1, 2), (3, 4))
+        >>> meet_operation(partition_1, partition_2)
+        ((0, 1), (2,), (3,), (4,))
     """
     partition_1 = tuple(set(part) for part in partition_1)
     partition_2 = tuple(set(part) for part in partition_2)
@@ -145,15 +191,25 @@ def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
     For parition_1 and partition_2, two partitions of the same set,
     the join operation yields the least upper bound of both partitions
 
-    Ex.
-    ((0,1), (2,), (3,4)) ∨ ((0,2), (1,), (3,), (4,)) = ((0,1,2), (3,4))
+    The join operation symbol is ∨, for instance
+    ((0, 1), (2,), (3, 4)) ∨ ((0, 2), (1,), (3,), (4,)) = ((0, 1, 2), (3, 4))
 
-    Args:
+    Parameters
+    ----------
         partition_1 (tuple[tuple[int]]): partition of a set
         partition_2 (tuple[tuple[int]]): partition of a set
 
-    Return:
+    Returns
+    ------
         tuple[tuple[int]]: Least upper bound
+
+    Examples
+    --------
+        >>> from haarpy import join_operation
+        >>> partition_1 = ((0, 1), (2,), (3, 4))
+        >>> partition_2 = ((0, 2), (1,), (3,), (4,))
+        >>> join_operation(partition_1, partition_2)
+        ((0, 1, 2), (3, 4))
     """
     parent = [
         {index for value in block1 for index, block2 in enumerate(partition_2) if value in block2}
@@ -178,18 +234,23 @@ def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
 
 @lru_cache
 def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
-    """
-    Checks if the partition is a crossing partition
+    """Checks if a given partition is crossing
 
-    Ex.
-    Crossing partition : ((0,2,4), (1,3))
-    Non crossing partition : ((0,3,4), (1,2))
-
-    Args:
+    Parameters
+    ----------
         partition (tuple[tuple[int]])): partition of a set
 
-    Returns:
+    Returns
+    -------
         bool: True if the partition is crossing, False otherwise
+
+    Examples
+    --------
+        >>> from haarpy import is_crossing_partition
+        >>> is_crossing_partition(((0,2,4), (1,3)))
+        True
+        >>> is_crossing_partition(((0,3,4), (1,2)))
+        False
     """
     filtered_partition = tuple(
         block for block in partition if len(block) != 1 and block[0] + 1 != block[-1]
