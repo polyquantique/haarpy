@@ -136,8 +136,7 @@ def haar_integral_circular_orthogonal(
         >>> from sympy import Symbol
         >>> from haarpy import haar_integral_circular_orthogonal
         >>> d = Symbol('d')
-        >>> seq_i = (0, 0, 1, 2)
-        >>> seq_j = (1, 0, 0, 2)
+        >>> seq_i, seq_j = (0, 0, 1, 2), (1, 0, 0, 2)
         >>> haar_integral_circular_orthogonal((seq_i, seq_j), 7)
         Fraction(-1, 280)
         >>> haar_integral_circular_orthogonal((seq_i, seq_j), d)
@@ -200,8 +199,12 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
         >>> from sympy import Symbol
         >>> from haarpy import haar_integral_circular_symplectic
         >>> d = Symbol('d')
-        >>> seq_i = (0, 0, 1, 2)
-        >>> seq_j = (1, 0, 0, 2)
+        >>> seq_i_num, seq_j_num = (0, 3, 2, 1), (0, 1, 2, 3)
+        >>> haar_integral_circular_symplectic((seq_i_num, seq_j_num), 2)
+        Fraction(1, 6)
+        >>> seq_i_symb, seq_j_symb = (0, d+1, d, 1), (0, 1, d, d + 1)
+        >>> haar_integral_circular_symplectic((seq_i_symb, seq_j_symb), d)
+        -1/(2*d*(2*d - 3)*(2*d - 1))
 
     See Also
     --------
