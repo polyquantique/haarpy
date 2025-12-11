@@ -15,7 +15,7 @@
 Circular ensembles Python interface
 
 References
-==========
+----------
     [1] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
         symmetric spaces. arXiv preprint arXiv:1301.5401.
 """

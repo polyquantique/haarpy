@@ -13,6 +13,13 @@
 # limitations under the License.
 """
 Orthogonal group Python interface
+
+References
+----------
+    [1] Collins, B., & Śniady, P. (2006). Integration with respect to the Haar measure on unitary,
+    orthogonal and symplectic group. Communications in Mathematical Physics, 264(3), 773-795.
+    [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from math import prod

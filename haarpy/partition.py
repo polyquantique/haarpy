@@ -13,6 +13,13 @@
 # limitations under the License.
 """
 Partition Python interface
+
+References
+----------
+    [1] Collins, B., & Nagatsu, M. (2025). Weingarten calculus for centered random permutation
+    matrices. arXiv preprint arXiv:2503.18453.
+    [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from functools import lru_cache

@@ -1,4 +1,4 @@
-# Copyright 2024 Polyquantique
+# Copyright 2025 Polyquantique
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,14 @@
 # limitations under the License.
 """
 Unitary group Python interface
+
+References
+----------
+    [1] Collins, B. (2003). Moments and cumulants of polynomial random variables on unitarygroups,
+    the Itzykson-Zuber integral, and free probability. International Mathematics Research Notices,
+    2003(17), 953-982.
+    [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from math import factorial, prod

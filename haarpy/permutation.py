@@ -13,6 +13,11 @@
 # limitations under the License.
 """
 Permutation matrices Python interface
+
+References
+----------
+    [1] Collins, B., & Nagatsu, M. (2025). Weingarten calculus for centered random permutation
+    matrices. arXiv preprint arXiv:2503.18453.
 """
 
 from math import factorial, prod
