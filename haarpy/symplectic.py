@@ -20,6 +20,7 @@ References
     orthogonal and symplectic group. Communications in Mathematical Physics, 264(3), 773-795.
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
+    [3] Macdonald, I. G. (1998). Symmetric functions and Hall polynomials. Oxford university press.
 """
 
 from math import prod
@@ -42,7 +43,6 @@ from haarpy import (
 @lru_cache
 def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) -> float:
     """Returns the twisted spherical function of the Gelfand pair (S_2k, H_k)
-    as seen in Macdonald's "Symmetric Functions and Hall Polynomials" chapter VII
 
     Args:
         permutation (Permutation): A permutation of the symmetric group S_2k
