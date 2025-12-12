@@ -161,7 +161,7 @@ def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
         partition_2 (tuple[tuple[int]]): partition of a set
 
     Returns
-    ------
+    -------
         tuple[tuple]: Greatest lower bound
 
     Examples
