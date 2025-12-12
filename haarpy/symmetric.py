@@ -13,6 +13,15 @@
 # limitations under the License.
 """
 Symmetric group Python interface
+
+References
+----------
+    [1] Collins, B. (2003). Moments and cumulants of polynomial random variables on unitarygroups,
+    the Itzykson-Zuber integral, and free probability. International Mathematics Research Notices,
+    2003(17), 953-982.
+    [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces. arXiv preprint arXiv:1301.5401.
+    [3] Macdonald, I. G. (1998). Symmetric functions and Hall polynomials. Oxford university press.
 """
 
 from math import factorial, prod
@@ -32,18 +41,28 @@ from haarpy import perfect_matchings, join_operation
 def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
     """Returns the conjugacy class of an element of the symmetric group Sp
 
-    Args:
-        perm (Permutation): Permutation cycle from the symmetric group
-        degree (integer): Order of the symmetric group
+    Parameters
+    ----------
+        perm (Permutation): permutation cycle from the symmetric group
+        degree (integer): order of the symmetric group
 
-    Returns:
+    Returns
+    -------
         tuple[int]: the conjugacy class in partition form
 
-    Raise:
+    Raise
+    -----
         TypeError : order must be of type int
-        ValueError : If order is not an integer greaten than 1
+        ValueError : if order is not an integer greaten than 1
         TypeError : cycle must be of type sympy.combinatorics.permutations.Permutation
-        ValueError : Incompatible degree and permutation cycle
+        ValueError : incompatible degree and permutation cycle
+
+    Examples
+    --------
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import get_conjugacy_class
+        >>> get_conjugacy_class(Permutation(5)(0,1,3), 6)
+        (3, 1, 1, 1)
     """
     if not isinstance(degree, int):
         raise TypeError("degree must be of type int")
@@ -74,13 +93,15 @@ def derivative_tableaux(
     """Takes a single tableau and adds the selected number to its contents
     in a way that keeps it semi-standard. All possible tableaux are yielded
 
-    Args:
-        tableau (tuple[tuple[int]]): An incomplet Young tableau
+    Parameters
+    ----------
+        tableau (tuple[tuple[int]]): an incomplet Young tableau
         increment (int): Selected number to be added
         partition (tuple[int]) : partition characterizing an irrep of Sp
 
-    Yields:
-        tuple[tuple[int]]: Modified tableaux
+    Yields
+    ------
+        tuple[tuple[int]]: modified tableaux
     """
     # empty tableau
     if not tableau[0]:
@@ -117,12 +138,22 @@ def semi_standard_young_tableaux(
 ) -> set[tuple[tuple[int]]]:
     """all eligible semi-standard young tableaux based of the partition
 
-    Args:
+    Parameters
+    ----------
         partition (tuple[int]) : partition characterizing an irrep of Sp
-        conjugacy_class (tuple[int]) : A conjugacy class, in partition form, of Sp
+        conjugacy_class (tuple[int]) : a conjugacy class, in partition form, of Sp
 
-    Returns:
+    Returns
+    -------
         set[tuple[tuple[int]]]: all eligible semi-standard young tableaux
+
+    Examples
+    --------
+        >>> from haarpy import semi_standard_young_tableaux
+        >>> semi_standard_young_tableaux((3, 1), (2, 1, 1))
+        {((0, 1, 2), (0,)), ((0, 0, 2), (1,)), ((0, 0, 1), (2,))}
+        >>> semi_standard_young_tableaux((3,2),(4,1))
+        {((0, 0, 1), (0, 0)), ((0, 0, 0), (0, 1))}
     """
     tableaux = (tuple(() for _ in partition),)
     cell_values = (i for i, m in enumerate(conjugacy_class) for _ in range(m))
@@ -140,12 +171,22 @@ def semi_standard_young_tableaux(
 def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int]) -> bool:
     """Returns True if input Young tableau is a valid border-strip tableau
 
-    Args:
-        tableau (tuple[tuple[int]]) : A semi-standard Young tableau
-        conjugacy_class (tuple[int]) : A conjugacy class, in partition form, of Sp
+    Parameters
+    ----------
+        tableau (tuple[tuple[int]]) : a semi-standard Young tableau
+        conjugacy_class (tuple[int]) : a conjugacy class, in partition form, of Sp
 
-    Returns:
+    Returns
+    -------
         bool : True if the tableau is a border-strip
+
+    Examples
+    --------
+        >>> from haarpy import proper_border_strip
+        >>> ap.proper_border_strip(((0, 0, 0), (0, 1)), (4,1))
+        True
+        >>> ap.proper_border_strip(((0, 0, 1), (0, 0)), (4,1))
+        False
     """
     if len(tableau) == 1:
         return True
@@ -181,10 +222,10 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
 
     Args:
         partition (tuple[int]) : partition characterizing an irrep of Sp
-        conjugacy_class (tuple[int]) : A conjugacy class, in partition form, of Sp
+        conjugacy_class (tuple[int]) : a conjugacy class, in partition form, of Sp
 
     Returns:
-        int : Character of the elements in class mu of the irrep of the symmetric group
+        int : character of the elements in class mu of the irrep of the symmetric group
     """
     if sum(partition) != sum(conjugacy_class):
         return 0
@@ -249,7 +290,6 @@ def sorting_permutation(*sequence: tuple[int]) -> Permutation:
 
 def YoungSubgroup(partition: tuple[int]) -> PermutationGroup:
     """Returns the Young subgroup of a given input partition
-    See `<https://en.wikipedia.org/wiki/YoungSubgroup>`_
 
     Args:
         partition (tuple[int]): A partition
@@ -322,8 +362,7 @@ def HyperoctahedralGroup(degree: int) -> PermutationGroup:
 
 def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
     """Returns a generator with the permutations of M_2k, the complete set of coset
-    representatives of S_2k/H_k as seen in Macdonald's "Symmetric Functions and Hall
-    Polynomials" chapter VII
+    representatives of S_2k/H_k
 
     Args:
         degree (int): Degree 2k of the set M_2k
@@ -343,9 +382,7 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
 @lru_cache
 def coset_type(permutation: Permutation) -> tuple[int]:
-    """Returns the coset-type of a given permutation of S_2k as seen
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with
-    compact symmetric spaces <https://arxiv.org/pdf/1301.5401>`_
+    """Returns the coset-type of a given permutation of S_2k
 
     Args:
         permutation (Permutation): A permutation of the symmetric group S_2k
@@ -380,9 +417,7 @@ def coset_type(permutation: Permutation) -> tuple[int]:
 @lru_cache
 def coset_type_representative(partition: tuple[int]) -> Permutation:
     """Returns a representative permutation of S_2k for a given
-    input coset-type (partition of k) as seen
-    `Matsumoto. Weingarten calculus for matrix ensembles associated with
-    compact symmetric spaces <https://arxiv.org/pdf/1301.5401>`_
+    input coset-type (partition of k)
 
     Args:
         partition (tuple[int]): The coset-type (partition of k)
