@@ -35,12 +35,12 @@ def mobius_function(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int
 
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]): The intersected partition
-        partition_2 (tuple[tuple[int]]): The partition summed over
+        partition_1 (tuple[tuple[int]) : the intersected partition
+        partition_2 (tuple[tuple[int]]) : the partition summed over
 
     Returns
     -------
-        int: the value of the Möbius function
+        int : the value of the Möbius function
 
     Examples
     --------
@@ -73,9 +73,9 @@ def weingarten_permutation(
 
     Parameters
     ----------
-        first_partition (tuple(tuple(int))): a set partition of integer k
-        second_partition (tuple(tuple(int))): a set partition of integer k
-        dimension (Symbol): Dimension of the random permutation matrices
+        first_partition (tuple(tuple(int))) : a set partition of integer k
+        second_partition (tuple(tuple(int))) : a set partition of integer k
+        dimension (Symbol) : the dimension of the random permutation matrices
 
     Returns
     -------
@@ -139,9 +139,9 @@ def weingarten_centered_permutation(
 
     Parameters
     ----------
-        first_partition (tuple(tuple(int))): a set partition of integer k
-        second_partition (tuple(tuple(int))): a set partition of integer k
-        dimension (Symbol): Dimension of the centered random permutation matrices
+        first_partition (tuple(tuple(int))) : a set partition of integer k
+        second_partition (tuple(tuple(int))) : a set partition of integer k
+        dimension (Symbol) : the dimension of the centered random permutation matrices
 
     Returns
     -------
@@ -284,11 +284,11 @@ def haar_integral_centered_permutation(
         column_indices (tuple(int)) : sequence of column indices
 
     Returns:
-        Symbol : Integral under the Haar measure
+        Symbol : integral under the Haar measure
 
     Raise:
-        TypeError : If row_indices and column_indices are not Sequence
-        ValueError : If row_indices and column_indices are of different length
+        TypeError : if row_indices and column_indices are not Sequence
+        ValueError : if row_indices and column_indices are of different length
 
     Examples
     --------

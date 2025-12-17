@@ -43,12 +43,12 @@ def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
 
     Parameters
     ----------
-        perm (Permutation): permutation cycle from the symmetric group
-        degree (integer): order of the symmetric group
+        perm (Permutation) : permutation cycle from the symmetric group
+        degree (integer) : order of the symmetric group
 
     Returns
     -------
-        tuple[int]: the conjugacy class in partition form
+        tuple[int] : the conjugacy class in partition form
 
     Raise
     -----
@@ -95,13 +95,13 @@ def derivative_tableaux(
 
     Parameters
     ----------
-        tableau (tuple[tuple[int]]): an incomplet Young tableau
-        increment (int): Selected number to be added
+        tableau (tuple[tuple[int]]) : an incomplet Young tableau
+        increment (int) : selected number to be added
         partition (tuple[int]) : partition characterizing an irrep of Sp
 
     Yields
     ------
-        tuple[tuple[int]]: modified tableaux
+        tuple[tuple[int]] : modified tableaux
     """
     # empty tableau
     if not tableau[0]:
@@ -145,7 +145,7 @@ def semi_standard_young_tableaux(
 
     Returns
     -------
-        set[tuple[tuple[int]]]: all eligible semi-standard young tableaux
+        set[tuple[tuple[int]]] : all eligible semi-standard young tableaux
 
     Examples
     --------
@@ -229,10 +229,6 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
     -------
         int : character of the elements in class mu of the irrep of the symmetric group
 
-    See Also
-    --------
-        semi_standard_young_tableaux, proper_border_strip
-
     Examples
     --------
         >>> from haarpy import murn_naka_rule
@@ -240,6 +236,10 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
         -1
         >>> murn_naka_rule((3, 1), (1, 1, 1, 1))
         3
+
+    See Also
+    --------
+        semi_standard_young_tableaux, proper_border_strip
     """
     if sum(partition) != sum(conjugacy_class):
         return 0
@@ -263,11 +263,11 @@ def irrep_dimension(partition: tuple[int]) -> int:
 
     Parameters
     ----------
-        partition (tuple[int]) : A partition labelling an irrep of Sp
+        partition (tuple[int]) : a partition labelling an irrep of Sp
 
     Returns
     -------
-        int : The dimension of the irrep
+        int : the dimension of the irrep
 
     Examples
     --------
@@ -298,16 +298,16 @@ def sorting_permutation(*sequence: tuple[int]) -> Permutation:
 
     Parameters
     ----------
-        *sequence (tuple[int]): one or two sequences of unorderd elements
+        *sequence (tuple[int]) : one or two sequences of unorderd elements
 
     Returns
     -------
-        Permutation: the sorting permutation
+        Permutation : the sorting permutation
 
     Raise
     -----
-        ValueError: for incompatible sequence inputs
-        TypeError: if more than two sequences are passed as arguments
+        ValueError : for incompatible sequence inputs
+        TypeError : if more than two sequences are passed as arguments
 
     Examples
     --------
@@ -334,20 +334,16 @@ def YoungSubgroup(partition: tuple[int]) -> PermutationGroup:
 
     Parameters
     ----------
-        partition (tuple[int]): A partition
+        partition (tuple[int]) : a partition
 
     Returns
     -------
-        PermutationGroup: the associated Young subgroup
+        PermutationGroup : the associated Young subgroup
 
     Raise
     -----
-        TypeError: if partition is not a tuple or a list
-        TypeError: if partition is not made of positive integers
-
-    See Also
-    --------
-        sympy.combinatorics.DirectProduct, sympy.combinatorics.SymmetricGroup
+        TypeError : if partition is not a tuple or a list
+        TypeError : if partition is not made of positive integers
 
     Examples
     --------
@@ -355,6 +351,10 @@ def YoungSubgroup(partition: tuple[int]) -> PermutationGroup:
         >>> young = YoungSubgroup((2, 2))
         >>> list(young.generate())
         [Permutation(3), Permutation(3)(0, 1), Permutation(2, 3), Permutation(0, 1)(2, 3)]
+
+    See Also
+    --------
+        sympy.combinatorics.DirectProduct, sympy.combinatorics.SymmetricGroup
     """
     if not isinstance(partition, (tuple, list)):
         raise TypeError
@@ -372,19 +372,15 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
 
     Parameters
     ----------
-        *sequence (tuple): the sequences acted upon
+        *sequence (tuple) : the sequences acted upon
 
     Returns
     -------
-        Generator[Permutation]: permutations that, when acting on sequence[0], return sequence[1]
+        Generator[Permutation] : permutations that, when acting on sequence[0], return sequence[1]
 
     Raise
     -----
-        TypeError: if the sequence argument contains more than two sequences
-
-    See Also
-    --------
-        sorting_permutation, YoungSubgroup
+        TypeError : if the sequence argument contains more than two sequences
 
     Examples
     --------
@@ -394,6 +390,10 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
         [Permutation(3), Permutation(3)(0, 1)]
         >>> list(stabilizer_coset(sequence_1, sequence_2))
         [Permutation(0, 3, 2, 1), Permutation(0, 3, 2)]
+
+    See Also
+    --------
+        sorting_permutation, YoungSubgroup
     """
     if len(sequence) == 1:
         sequence = tuple(sequence[0] for _ in range(2))
@@ -418,19 +418,15 @@ def HyperoctahedralGroup(degree: int) -> PermutationGroup:
 
     Parameters
     ----------
-        degree (int): the degree k of the hyperoctahedral group H_k
+        degree (int) : the degree k of the hyperoctahedral group H_k
 
     Returns
     -------
-        (PermutationGroup): the hyperoctahedral group
+        PermutationGroup : the hyperoctahedral group
 
     Raise
     -----
-        TypeError: if degree is not of type int
-
-    See Also
-    --------
-        sympy.combinatorics.PermutationGroup
+        TypeError : if degree is not of type int
 
     Examples
     --------
@@ -438,8 +434,10 @@ def HyperoctahedralGroup(degree: int) -> PermutationGroup:
         >>> hyperoctahedral = ap.HyperoctahedralGroup(3)
         >>> hyperoctahedral.order()
         48
-    --------
 
+    See Also
+    --------
+        sympy.combinatorics.PermutationGroup
     """
     if not isinstance(degree, int):
         raise TypeError
@@ -458,15 +456,11 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
     Parameters
     ----------
-        degree (int): degree 2k of the set M_2k
+        degree (int) : degree 2k of the set M_2k
 
     Returns
     -------
-        (Generator[Permutation]): the permutations of M_2k
-
-    See Also
-    --------
-        perfect_matchings
+        Generator[Permutation] : the permutations of M_2k
 
     Examples
     --------
@@ -474,6 +468,10 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
         >>> transversal = ap.hyperoctahedral_transversal(4)
         >>> list(transversal)
         [Permutation(3), Permutation(3)(1, 2), Permutation(1, 3, 2)]
+
+    See Also
+    --------
+        perfect_matchings
     """
     if degree % 2:
         raise ValueError("degree should be a factor of 2")
@@ -491,20 +489,16 @@ def coset_type(permutation: Permutation) -> tuple[int]:
 
     Parameters
     ----------
-        permutation (Permutation): a permutation of the symmetric group S_2k
+        permutation (Permutation) : a permutation of the symmetric group S_2k
 
     Returns
     -------
-        tuple[int]: the associated coset-type as a partition of k
+        tuple[int] : the associated coset-type as a partition of k
 
     Raise
     -----
-        TypeError: if partition is not a Permutation
-        ValueError: if the symmetric group is of odd degree
-
-    See Also
-    --------
-        join_operation
+        TypeError : if partition is not a Permutation
+        ValueError : if the symmetric group is of odd degree
 
     Examples
     --------
@@ -512,6 +506,10 @@ def coset_type(permutation: Permutation) -> tuple[int]:
         >>> from haarpy import coset_type
         >>> coset_type(Permutation(0, 5, 4, 2, 1, 3))
         (2, 1)
+
+    See Also
+    --------
+        join_operation
     """
     if not isinstance(permutation, Permutation):
         raise TypeError
@@ -540,15 +538,15 @@ def coset_type_representative(partition: tuple[int]) -> Permutation:
 
     Parameters
     ----------
-        partition (tuple[int]): the coset-type (partition of k)
+        partition (tuple[int]) : the coset-type (partition of k)
 
     Returns
     -------
-        (Permutation): the associated permutation of S_2k
+        Permutation : the associated permutation of S_2k
 
     Raise
     -----
-        TypeError: if partition is not a tuple
+        TypeError : if partition is not a tuple
 
     Examples
     --------

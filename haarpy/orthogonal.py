@@ -44,22 +44,22 @@ from haarpy import (
 
 
 @lru_cache
-def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) -> float:
+def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) -> Fraction:
     """Returns the zonal spherical function of the Gelfand pair (S_2k, H_k)
 
     Parameters
     ----------
-        permutation (Permutation): A permutation of the symmetric group S_2k
-        partition (tuple[int]): A partition of k
+        permutation (Permutation) : a permutation of the symmetric group S_2k
+        partition (tuple[int]) : a partition of k
 
     Returns
     -------
-        (float): The zonal spherical function of the given permutation
+        Fraction : the zonal spherical function of the given permutation
 
     Raise
     -----
-        TypeError: If partition argument is not a tuple
-        TypeError: If permutation argument is not a permutation
+        TypeError : if partition argument is not a tuple
+        TypeError : if permutation argument is not a permutation
 
     Examples
     --------
@@ -102,18 +102,18 @@ def weingarten_orthogonal(
 
     Parameters
     ----------
-        permutation (Permutation, tuple[int]): A permutation of S_2k or its coset-type
-        orthogonal_dimension (int): Dimension of the orthogonal group
+        permutation (Permutation, tuple[int]) : a permutation of S_2k or its coset-type
+        orthogonal_dimension (int): dimension of the orthogonal group
 
     Returns
     -------
-        Symbol: The Weingarten function
+        Symbol : the Weingarten function
 
     Raise
     -----
-        TypeError: if unitary_dimension has the wrong type
-        TypeError: if permutation has the wrong type
-        ValueError: if the degree 2k of the symmetric group S_2k is not a factor of 2
+        TypeError : if unitary_dimension has the wrong type
+        TypeError : if permutation has the wrong type
+        ValueError : if the degree 2k of the symmetric group S_2k is not a factor of 2
 
     Examples
     --------
@@ -208,17 +208,17 @@ def haar_integral_orthogonal(sequences: tuple[tuple[int]], orthogonal_dimension:
 
     Parameters
     ----------
-        sequences (tuple[tuple[int]]): Indices of matrix elements
-        orthogonal_dimension (int): Dimension of the orthogonal group
+        sequences (tuple[tuple[int]]) : indices of matrix elements
+        orthogonal_dimension (int) : dimension of the orthogonal group
 
     Returns
     -------
-        Expr: Integral under the Haar measure
+        Expr : integral under the Haar measure
 
     Raise
     -----
-        ValueError: if sequences doesn't contain 2 tuples
-        ValueError: if tuples i and j are of different length
+        ValueError : if sequences doesn't contain 2 tuples
+        ValueError : if tuples i and j are of different length
 
     Examples
     --------

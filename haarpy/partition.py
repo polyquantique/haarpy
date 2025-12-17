@@ -33,15 +33,15 @@ def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
 
     Parameters
     ----------
-        collection (tuple): An indexable iterable to be partitionned
+        collection (tuple) : an indexable iterable to be partitionned
 
     Returns
     -------
-        generator(tuple[tuple]): all partitions of the input collection
+        generator(tuple[tuple]) : all partitions of the input collection
 
     Raise
     -----
-        ValueError: if the collection is not a tuple
+        ValueError : if the collection is not a tuple
 
     Examples
     --------
@@ -75,17 +75,16 @@ def perfect_matchings(
 
     Parameters
     ----------
-        seed (tuple[int]): a tuple representing the (multi-)set that will be partitioned.
-            Note that it must hold that ``len(s) >= 2``.
+        seed (tuple[int]) : a tuple representing the (multi-)set that will be partitioned.
+            Note that it must hold that ``len(s) >= 2``
 
     Returns
     -------
-        generator: a generators that goes through all the single-double
-        partitions of the tuple
+        generator : all the single-double partitions of the tuple
 
     Raise
     -----
-        TypeError: if the seed is not a tuple
+        TypeError : if the seed is not a tuple
 
     Examples
     --------
@@ -120,12 +119,12 @@ def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]]): The partition of lower order
-        partition_2 (tuple[tuple[int]]): The partition of higher order
+        partition_1 (tuple[tuple[int]]) : the partition of lower order
+        partition_2 (tuple[tuple[int]]) : the partition of higher order
 
     Returns
     -------
-        bool: True if parition_1 <= partition_2
+        bool : True if parition_1 <= partition_2
 
     Examples
     --------
@@ -157,12 +156,12 @@ def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
 
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]]): partition of a set
-        partition_2 (tuple[tuple[int]]): partition of a set
+        partition_1 (tuple[tuple[int]]) : partition of a set
+        partition_2 (tuple[tuple[int]]) : partition of a set
 
     Returns
     -------
-        tuple[tuple]: Greatest lower bound
+        tuple[tuple] : greatest lower bound
 
     Examples
     --------
@@ -196,12 +195,12 @@ def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
 
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]]): partition of a set
-        partition_2 (tuple[tuple[int]]): partition of a set
+        partition_1 (tuple[tuple[int]]) : partition of a set
+        partition_2 (tuple[tuple[int]]) : partition of a set
 
     Returns
     ------
-        tuple[tuple[int]]: Least upper bound
+        tuple[tuple[int]] : least upper bound
 
     Examples
     --------
@@ -238,11 +237,11 @@ def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
 
     Parameters
     ----------
-        partition (tuple[tuple[int]])): partition of a set
+        partition (tuple[tuple[int]])) : partition of a set
 
     Returns
     -------
-        bool: True if the partition is crossing, False otherwise
+        bool : True if the partition is crossing, False otherwise
 
     Examples
     --------

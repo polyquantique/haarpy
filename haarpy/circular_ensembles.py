@@ -45,12 +45,12 @@ def weingarten_circular_orthogonal(
 
     Parameters
     ----------
-        permutation (Permutation): A permutation of S_2k or its coset-type
-        coe_dimension (Symbol): The dimension of the COE
+        permutation (Permutation) : A permutation of S_2k or its coset-type
+        coe_dimension (Symbol) : The dimension of the COE
 
     Returns
     -------
-        Expr: The Weingarten function
+        Expr : The Weingarten function
 
     Examples
     --------
@@ -80,12 +80,12 @@ def weingarten_circular_symplectic(permutation: Permutation, cse_dimension: Symb
 
     Parameters
     ----------
-        permutation (Permutation): A permutation of the symmetric group S_2k
-        cse_dimension (int): The dimension of the CSE
+        permutation (Permutation) : A permutation of the symmetric group S_2k
+        cse_dimension (int) : The dimension of the CSE
 
     Returns
     -------
-        Expr: The Weingarten function
+        Expr : The Weingarten function
 
     Examples
     --------
@@ -141,7 +141,7 @@ def haar_integral_circular_orthogonal(
         Fraction(-1, 280)
         >>> haar_integral_circular_orthogonal((seq_i, seq_j), d)
         -2/(d*(d + 1)*(d + 3))
-    
+
     See Also
     --------
         coset_type, stabilizer_coset, weingarten_circular_orthogonal
@@ -188,11 +188,11 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
     -----
         ValueError : if sequences doesn't contain 2 tuples
         ValueError : if tuples i and j are of odd size
-        TypeError: if dimension is int and sequence is not
-        TypeError: if the half_dimension is not int nor Symbol
-        ValueError: if all sequence indices are not between 0 and 2*dimension - 1
-        TypeError: if sequence containt something else than Expr
-        TypeError: if symbolic sequences have the wrong format
+        TypeError : if dimension is int and sequence is not
+        TypeError : if the half_dimension is not int nor Symbol
+        ValueError : if all sequence indices are not between 0 and 2*dimension - 1
+        TypeError : if sequence containt something else than Expr
+        TypeError : if symbolic sequences have the wrong format
 
     Examples
     --------
