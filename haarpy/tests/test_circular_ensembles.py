@@ -16,13 +16,14 @@ Circular ensembles tests
 """
 
 from math import prod
-from random import randint
+from random import seed, randint
 from fractions import Fraction
 from sympy import Symbol, simplify, factorial, factorial2
 from sympy.combinatorics import SymmetricGroup
 import pytest
 import haarpy as ap
 
+seed(137)
 d = Symbol("d")
 
 # The values in the dictionary below were verified against Monte Carlo simulations

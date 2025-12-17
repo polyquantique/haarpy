@@ -17,10 +17,13 @@ Permutation matrices tests
 
 import pytest
 from math import factorial
+from random import seed, randint
 from itertools import product
+from fractions import Fraction
 from sympy import Symbol, simplify, factor, fraction
 import haarpy as ap
 
+seed(137)
 d = Symbol("d")
 
 hand_calculated_weingarten = {
@@ -130,9 +133,13 @@ def test_mobius_inversion_formula(size):
 )
 def test_weingarten_centered_permutation_hand_calculated(partition1, partition2, result_key):
     "Test Weingarten centered permutation function against hand calculated cases"
-    assert (
-        ap.weingarten_centered_permutation(partition1, partition2, d)
-        == hand_calculated_weingarten[result_key]
+    dimension = randint(10, 99)
+    assert ap.weingarten_centered_permutation(
+        partition1, partition2, d
+    ) == hand_calculated_weingarten[result_key] and ap.weingarten_centered_permutation(
+        partition1, partition2, dimension
+    ) == Fraction(
+        hand_calculated_weingarten[result_key].subs(d, dimension)
     )
 
 
@@ -153,6 +160,8 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
     sum as seen in Eq.(2.2) and (2.4) of `Collins and Nagatsu. Weingarten
     Calculus for Centered Random Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
     """
+    dimension = randint(10, 99)
+
     partition_row = tuple(
         tuple(index for index, value in enumerate(row_indices) if value == unique)
         for unique in set(row_indices)
@@ -179,7 +188,13 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
     num, denum = fraction(simplify(weingarten_integral))
     weingarten_integral = factor(num) / factor(denum)
 
-    assert ap.haar_integral_permutation(row_indices, column_indices, d) == weingarten_integral
+    assert ap.haar_integral_permutation(
+        row_indices, column_indices, d
+    ) == weingarten_integral and ap.haar_integral_permutation(
+        row_indices, column_indices, dimension
+    ) == Fraction(
+        weingarten_integral.subs(d, dimension)
+    )
 
 
 @pytest.mark.parametrize(
