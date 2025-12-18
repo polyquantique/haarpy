@@ -128,7 +128,7 @@ def haar_integral_circular_orthogonal(
 
     Raise
     -----
-        ValueError : if sequences doesn't contain 2 tuples
+        ValueError : if sequences do not contain 2 tuples
         ValueError : if tuples i and j are of odd size
 
     Examples
@@ -186,7 +186,7 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
 
     Raise
     -----
-        ValueError : if sequences don't contain 2 tuples
+        ValueError : if sequences do not contain 2 tuples
         ValueError : if tuples i and j are of odd size
         TypeError : if dimension is int and sequence is not
         TypeError : if the half_dimension is neither int nor Symbol

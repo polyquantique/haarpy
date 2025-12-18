@@ -217,7 +217,7 @@ def haar_integral_orthogonal(sequences: tuple[tuple[int]], orthogonal_dimension:
 
     Raise
     -----
-        ValueError : if sequences doesn't contain 2 tuples
+        ValueError : if sequences do not contain 2 tuples
         ValueError : if tuples i and j are of different length
 
     Examples

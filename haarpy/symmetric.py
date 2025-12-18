@@ -272,7 +272,8 @@ def irrep_dimension(partition: tuple[int]) -> int:
     Examples
     --------
         >>> from haarpy import irrep_dimension
-        >>> irrep_dimension()
+        >>> irrep_dimension((2, 1, 1))
+        3
     """
     numerator = prod(
         part_i - part_j + j + 1

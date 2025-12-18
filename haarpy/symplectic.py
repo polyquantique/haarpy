@@ -201,7 +201,7 @@ def haar_integral_symplectic(
 
     Raise
     -----
-        ValueError : if sequences don't contain 2 tuples
+        ValueError : if sequences do not contain 2 tuples
         ValueError : if tuples i and j are of different length
         TypeError : if the half_dimension is not int nor Symbol
         TypeError : if dimension is int and sequence is not

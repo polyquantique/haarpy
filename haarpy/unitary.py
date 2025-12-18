@@ -179,7 +179,7 @@ def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbo
 
     Raise
     -----
-        ValueError : if sequences doesn't contain 4 tuples
+        ValueError : if sequences do not contain 4 tuples
         ValueError : if tuples i and j are of different length
 
     Examples
