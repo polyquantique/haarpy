@@ -95,7 +95,7 @@ def derivative_tableaux(
 
     Parameters
     ----------
-        tableau (tuple[tuple[int]]) : an incomplet Young tableau
+        tableau (tuple[tuple[int]]) : an incomplete Young tableau
         increment (int) : selected number to be added
         partition (tuple[int]) : partition characterizing an irrep of Sp
 
