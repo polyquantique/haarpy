@@ -114,7 +114,7 @@ def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
     """Checks if parition_1 <= partition_2 in terms of partial order
 
     For parition_1 and partition_2, two partitions of the same set, we call
-    parition_1 <= partition_2 if and only if each block of parition_1 is
+    partition_1 <= partition_2 if and only if each block of partition_1 is
     contained in some block of partition_2
 
     Parameters
