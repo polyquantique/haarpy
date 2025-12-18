@@ -189,7 +189,7 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
         ValueError : if sequences don't contain 2 tuples
         ValueError : if tuples i and j are of odd size
         TypeError : if dimension is int and sequence is not
-        TypeError : if the half_dimension is not int nor Symbol
+        TypeError : if the half_dimension is neither int nor Symbol
         ValueError : if all sequence indices are not between 0 and 2*dimension - 1
         TypeError : if sequence containt something else than Expr
         TypeError : if symbolic sequences have the wrong format
