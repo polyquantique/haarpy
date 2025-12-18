@@ -124,7 +124,7 @@ def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 
     Returns
     -------
-        bool : True if parition_1 <= partition_2
+        bool : True if partition_1 <= partition_2
 
     Examples
     --------
