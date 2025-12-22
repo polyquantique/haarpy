@@ -17,10 +17,13 @@ Permutation matrices tests
 
 import pytest
 from math import factorial
+from random import seed, randint
 from itertools import product
+from fractions import Fraction
 from sympy import Symbol, simplify, factor, fraction
 import haarpy as ap
 
+seed(137)
 d = Symbol("d")
 
 hand_calculated_weingarten = {
@@ -130,9 +133,13 @@ def test_mobius_inversion_formula(size):
 )
 def test_weingarten_centered_permutation_hand_calculated(partition1, partition2, result_key):
     "Test Weingarten centered permutation function against hand calculated cases"
-    assert (
-        ap.weingarten_centered_permutation(partition1, partition2, d)
-        == hand_calculated_weingarten[result_key]
+    dimension = randint(10, 99)
+    assert ap.weingarten_centered_permutation(
+        partition1, partition2, d
+    ) == hand_calculated_weingarten[result_key] and ap.weingarten_centered_permutation(
+        partition1, partition2, dimension
+    ) == Fraction(
+        hand_calculated_weingarten[result_key].subs(d, dimension)
     )
 
 
@@ -148,11 +155,14 @@ def test_weingarten_centered_permutation_hand_calculated(partition1, partition2,
         ((3, 3, 2, 2, 3, 2), (3, 3, 2, 2, 1, 2)),
     ],
 )
-def test_haar_integral_permutation_weingarten(row_indices, column_indices):
+@pytest.mark.parametrize("symbolic", [True, False])
+def test_haar_integral_permutation_weingarten(row_indices, column_indices, symbolic):
     """Test haar integral for permutation matrices against the Weingarten
     sum as seen in Eq.(2.2) and (2.4) of `Collins and Nagatsu. Weingarten
     Calculus for Centered Random Permutation Matrices <https://arxiv.org/abs/2503.18453>`_
     """
+    dimension = d if symbolic else randint(10, 99)
+
     partition_row = tuple(
         tuple(index for index, value in enumerate(row_indices) if value == unique)
         for unique in set(row_indices)
@@ -166,7 +176,7 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
         ap.weingarten_permutation(
             partition_sigma,
             partition_tau,
-            d,
+            dimension,
         )
         for partition_sigma, partition_tau in product(
             ap.set_partitions(tuple(i for i, _ in enumerate(row_indices))),
@@ -176,10 +186,11 @@ def test_haar_integral_permutation_weingarten(row_indices, column_indices):
         and ap.partial_order(partition_tau, partition_column)
     )
 
-    num, denum = fraction(simplify(weingarten_integral))
-    weingarten_integral = factor(num) / factor(denum)
+    if symbolic:
+        num, denum = fraction(simplify(weingarten_integral))
+        weingarten_integral = factor(num) / factor(denum)
 
-    assert ap.haar_integral_permutation(row_indices, column_indices, d) == weingarten_integral
+    assert ap.haar_integral_permutation(row_indices, column_indices, dimension) == weingarten_integral
 
 
 @pytest.mark.parametrize(

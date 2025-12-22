@@ -19,6 +19,7 @@
 ### Improvements
 
 * The `README` has been improved to describe the expanding capabilities of `haarpy` [(#39)](https://github.com/polyquantique/haarpy/pull/39).
+* Added references and examples to the docstrings. Slight modification to the docstring format  [(#47)](https://github.com/polyquantique/haarpy/pull/47).
 
 ### Bug fixes
 

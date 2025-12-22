@@ -13,6 +13,11 @@
 # limitations under the License.
 """
 Circular ensembles Python interface
+
+References
+----------
+    [1] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+        symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from math import prod
@@ -36,14 +41,35 @@ def weingarten_circular_orthogonal(
     permutation: Union[Permutation, tuple[int]],
     coe_dimension: Symbol,
 ) -> Expr:
-    """Returns the circular orthogonal ensembles Weingarten functions
+    """Returns the circular orthogonal ensemble's Weingarten functions
 
-    Args:
-        permutation (Permutation): A permutation of S_2k or its coset-type
-        coe_dimension (int): The dimension of the COE
+    Parameters
+    ----------
+        permutation (Permutation) : A permutation of S_2k or its coset-type
+        coe_dimension (Symbol) : The dimension of the COE
 
-    Returns:
-        Expr: The Weingarten function
+    Returns
+    -------
+        Expr : The Weingarten function
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import weingarten_circular_orthogonal
+        >>> d = Symbol("d")
+        >>> weingarten_circular_orthogonal(Permutation(3)(0,1), 4)
+        Fraction(3, 70)
+        >>> weingarten_circular_orthogonal(Permutation(3)(0,1), d)
+        (d + 2)/(d*(d + 1)*(d + 3))
+        >>> weingarten_circular_orthogonal((1,1), d)
+        (d + 2)/(d*(d + 1)*(d + 3))
+
+        Where (1,1) is the coset-type of Permutation(3)(0,1)
+
+    See Also
+    --------
+        coset_type, weingarten_orthogonal
     """
     return weingarten_orthogonal(permutation, coe_dimension + 1)
 
@@ -52,12 +78,29 @@ def weingarten_circular_orthogonal(
 def weingarten_circular_symplectic(permutation: Permutation, cse_dimension: Symbol) -> Expr:
     """Returns the circular symplectic ensembles Weingarten functions
 
-    Args:
-        permutation (Permutation): A permutation of the symmetric group S_2k
-        cse_dimension (int): The dimension of the CSE
+    Parameters
+    ----------
+        permutation (Permutation) : A permutation of the symmetric group S_2k
+        cse_dimension (int) : The dimension of the CSE
 
-    Returns:
-        Expr: The Weingarten function
+    Returns
+    -------
+        Expr : The Weingarten function
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import weingarten_circular_symplectic
+        >>> d = Symbol("d")
+        >>> weingarten_circular_symplectic(Permutation(3)(0,1), 4)
+        Fraction(-3, 140)
+        >>> weingarten_circular_symplectic(Permutation(3)(0,1), d)
+        (1 - d)/(d*(2*d - 3)*(2*d - 1))
+
+    See Also
+    --------
+        weingarten_symplectic
     """
     symplectic_dimension = (
         (2 * cse_dimension - 1) / 2
@@ -74,16 +117,34 @@ def haar_integral_circular_orthogonal(
     """Returns integral over circular orthogonal ensemble polynomial
     sampled at random from the Haar measure
 
-    Args:
+    Parameters
+    ----------
         sequences (tuple[tuple[int]]) : Indices of matrix elements
         group_dimension (Symbol) : Dimension of the orthogonal group
 
-    Returns:
+    Returns
+    -------
         Expr : Integral under the Haar measure
 
-    Raise:
-        ValueError : If sequences doesn't contain 2 tuples
-        ValueError : If tuples i and j are of odd size
+    Raise
+    -----
+        ValueError : if sequences do not contain 2 tuples
+        ValueError : if tuples i and j are of odd size
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_circular_orthogonal
+        >>> d = Symbol("d")
+        >>> seq_i, seq_j = (0, 0, 1, 2), (1, 0, 0, 2)
+        >>> haar_integral_circular_orthogonal((seq_i, seq_j), 7)
+        Fraction(-1, 280)
+        >>> haar_integral_circular_orthogonal((seq_i, seq_j), d)
+        -2/(d*(d + 1)*(d + 3))
+
+    See Also
+    --------
+        coset_type, stabilizer_coset, weingarten_circular_orthogonal
     """
     if len(sequences) != 2:
         raise ValueError("Wrong tuple format")
@@ -114,21 +175,40 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
     """Returns integral over circular symplectic ensemble polynomial
     sampled at random from the Haar measure
 
-    Args:
+    Parameters
+    ----------
         sequences (tuple[tuple[int]]) : Indices of matrix elements
         half_dimension (Symbol) : Half the dimension of the unitary group
 
-    Returns:
+    Returns
+    -------
         Expr : Integral under the Haar measure
 
-    Raise:
-        ValueError : If sequences doesn't contain 2 tuples
-        ValueError : If tuples i and j are of odd size
-        TypeError: If dimension is int and sequence is not
-        TypeError: If the half_dimension is not int nor Symbol
-        ValueError: If all sequence indices are not between 0 and 2*dimension - 1
-        TypeError: If sequence containt something else than Expr
-        TypeError: If symbolic sequences have the wrong format
+    Raise
+    -----
+        ValueError : if sequences do not contain 2 tuples
+        ValueError : if tuples i and j are of odd size
+        TypeError : if dimension is int and sequence is not
+        TypeError : if the half_dimension is neither int nor Symbol
+        ValueError : if all sequence indices are not between 0 and 2*dimension - 1
+        TypeError : if sequence contains something other than Expr
+        TypeError : if symbolic sequences have the wrong format
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_circular_symplectic
+        >>> d = Symbol("d")
+        >>> seq_i_num, seq_j_num = (0, 3, 2, 1), (0, 1, 2, 3)
+        >>> haar_integral_circular_symplectic((seq_i_num, seq_j_num), 2)
+        Fraction(1, 6)
+        >>> seq_i_symb, seq_j_symb = (0, d+1, d, 1), (0, 1, d, d + 1)
+        >>> haar_integral_circular_symplectic((seq_i_symb, seq_j_symb), d)
+        -1/(2*d*(2*d - 3)*(2*d - 1))
+
+    See Also
+    --------
+        weingarten_circular_symplectic
     """
     if len(sequences) != 2:
         raise ValueError("Wrong sequence format")

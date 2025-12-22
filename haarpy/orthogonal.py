@@ -13,6 +13,14 @@
 # limitations under the License.
 """
 Orthogonal group Python interface
+
+References
+----------
+    [1] Collins, B., & Śniady, P. (2006). Integration with respect to the Haar measure on unitary,
+    orthogonal and symplectic group. Communications in Mathematical Physics, 264(3), 773-795.
+    [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces. arXiv preprint arXiv:1301.5401.
+    [3] Macdonald, I. G. (1998). Symmetric functions and Hall polynomials. Oxford university press.
 """
 
 from math import prod
@@ -36,20 +44,33 @@ from haarpy import (
 
 
 @lru_cache
-def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) -> float:
+def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) -> Fraction:
     """Returns the zonal spherical function of the Gelfand pair (S_2k, H_k)
-    as seen in Macdonald's "Symmetric Functions and Hall Polynomials" chapter VII
 
-    Args:
-        permutation (Permutation): A permutation of the symmetric group S_2k
-        partition (tuple[int]): A partition of k
+    Parameters
+    ----------
+        permutation (Permutation) : a permutation of the symmetric group S_2k
+        partition (tuple[int]) : a partition of k
 
-    Returns:
-        (float): The zonal spherical function of the given permutation
+    Returns
+    -------
+        Fraction : the zonal spherical function of the given permutation
 
-    Raise:
-        TypeError: If partition argument is not a tuple
-        TypeError: If permutation argument is not a permutation
+    Raise
+    -----
+        TypeError : if partition argument is not a tuple
+        TypeError : if permutation argument is not a permutation
+
+    Examples
+    --------
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import zonal_spherical_function
+        >>> zonal_spherical_function(Permutation(5)(0,1,2), (2,1))
+        Fraction(1, 6)
+
+    See Also
+    --------
+        HyperoctahedralGroup, murn_naka_rule
     """
     if not isinstance(partition, tuple):
         raise TypeError
@@ -79,17 +100,39 @@ def weingarten_orthogonal(
 ) -> Expr:
     """Returns the orthogonal Weingarten function
 
-    Args:
-        permutation (Permutation, tuple[int]): A permutation of S_2k or its coset-type
-        orthogonal_dimension (int): Dimension of the orthogonal group
+    Parameters
+    ----------
+        permutation (Permutation, tuple[int]) : a permutation of S_2k or its coset-type
+        orthogonal_dimension (int): dimension of the orthogonal group
 
-    Returns:
-        Symbol: The Weingarten function
+    Returns
+    -------
+        Symbol : the Weingarten function
 
-    Raise:
-        TypeError: if unitary_dimension has the wrong type
-        TypeError: if permutation has the wrong type
-        ValueError: if the degree 2k of the symmetric group S_2k is not a factor of 2
+    Raise
+    -----
+        TypeError : if unitary_dimension has the wrong type
+        TypeError : if permutation has the wrong type
+        ValueError : if the degree 2k of the symmetric group S_2k is not a factor of 2
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import weingarten_orthogonal
+        >>> d = Symbol("d")
+        >>> weingarten_orthogonal(Permutation(5)(0,1,2), 6)
+        Fraction(-1, 1200)
+        >>> weingarten_orthogonal(Permutation(5)(0,1,2), d)
+        -1/(d*(d - 2)*(d - 1)*(d + 4))
+        >>> weingarten_orthogonal((2,1), d)
+        -1/(d*(d - 2)*(d - 1)*(d + 4))
+
+        Where (2,1) is the coset-type of Permutation(5)(0,1,2)
+
+    See Also
+    --------
+        zonal_spherical_function, coset_type_representative
     """
     if not isinstance(orthogonal_dimension, (Expr, int)):
         raise TypeError("orthogonal_dimension must be an instance of int or sympy.Symbol")
@@ -161,18 +204,36 @@ def weingarten_orthogonal(
 
 @lru_cache
 def haar_integral_orthogonal(sequences: tuple[tuple[int]], orthogonal_dimension: Symbol) -> Expr:
-    """Returns integral over orthogonal group polynomial sampled at random from the Haar measure
+    """Returns the integral over orthogonal group polynomial sampled at random from the Haar measure
 
-    Args:
-        sequences (tuple[tuple[int]]): Indices of matrix elements
-        orthogonal_dimension (int): Dimension of the orthogonal group
+    Parameters
+    ----------
+        sequences (tuple[tuple[int]]) : indices of matrix elements
+        orthogonal_dimension (int) : dimension of the orthogonal group
 
-    Returns:
-        Expr: Integral under the Haar measure
+    Returns
+    -------
+        Expr : integral under the Haar measure
 
-    Raise:
-        ValueError: If sequences doesn't contain 2 tuples
-        ValueError: If tuples i and j are of different length
+    Raise
+    -----
+        ValueError : if sequences do not contain 2 tuples
+        ValueError : if tuples i and j are of different length
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_orthogonal
+        >>> d = Symbol("d")
+        >>> row_indices, column_indices = (0, 0, 1, 1, 2, 2), (0, 2, 2, 1, 1, 0)
+        >>> haar_integral_orthogonal((row_indices, column_indices), 4)
+        Fraction(1, 576)
+        >>> haar_integral_orthogonal((row_indices, column_indices), d)
+        2/(d*(d - 2)*(d - 1)*(d + 2)*(d + 4))
+
+    See Also
+    --------
+        hyperoctahedral_transversal, coset_type, weingarten_orthogonal
     """
     if len(sequences) != 2:
         raise ValueError("Wrong tuple format")

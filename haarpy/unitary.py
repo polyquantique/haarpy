@@ -1,4 +1,4 @@
-# Copyright 2024 Polyquantique
+# Copyright 2025 Polyquantique
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,14 @@
 # limitations under the License.
 """
 Unitary group Python interface
+
+References
+----------
+    [1] Collins, B. (2003). Moments and cumulants of polynomial random variables on unitarygroups,
+    the Itzykson-Zuber integral, and free probability. International Mathematics Research Notices,
+    2003(17), 953-982.
+    [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from math import factorial, prod
@@ -36,12 +44,24 @@ from haarpy import (
 def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> Expr:
     """Returns the dimension of the unitary group U(d) labelled by the input partition
 
-    Args:
-        partition (tuple[int]) : A partition labelling a representation of U(d)
+    Parameters
+    ----------
+        partition (tuple[int]) : a partition labelling a representation of U(d)
         unitary_dimension (Symbol) : dimension d of the unitary matrix U
 
-    Returns:
-        Expr : The dimension of the representation of U(d) labeled by the partition
+    Returns
+    -------
+        Expr : the dimension of the representation of U(d) labeled by the partition
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import representation_dimension
+        >>> d = Symbol("d")
+        >>> representation_dimension((2,1,1), 4)
+        15
+        >>> representation_dimension((2,1,1), d)
+        d*(d/2 - 1/2)*(d - 2)*(d + 1)/4
     """
     conjugate_partition = tuple(
         sum(1 for part in partition if i < part) for i in range(partition[0])
@@ -71,16 +91,37 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
 def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol) -> Expr:
     """Returns the Weingarten function
 
-    Args:
-        cycle (Permutation, tuple[int]): Permutation from the symmetric group or its cycle-type
-        unitary_dimension (Symbol): Dimension d of the unitary matrix U
+    The function works with both a permutation or a conjugacy class as a partition
 
-    Returns:
-        Expr: The Weingarten function
+    Parameters
+    ----------
+        cycle (Permutation, tuple[int]) : permutation from the symmetric group or its cycle-type
+        unitary_dimension (Symbol) : dimension d of the unitary matrix U
 
-    Raise:
-        TypeError: if unitary_dimension has the wrong type
-        TypeError: if cycle has the wrong type
+    Returns
+    -------
+        Expr : the Weingarten function
+
+    Raise
+    -----
+        TypeError : if unitary_dimension has the wrong type
+        TypeError : if cycle has the wrong type
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import weingarten_unitary
+        >>> d = Symbol("d")
+        >>> weingarten_unitary(Permutation(2)(0, 1), 4)
+        Fraction(-1, 180)
+        >>> weingarten_unitary(Permutation(2)(0, 1), d)
+        -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
+        >>> weingarten_unitary((2, 1), d)
+        -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
+
+    See Also
+    --------
+        murn_naka_rule, representation_dimension, sympy.utilities.iterables.partitions
     """
     if not isinstance(unitary_dimension, (Expr, int)):
         raise TypeError("unitary_dimension must be an instance of int or sympy.Expr")
@@ -127,16 +168,35 @@ def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension:
 def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbol) -> Expr:
     """Returns integral over unitary group polynomial sampled at random from the Haar measure
 
-    Args:
-        sequences (tuple[tuple[int]]): Indices of matrix elements
-        unitary_dimension (Symbol): Dimension of the unitary group
+    Parameters
+    ----------
+        sequences (tuple[tuple[int]]) : indices of matrix elements
+        unitary_dimension (Symbol) : dimension of the unitary group
 
-    Returns:
-        Expr: Integral under the Haar measure
+    Returns
+    -------
+        Expr : integral under the Haar measure
 
-    Raise:
-        ValueError: If sequences doesn't contain 4 tuples
-        ValueError: If tuples i and j are of different length
+    Raise
+    -----
+        ValueError : if sequences do not contain 4 tuples
+        ValueError : if tuples i and j are of different length
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_unitary
+        >>> d = Symbol("d")
+        >>> seq_i, seq_j = (0, 1, 2), (0, 0, 1)
+        >>> seq_i_prime, seq_j_prime = (0, 1, 2), (0, 1, 0)
+        >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), 5)
+        Fraction(-1, 840)
+        >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), d)
+        -1/(d*(d - 1)*(d + 1)*(d + 2))
+
+    See Also
+    --------
+        stabilizer_coset, weingarten_unitary
     """
     if len(sequences) != 4:
         raise ValueError("Wrong tuple format")
