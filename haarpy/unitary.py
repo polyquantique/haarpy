@@ -1,4 +1,4 @@
-# Copyright 2024 Polyquantique
+# Copyright 2025 Polyquantique
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,14 @@
 # limitations under the License.
 """
 Unitary group Python interface
+
+References
+----------
+    [1] Collins, B. (2003). Moments and cumulants of polynomial random variables on unitarygroups,
+    the Itzykson-Zuber integral, and free probability. International Mathematics Research Notices,
+    2003(17), 953-982.
+    [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
+    symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from math import factorial, prod
@@ -21,22 +29,39 @@ from typing import Union
 from itertools import product
 from collections import Counter
 from fractions import Fraction
-from sympy import Symbol, fraction, simplify, factor
-from sympy.combinatorics import Permutation, SymmetricGroup
+from sympy import Symbol, Expr, fraction, simplify, factor
+from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
-from haarpy import get_conjugacy_class, murn_naka_rule, irrep_dimension
+from haarpy import (
+    get_conjugacy_class,
+    murn_naka_rule,
+    irrep_dimension,
+    stabilizer_coset,
+)
 
 
 @lru_cache
-def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> int:
+def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> Expr:
     """Returns the dimension of the unitary group U(d) labelled by the input partition
 
-    Args:
-        partition (tuple[int]) : A partition labelling a representation of U(d)
+    Parameters
+    ----------
+        partition (tuple[int]) : a partition labelling a representation of U(d)
         unitary_dimension (Symbol) : dimension d of the unitary matrix U
 
-    Returns:
-        Symbol : The dimension of the representation of U(d) labeled by the partition
+    Returns
+    -------
+        Expr : the dimension of the representation of U(d) labeled by the partition
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import representation_dimension
+        >>> d = Symbol("d")
+        >>> representation_dimension((2,1,1), 4)
+        15
+        >>> representation_dimension((2,1,1), d)
+        d*(d/2 - 1/2)*(d - 2)*(d + 1)/4
     """
     conjugate_partition = tuple(
         sum(1 for part in partition if i < part) for i in range(partition[0])
@@ -63,35 +88,55 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
 
 
 @lru_cache
-def weingarten_unitary(
-    cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol
-) -> Symbol:
+def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol) -> Expr:
     """Returns the Weingarten function
 
-    Args:
-        cycle (Permutation, tuple(int)) : Permutation from the symmetric group or its cycle-type
-        unitary_dimension (Symbol) : Dimension d of the unitary matrix U
+    The function works with both a permutation or a conjugacy class as a partition
 
-    Returns:
-        Symbol : The Weingarten function
+    Parameters
+    ----------
+        cycle (Permutation, tuple[int]) : permutation from the symmetric group or its cycle-type
+        unitary_dimension (Symbol) : dimension d of the unitary matrix U
+
+    Returns
+    -------
+        Expr : the Weingarten function
+
+    Raise
+    -----
+        TypeError : if unitary_dimension has the wrong type
+        TypeError : if cycle has the wrong type
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import weingarten_unitary
+        >>> d = Symbol("d")
+        >>> weingarten_unitary(Permutation(2)(0, 1), 4)
+        Fraction(-1, 180)
+        >>> weingarten_unitary(Permutation(2)(0, 1), d)
+        -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
+        >>> weingarten_unitary((2, 1), d)
+        -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
+
+    See Also
+    --------
+        murn_naka_rule, representation_dimension, sympy.utilities.iterables.partitions
     """
-    if not isinstance(unitary_dimension, (Symbol, int)):
-        raise TypeError("unitary_dimension must be an instance of int or sympy.Symbol")
+    if not isinstance(unitary_dimension, (Expr, int)):
+        raise TypeError("unitary_dimension must be an instance of int or sympy.Expr")
 
     if isinstance(cycle, Permutation):
         degree = cycle.size
         conjugacy_class = get_conjugacy_class(cycle, degree)
-    elif isinstance(cycle, (tuple, list)) and all(
-        isinstance(value, int) for value in cycle
-    ):
+    elif isinstance(cycle, (tuple, list)) and all(isinstance(value, int) for value in cycle):
         degree = sum(cycle)
         conjugacy_class = tuple(cycle)
     else:
         raise TypeError
 
     partition_tuple = tuple(
-        sum((value * (key,) for key, value in part.items()), ())
-        for part in partitions(degree)
+        sum((value * (key,) for key, value in part.items()), ()) for part in partitions(degree)
     )
     irrep_dimension_tuple = (irrep_dimension(part) for part in partition_tuple)
 
@@ -109,9 +154,7 @@ def weingarten_unitary(
                 irrep_dimension**2
                 * murn_naka_rule(partition, conjugacy_class)
                 / representation_dimension(partition, unitary_dimension)
-                for partition, irrep_dimension in zip(
-                    partition_tuple, irrep_dimension_tuple
-                )
+                for partition, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
             )
             / factorial(degree) ** 2
         )
@@ -122,21 +165,38 @@ def weingarten_unitary(
 
 
 @lru_cache
-def haar_integral_unitary(
-    sequences: tuple[tuple[int]], unitary_dimension: Symbol
-) -> Symbol:
+def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbol) -> Expr:
     """Returns integral over unitary group polynomial sampled at random from the Haar measure
 
-    Args:
-        sequences (tuple(tuple(int))) : Indices of matrix elements
-        unitary_dimension (Symbol) : Dimension of the unitary group
+    Parameters
+    ----------
+        sequences (tuple[tuple[int]]) : indices of matrix elements
+        unitary_dimension (Symbol) : dimension of the unitary group
 
-    Returns:
-        Symbol : Integral under the Haar measure
+    Returns
+    -------
+        Expr : integral under the Haar measure
 
-    Raise:
-        ValueError : If sequences doesn't contain 4 tuples
-        ValueError : If tuples i and j are of different length
+    Raise
+    -----
+        ValueError : if sequences do not contain 4 tuples
+        ValueError : if tuples i and j are of different length
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_unitary
+        >>> d = Symbol("d")
+        >>> seq_i, seq_j = (0, 1, 2), (0, 0, 1)
+        >>> seq_i_prime, seq_j_prime = (0, 1, 2), (0, 1, 0)
+        >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), 5)
+        Fraction(-1, 840)
+        >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), d)
+        -1/(d*(d - 1)*(d + 1)*(d + 2))
+
+    See Also
+    --------
+        stabilizer_coset, weingarten_unitary
     """
     if len(sequences) != 4:
         raise ValueError("Wrong tuple format")
@@ -146,36 +206,22 @@ def haar_integral_unitary(
     if len(seq_i) != len(seq_j) or len(seq_i_prime) != len(seq_j_prime):
         raise ValueError("Wrong tuple format")
 
-    if sorted(seq_i) != sorted(seq_i_prime) or sorted(seq_j) != sorted(seq_j_prime):
-        return 0
-
     degree = len(seq_i)
-    seq_i, seq_j = list(seq_i), list(seq_j)
 
-    permutation_i = (
-        perm
-        for perm in SymmetricGroup(degree).generate_schreier_sims()
-        if perm(seq_i_prime) == seq_i
-    )
-
-    permutation_j = (
-        perm
-        for perm in SymmetricGroup(degree).generate_schreier_sims()
-        if perm(seq_j_prime) == seq_j
-    )
-
-    class_mapping = dict(
-        Counter(
-            get_conjugacy_class(cycle_i * ~cycle_j, degree)
-            for cycle_i, cycle_j in product(permutation_i, permutation_j)
+    class_mapping = Counter(
+        get_conjugacy_class(cycle_i * ~cycle_j, degree)
+        for cycle_i, cycle_j in product(
+            stabilizer_coset(seq_i, seq_i_prime),
+            stabilizer_coset(seq_j, seq_j_prime),
         )
     )
+
     integral = sum(
         count * weingarten_unitary(conjugacy, unitary_dimension)
         for conjugacy, count in class_mapping.items()
     )
 
-    if isinstance(unitary_dimension, Symbol):
+    if isinstance(unitary_dimension, Expr):
         numerator, denominator = fraction(simplify(integral))
         integral = factor(numerator) / factor(denominator)
 

@@ -1,4 +1,4 @@
-# Copyright 2024 Polyquantique
+# Copyright 2025 Polyquantique
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,6 +34,9 @@ Functions
     weingarten_centered_permutation
     haar_integral_unitary
     haar_integral_orthogonal
+    haar_integral_symplectic
+    haar_integral_circular_orthogonal
+    haar_integral_circular_symplectic
     haar_integral_permutation
     haar_integral_centered_permutation
     get_conjugacy_class
@@ -43,10 +46,14 @@ Functions
     murn_naka_rule
     irrep_dimension
     representation_dimension
-    hyperoctahedral
+    sorting_permutation
+    YoungSubgroup
+    stabilizer_coset
+    HyperoctahedralGroup
     hyperoctahedral_transversal
     zonal_spherical_function
     coset_type
+    coset_type_representative
     twisted_spherical_function
     mobius_function
     set_partitions
@@ -75,9 +82,13 @@ from .symmetric import (
     proper_border_strip,
     murn_naka_rule,
     irrep_dimension,
-    hyperoctahedral,
+    sorting_permutation,
+    YoungSubgroup,
+    stabilizer_coset,
+    HyperoctahedralGroup,
     hyperoctahedral_transversal,
     coset_type,
+    coset_type_representative,
 )
 
 from .unitary import (
@@ -95,11 +106,14 @@ from .orthogonal import (
 from .symplectic import (
     twisted_spherical_function,
     weingarten_symplectic,
+    haar_integral_symplectic,
 )
 
 from .circular_ensembles import (
     weingarten_circular_orthogonal,
     weingarten_circular_symplectic,
+    haar_integral_circular_orthogonal,
+    haar_integral_circular_symplectic,
 )
 
 from .permutation import (
@@ -122,6 +136,9 @@ __all__ = [
     "weingarten_centered_permutation",
     "haar_integral_unitary",
     "haar_integral_orthogonal",
+    "haar_integral_symplectic",
+    "haar_integral_circular_orthogonal",
+    "haar_integral_circular_symplectic",
     "haar_integral_permutation",
     "haar_integral_centered_permutation",
     "get_conjugacy_class",
@@ -131,10 +148,14 @@ __all__ = [
     "murn_naka_rule",
     "irrep_dimension",
     "representation_dimension",
-    "hyperoctahedral",
+    "sorting_permutation",
+    "YoungSubgroup",
+    "stabilizer_coset",
+    "HyperoctahedralGroup",
     "hyperoctahedral_transversal",
     "zonal_spherical_function",
     "coset_type",
+    "coset_type_representative",
     "twisted_spherical_function",
     "mobius_function",
     "set_partitions",
@@ -172,7 +193,7 @@ def about():
         Python version:            3.12.3
         Platform info:             Linux-6.8.0-31-generic-x86_64-with-glibc2.39
         Installation path:         /home/username/haarpy
-        Haarpy version:            0.0.5
+        Haarpy version:            0.0.6
         SymPy version:             1.12
     """
     # pylint: disable=import-outside-toplevel
@@ -183,9 +204,7 @@ def about():
     import sympy
 
     # a QuTiP-style infobox
-    print(
-        "\nHaarpy: a Python library for the symbolic calculation of Weingarten functions."
-    )
+    print("\nHaarpy: a Python library for the symbolic calculation of Weingarten functions.")
     # print("Copyright 2018-2021 Polyquantique\n")
 
     print("Python version:            {}.{}.{}".format(*sys.version_info[0:3]))

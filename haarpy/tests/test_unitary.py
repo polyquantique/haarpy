@@ -155,15 +155,16 @@ def test_weingarten_reconciliation_symbolic(cycle):
     "partition, dimension",
     [
         ((3, 2), 1.0),
-        ((3, 1, 1), 'a'),
+        ((3, 1, 1), "a"),
         ((2, 2, 1), (1, 0)),
         ((3, 3), (8,)),
     ],
 )
 def test_weingarten_unitary_class_dimension_type_error(partition, dimension):
+    "Test type error for for wrong unitary dimension input"
     with pytest.raises(
         TypeError,
-        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+        match=".*unitary_dimension must be an instance of int or sympy.Expr*",
     ):
         ap.weingarten_unitary(partition, dimension)
 
@@ -172,7 +173,7 @@ def test_weingarten_unitary_class_dimension_type_error(partition, dimension):
     "cycle, dimension",
     [
         (Permutation(0, 1, 2), 1.0),
-        (Permutation(0, 2)(1, 3), 'a'),
+        (Permutation(0, 2)(1, 3), "a"),
         (Permutation(2), (0, 1)),
         (Permutation(4, 1), (8,)),
     ],
@@ -181,7 +182,7 @@ def test_weingarten_unitary_element_dimension_type_error(cycle, dimension):
     "Test type error for for wrong unitary dimension input"
     with pytest.raises(
         TypeError,
-        match=".*unitary_dimension must be an instance of int or sympy.Symbol*",
+        match=".*unitary_dimension must be an instance of int or sympy.Expr*",
     ):
         ap.weingarten_unitary(cycle, dimension)
 
@@ -189,37 +190,34 @@ def test_weingarten_unitary_element_dimension_type_error(cycle, dimension):
 @pytest.mark.parametrize(
     "cycle",
     [
-        (1,2,"a"),
-        (3, (1,2), 4),
+        (1, 2, "a"),
+        (3, (1, 2), 4),
         "abc",
-    ]
+    ],
 )
 def test_weingarten_unitary_cycle_type_error(cycle):
     "Test the type error for wrong permutation input"
     with pytest.raises(TypeError):
-        ap.weingarten_unitary(cycle, Symbol('d'))
+        ap.weingarten_unitary(cycle, Symbol("d"))
 
 
-@pytest.mark.parametrize("n", range(2,5))
+@pytest.mark.parametrize("n", range(2, 5))
 def test_gram_orthogonality_elements(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
     d = Symbol("d")
     orthogonality = sum(
         d ** (g.cycles) * ap.weingarten_unitary(g, d)
         for g in SymmetricGroup(n).generate_schreier_sims()
-        )
+    )
     assert simplify(orthogonality) == 1
 
 
-@pytest.mark.parametrize("n", range(2,10))
+@pytest.mark.parametrize("n", range(2, 10))
 def test_gram_orthogonality_classes(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
     d = Symbol("d")
-    weight = lambda g : d ** (g.cycles) * ap.weingarten_unitary(ap.get_conjugacy_class(g, n), d)
-    orthogonality = sum(
-        len(c) * weight(c.pop())
-        for c in SymmetricGroup(n).conjugacy_classes()
-        )
+    weight = lambda g: d ** (g.cycles) * ap.weingarten_unitary(ap.get_conjugacy_class(g, n), d)
+    orthogonality = sum(len(c) * weight(c.pop()) for c in SymmetricGroup(n).conjugacy_classes())
     assert simplify(orthogonality) == 1
 
 
@@ -261,7 +259,7 @@ def test_haar_integral_hand(sequences, weingarten_map):
     ],
 )
 def test_haar_integral_wrong_format(sequence):
-    """Test wrong tuple format ValueError"""
+    "Test wrong tuple format ValueError"
     dimension = Symbol("d")
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_unitary(sequence, dimension)
