@@ -13,12 +13,16 @@
 # limitations under the License.
 """
 Gram and Weingarten matrices Python interface
+
+References
+----------
+    [1]
 """
 
 from functools import lru_cache
 from sympy import Symbol, Matrix
 from sympy.combinatorics import SymmetricGroup
-from haarpy import join_operation, perfect_matchings
+from haarpy import join_operation, perfect_matchings, is_crossing_partition, set_partitions
 
 
 @lru_cache
@@ -26,8 +30,29 @@ def gram_matrix(
     partition_tuple: tuple[tuple[tuple[int]]],
     group_dimension: Symbol,
 ) -> Matrix:
+    """ Generates the Gram matrix of a given input set of partitions
+
+    Parameters
+    ----------
+        partition_tuple (tuple[tuple[tuple[int]]]) : a set of partitions
+        group_dimension (Symbol) : the dimension of the underlying group
+
+    Returns
+    -------
+        Matrix : the symbolic Gram matrix
+
+    Raise
+    -----
+        TypeError :
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import gram_matrix
+        >>> d = Symbol("d")
+        >>>
     """
-    """
+    #
     return Matrix(
         tuple(
             tuple(
@@ -41,13 +66,12 @@ def gram_matrix(
 
 @lru_cache
 def weingarten_matrix_unitary(degree: int, group_dimension: Symbol) -> Matrix:
-    """
-    """
+    """ """
+    #RAISE ERROR IF DEGREE IS NOT INT GREATER THAN 0
+    #RAISE ERROR IF GROUP IS NOT SYMBOL OR INT GREATER THAN O
+    #RETURN THE SET OF PARTITIONS
     unitary_partitions = tuple(
-        tuple(
-            (i, j)
-            for i, j in enumerate(permutation(range(degree,2*degree)))
-        )
+        tuple((i, j) for i, j in enumerate(permutation(range(degree, 2 * degree))))
         for permutation in SymmetricGroup(degree).generate()
     )
     return gram_matrix(unitary_partitions, group_dimension).inv()
@@ -55,23 +79,30 @@ def weingarten_matrix_unitary(degree: int, group_dimension: Symbol) -> Matrix:
 
 @lru_cache
 def weingarten_matrix_orthogonal(degree: int, group_dimension: Symbol) -> Matrix:
-    """
-    """
+    """ """
     orthogonal_partitions = tuple(
-        matching for matching in perfect_matchings(tuple(i for i in range(degree)))
+        partition for partition in perfect_matchings(tuple(i for i in range(degree)))
     )
     return gram_matrix(orthogonal_partitions, group_dimension).inv()
 
 
 @lru_cache
 def weingarten_matrix_free_symmetric(degree: int, group_dimension: Symbol) -> Matrix:
-    """
-    """
-    return
+    """ """
+    free_symmetric_partitions = tuple(
+        partition
+        for partition in set_partitions(tuple(i for i in range(degree)))
+        if not is_crossing_partition(partition)
+    )
+    return gram_matrix(free_symmetric_partitions, group_dimension).inv()
 
 
 @lru_cache
 def weingarten_matrix_free_orthogonal(degree: int, group_dimension: Symbol) -> Matrix:
-    """
-    """
-    return
+    """ """
+    free_orthogonal_partitions = tuple(
+        partition
+        for partition in perfect_matchings(tuple(i for i in range(degree)))
+        if not is_crossing_partition(partition)
+    )
+    return gram_matrix(free_orthogonal_partitions, group_dimension).inv()
