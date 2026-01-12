@@ -1,4 +1,4 @@
-# Copyright 2025 Polyquantique
+# Copyright 2026 Polyquantique
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@ Gram and Weingarten matrices Python interface
 
 from functools import lru_cache
 from sympy import Symbol, Matrix
-from haarpy import join_operation
+from sympy.combinatorics import SymmetricGroup
+from haarpy import join_operation, perfect_matchings
 
 
 @lru_cache
@@ -30,36 +31,36 @@ def gram_matrix(
     return Matrix(
         tuple(
             tuple(
-                group_dimension ** len(join_operation(partition_1, partition_2))
-                for partition_1 in partition_tuple
+                group_dimension ** len(join_operation(partition_column, partition_row))
+                for partition_column in partition_tuple
             )
-            for partition_2 in partition_tuple
+            for partition_row in partition_tuple
         )
     )
-
-
-@lru_cache
-def weingarten_matrix(
-    partition_tuple: tuple[tuple[tuple[int]]],
-    group_dimension: Symbol,
-) -> Matrix:
-    """
-    """
-    return gram_matrix(partition_tuple, group_dimension).inv()
 
 
 @lru_cache
 def weingarten_matrix_unitary(degree: int, group_dimension: Symbol) -> Matrix:
     """
     """
-    return
+    unitary_partitions = tuple(
+        tuple(
+            (i, j)
+            for i, j in enumerate(permutation(range(degree,2*degree)))
+        )
+        for permutation in SymmetricGroup(degree).generate()
+    )
+    return gram_matrix(unitary_partitions, group_dimension).inv()
 
 
 @lru_cache
 def weingarten_matrix_orthogonal(degree: int, group_dimension: Symbol) -> Matrix:
     """
     """
-    return
+    orthogonal_partitions = tuple(
+        matching for matching in perfect_matchings(tuple(i for i in range(degree)))
+    )
+    return gram_matrix(orthogonal_partitions, group_dimension).inv()
 
 
 @lru_cache
@@ -73,14 +74,4 @@ def weingarten_matrix_free_symmetric(degree: int, group_dimension: Symbol) -> Ma
 def weingarten_matrix_free_orthogonal(degree: int, group_dimension: Symbol) -> Matrix:
     """
     """
-    return
-
-
-@lru_cache
-def haar_integral_free_symmetric():
-    return
-
-
-@lru_cache
-def haar_integral_free_orthogonal():
     return
