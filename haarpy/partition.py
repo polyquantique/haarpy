@@ -23,11 +23,11 @@ References
 """
 
 from functools import lru_cache
-from typing import Generator
+from collections.abc import Iterator
 from itertools import product
 
 
-def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
+def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
     """Returns the partitionning of a given collection (set) of objects
     into non-empty subsets.
 
@@ -69,8 +69,8 @@ def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
 
 
 def perfect_matchings(
-    seed: tuple[int],
-) -> Generator[tuple[tuple[int]], None, None]:
+    seed: tuple[int, ...],
+) -> Iterator[tuple[tuple[int, ...], ...]]:
     """Returns the partitions of a tuple in terms of perfect matchings.
 
     Parameters
@@ -110,7 +110,9 @@ def perfect_matchings(
 
 
 @lru_cache
-def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> bool:
+def partial_order(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> bool:
     """Checks if parition_1 <= partition_2 in terms of partial order
 
     For parition_1 and partition_2, two partitions of the same set, we call
@@ -145,7 +147,9 @@ def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 
 
 @lru_cache
-def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> tuple[tuple]:
+def meet_operation(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> tuple[tuple[int, ...], ...]:
     """Returns the greatest lower bound of the two input partitions
 
     For parition_1 and partition_2, two partitions of the same set,
@@ -184,7 +188,9 @@ def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
 
 
 @lru_cache
-def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> tuple[tuple]:
+def join_operation(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> tuple[tuple[int, ...], ...]:
     """Returns the least upper bound of the two input partitions
 
     For parition_1 and partition_2, two partitions of the same set,
@@ -231,8 +237,93 @@ def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
     )
 
 
+def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[int, ...], ...]]:
+    """Yields non crossing partitions of [n] = {1,2,...,n}
+
+    Parameters
+    ----------
+        n (int) : the size of the partitioned set [n]
+        pair (bool) : True if limited to pair partitions
+
+    Returns
+    -------
+        Iterator : yields the non-crossing partitions
+
+    Raise
+    -----
+        TypeError : if n is not int
+        ValueError : if n < 0
+        ValueError : if pair is True and n is odd
+
+    Examples
+    --------
+        >>> from haarpy import non_crossing_partitions
+        >>> for partition in non_crossing_partitions(3):
+        >>>     print(partition)
+        ((1,), (2,), (3,))
+        ((1,), (2, 3))
+        ((1, 3), (2,))
+        ((1, 2), (3,))
+        ((1, 2, 3),)
+        >>> for partition in non_crossing_partitions(6, pair = True):
+        >>>     print(partition)
+        ((1, 6), (2, 5), (3, 4))
+        ((1, 6), (2, 3), (4, 5))
+        ((1, 4), (2, 3), (5, 6))
+        ((1, 2), (3, 6), (4, 5))
+        ((1, 2), (3, 4), (5, 6))
+    """
+    if not isinstance(n, int):
+        raise TypeError
+    if n < 0:
+        raise ValueError
+    if pair and n % 2:
+        raise ValueError
+
+    def recursion_partitions(elements, active_partitions, inactive_partitions, pair):
+        if not elements:
+            if not pair or all(
+                len(block) == 2 for block in active_partitions + inactive_partitions
+            ):
+                yield active_partitions + inactive_partitions
+            return
+
+        element = elements.pop()
+
+        # pair partitions pruning
+        if pair:
+            open_blocks = sum(1 for b in active_partitions if len(b) == 1)
+            if open_blocks > len(elements) + 1:
+                elements.append(element)
+                return
+
+        active_partitions.append([element])
+        yield from recursion_partitions(elements, active_partitions, inactive_partitions, pair)
+        active_partitions.pop()
+
+        size = len(active_partitions)
+        for block in active_partitions[::-1]:
+            if not pair or len(block) < 2:
+                block.append(element)
+                yield from recursion_partitions(
+                    elements, active_partitions, inactive_partitions, pair
+                )
+                block.pop()
+
+            # remove potential crossing
+            inactive_partitions.append(active_partitions.pop())
+
+        for _ in range(size):
+            active_partitions.append(inactive_partitions.pop())
+
+        elements.append(element)
+
+    for partition in recursion_partitions(list(range(n, 0, -1)), [], [], pair):
+        yield tuple(sorted(map(tuple, partition), key=lambda x: x[0]))
+
+
 @lru_cache
-def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
+def is_crossing_partition(partition: tuple[tuple[int, ...], ...]) -> bool:
     """Checks if a given partition is crossing
 
     Parameters

@@ -22,7 +22,7 @@ References
 from functools import lru_cache
 from sympy import Symbol, Matrix
 from sympy.combinatorics import SymmetricGroup
-from haarpy import join_operation, perfect_matchings, is_crossing_partition, set_partitions
+from haarpy import join_operation, perfect_matchings, non_crossing_partitions, set_partitions
 
 
 @lru_cache
@@ -89,20 +89,12 @@ def weingarten_matrix_orthogonal(degree: int, group_dimension: Symbol) -> Matrix
 @lru_cache
 def weingarten_matrix_free_symmetric(degree: int, group_dimension: Symbol) -> Matrix:
     """ """
-    free_symmetric_partitions = tuple(
-        partition
-        for partition in set_partitions(tuple(i for i in range(degree)))
-        if not is_crossing_partition(partition)
-    )
+    free_symmetric_partitions = tuple(partition for partition in non_crossing_partitions(degree))
     return gram_matrix(free_symmetric_partitions, group_dimension).inv()
 
 
 @lru_cache
 def weingarten_matrix_free_orthogonal(degree: int, group_dimension: Symbol) -> Matrix:
     """ """
-    free_orthogonal_partitions = tuple(
-        partition
-        for partition in perfect_matchings(tuple(i for i in range(degree)))
-        if not is_crossing_partition(partition)
-    )
+    free_orthogonal_partitions = tuple(partition for partition in non_crossing_partitions(degree, pair = True))
     return gram_matrix(free_orthogonal_partitions, group_dimension).inv()

@@ -61,6 +61,7 @@ Functions
     partial_order
     meet_operation
     join_operation
+    non_crossing_partitions
     is_crossing_partition
 
 Code details
@@ -72,6 +73,7 @@ from .partition import (
     partial_order,
     meet_operation,
     join_operation,
+    non_crossing_partitions,
     is_crossing_partition,
 )
 
@@ -163,6 +165,7 @@ __all__ = [
     "partial_order",
     "meet_operation",
     "join_operation",
+    "non_crossing_partitions",
     "is_crossing_partition",
 ]
 
