@@ -86,56 +86,6 @@ def get_conjugacy_class(permutation: Permutation) -> tuple[int, ...]:
     return tuple(cycle_type)
 
 
-@lru_cache
-def old_get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
-    """Returns the conjugacy class of an element of the symmetric group Sp
-
-    Parameters
-    ----------
-        perm (Permutation) : permutation cycle from the symmetric group
-        degree (integer) : order of the symmetric group
-
-    Returns
-    -------
-        tuple[int] : the conjugacy class in partition form
-
-    Raise
-    -----
-        TypeError : order must be of type int
-        ValueError : if order is not an integer greaten than 1
-        TypeError : cycle must be of type sympy.combinatorics.permutations.Permutation
-        ValueError : incompatible degree and permutation cycle
-
-    Examples
-    --------
-        >>> from sympy.combinatorics import Permutation
-        >>> from haarpy import get_conjugacy_class
-        >>> get_conjugacy_class(Permutation(5)(0,1,3), 6)
-        (3, 1, 1, 1)
-    """
-    if not isinstance(degree, int):
-        raise TypeError("degree must be of type int")
-
-    if degree < 1:
-        raise ValueError(
-            "The degree you have provided is too low. It must be an integer greater than 0."
-        )
-    if not isinstance(perm, Permutation):
-        raise TypeError("Permutation must be of type sympy.combinatorics.permutations.Permutation")
-
-    if perm.size > degree:
-        raise ValueError("Incompatible degree and permutation cycle")
-
-    perm = perm * Permutation(degree - 1)
-
-    return tuple(
-        sorted(
-            (key for key, value in perm.cycle_structure.items() for _ in range(value)),
-            reverse=True,
-        )
-    )
-
-
 def derivative_tableaux(
     tableau: tuple[tuple[int]], increment: int, partition: tuple[int]
 ) -> Generator[tuple[tuple[int]], None, None]:
