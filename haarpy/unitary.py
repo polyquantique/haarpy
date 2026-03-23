@@ -136,7 +136,8 @@ def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension:
         raise TypeError
 
     partition_tuple = tuple(
-        sum((value * (key,) for key, value in part.items()), ()) for part in partitions(degree)
+        tuple(summand for summand, mult in partition.items() for _ in range(mult))
+        for partition in partitions(degree)
     )
     irrep_dimension_tuple = (irrep_dimension(part) for part in partition_tuple)
 
