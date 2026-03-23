@@ -18,7 +18,7 @@ Partition tests
 import pytest
 from collections import Counter
 from random import seed, choice
-from sympy import bell, factorial2
+from sympy import bell, factorial2, catalan
 import haarpy as ap
 
 seed(137)
@@ -322,6 +322,46 @@ def test_join_operation_size(size):
         assert len(flatten_joined_partition) == size and all(
             i in flatten_joined_partition for i in range(size)
         )
+
+
+@pytest.mark.parametrize("degree", range(10))
+def test_non_crossing_partition_size(degree):
+    "assert the number of non-crossing partitions coincides with the catatlan number"
+    assert sum(1 for _ in ap.non_crossing_partitions(degree)) == catalan(degree)
+
+
+@pytest.mark.parametrize("degree", range(6))
+def test_non_crossing_partition_repetition(degree):
+    "assert that non non-crossing partitions are repeated"
+    assert len({partition for partition in ap.non_crossing_partitions(degree)}) == catalan(degree)
+
+
+@pytest.mark.parametrize("degree", range(10))
+def test_non_crossing_partition_is_non_crossing(degree):
+    "assert that all non-crossing partitions are non-crossing"
+    for partition in ap.non_crossing_partitions(degree):
+        assert not ap.is_crossing_partition(partition)
+
+
+@pytest.mark.parametrize("degree", range(0, 10, 2))
+def test_non_crossing_partition_size(degree):
+    "assert the number of non-crossing pair partitions coincides with the catatlan number"
+    assert sum(1 for _ in ap.non_crossing_partitions(degree, pair=True)) == catalan(degree // 2)
+
+
+@pytest.mark.parametrize("degree", range(0, 8, 2))
+def test_non_crossing_pair_partition_repetition(degree):
+    "assert that non non-crossing partitions are repeated"
+    assert len(
+        {partition for partition in ap.non_crossing_partitions(degree, pair=True)}
+    ) == catalan(degree // 2)
+
+
+@pytest.mark.parametrize("degree", range(0, 10, 2))
+def test_non_crossing_pair_partition_is_non_crossing(degree):
+    "assert that all non-crossing partitions are non-crossing"
+    for partition in ap.non_crossing_partitions(degree, pair=True):
+        assert not ap.is_crossing_partition(partition)
 
 
 @pytest.mark.parametrize(
