@@ -128,7 +128,7 @@ def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension:
 
     if isinstance(cycle, Permutation):
         degree = cycle.size
-        conjugacy_class = get_conjugacy_class(cycle, degree)
+        conjugacy_class = get_conjugacy_class(cycle)
     elif isinstance(cycle, (tuple, list)) and all(isinstance(value, int) for value in cycle):
         degree = sum(cycle)
         conjugacy_class = tuple(cycle)
@@ -209,7 +209,7 @@ def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbo
     degree = len(seq_i)
 
     class_mapping = Counter(
-        get_conjugacy_class(cycle_i * ~cycle_j, degree)
+        get_conjugacy_class(cycle_i * ~cycle_j)
         for cycle_i, cycle_j in product(
             stabilizer_coset(seq_i, seq_i_prime),
             stabilizer_coset(seq_j, seq_j_prime),

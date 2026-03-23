@@ -88,7 +88,7 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
     double_partition = tuple(2 * part for part in partition)
     hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
-        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta, degree))
+        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta))
         for zeta in hyperocta.generate()
     )
     return Fraction(numerator, hyperocta.order())

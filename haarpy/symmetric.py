@@ -38,7 +38,56 @@ from haarpy import perfect_matchings, join_operation
 
 
 @lru_cache
-def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
+def get_conjugacy_class(permutation: Permutation) -> tuple[int, ...]:
+    """Returns the conjugacy class of an element of the symmetric group Sp
+
+    Parameters
+    ----------
+        permutation (Permutation) : permutation of the symmetric group
+
+    Returns
+    -------
+        tuple[int] : the conjugacy class (cycle-type) of the permutation
+
+    Raise
+    -----
+        TypeError : cycle must be of type sympy.combinatorics.Permutation
+
+    Examples
+    --------
+        >>> from sympy.combinatorics import Permutation
+        >>> from haarpy import get_conjugacy_class
+        >>> get_conjugacy_class(Permutation(5)(0,1,3))
+        (3, 1, 1, 1)
+    """
+    if not isinstance(permutation, Permutation):
+        raise TypeError("Permutation must be of type sympy.combinatorics.Permutation")
+    perm_array = permutation.array_form
+    degree = len(perm_array)
+
+    visited = [False] * degree
+    cycle_type = []
+
+    for i in range(degree):
+        if not visited[i]:
+            j = i
+            cycle_len = 0
+
+            for _ in range(degree):
+                visited[j] = True
+                j = perm_array[j]
+                cycle_len += 1
+                if visited[j]:
+                    break
+
+            cycle_type.append(cycle_len)
+
+    cycle_type.sort(reverse=True)
+    return tuple(cycle_type)
+
+
+@lru_cache
+def old_get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
     """Returns the conjugacy class of an element of the symmetric group Sp
 
     Parameters
