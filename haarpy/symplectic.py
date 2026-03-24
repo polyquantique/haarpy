@@ -87,7 +87,7 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
     duplicate_partition = tuple(part for part in partition for _ in range(2))
     hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
-        murn_naka_rule(duplicate_partition, get_conjugacy_class(~zeta * permutation, degree))
+        murn_naka_rule(duplicate_partition, get_conjugacy_class(~zeta * permutation))
         * zeta.signature()
         for zeta in hyperocta.generate()
     )

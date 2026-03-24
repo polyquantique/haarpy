@@ -27,82 +27,42 @@ seed(137)
 
 
 @pytest.mark.parametrize(
-    "degree, cycle, conjugacy",
+    "cycle, conjugacy",
     [
-        (3, Permutation(0, 1, 2), (3,)),
-        (3, Permutation(2)(0, 1), (2, 1)),
-        (4, Permutation(0, 1, 2, 3), (4,)),
-        (4, Permutation(0, 1, 2), (3, 1)),
-        (4, Permutation(0, 1)(2, 3), (2, 2)),
-        (5, Permutation(0, 1, 2), (3, 1, 1)),
-        (5, Permutation(1, 2, 4), (3, 1, 1)),
-        (5, Permutation(3)(0, 1, 2), (3, 1, 1)),
-        (6, Permutation(2)(3, 4, 5)(0, 1), (3, 2, 1)),
-        (6, Permutation(2, 3, 4, 0, 1, 5), (6,)),
-        (7, Permutation(2, 3, 4, 0, 1, 6), (6, 1)),
-        (1, Permutation(0), (1,)),
+        (Permutation(0, 1, 2), (3,)),
+        (Permutation(2)(0, 1), (2, 1)),
+        (Permutation(0, 1, 2, 3), (4,)),
+        (Permutation(3)(0, 1, 2), (3, 1)),
+        (Permutation(0, 1)(2, 3), (2, 2)),
+        (Permutation(4)(0, 1, 2), (3, 1, 1)),
+        (Permutation(1, 2, 4), (3, 1, 1)),
+        (Permutation(4)(0, 1, 2), (3, 1, 1)),
+        (Permutation(2)(3, 4, 5)(0, 1), (3, 2, 1)),
+        (Permutation(2, 3, 4, 0, 1, 5), (6,)),
+        (Permutation(2, 3, 4, 0, 1, 6), (6, 1)),
+        (Permutation(0), (1,)),
     ],
 )
-def test_get_conjugacy_class(degree, cycle, conjugacy):
+def test_get_conjugacy_class(cycle, conjugacy):
     "Test the normal usage of get_conjugacy_class"
-    assert ap.get_conjugacy_class(cycle, degree) == conjugacy
+    assert ap.get_conjugacy_class(cycle) == conjugacy
 
 
 @pytest.mark.parametrize(
-    "degree, cycle",
+    "cycle",
     [
-        ("a", Permutation(0, 1, 2)),
-        (0.1, Permutation(2)(0, 1)),
-        ((1,), Permutation(0, 1, 2, 3)),
-        ((5,), Permutation(0, 1, 2)),
+        ((1, 2, 3)),
+        ("a"),
+        (2.0),
     ],
 )
-def test_get_conjugacy_class_degree_type_error(degree, cycle):
-    "Test the degree parameter TypeError"
-    with pytest.raises(TypeError, match=".*degree must be of type int.*"):
-        ap.get_conjugacy_class(cycle, degree)
-
-
-@pytest.mark.parametrize("degree", range(-3, 1))
-def test_get_conjugacy_class_degree_value_error(degree):
-    "Test the degree parameter ValueError"
-    with pytest.raises(
-        ValueError,
-        match=".*The degree you have provided is too low. It must be an integer greater than 0.*",
-    ):
-        ap.get_conjugacy_class(Permutation(0, 1, 2), degree)
-
-
-@pytest.mark.parametrize(
-    "degree, cycle",
-    [
-        (3, (1, 2, 3)),
-        (4, "a"),
-        (7, 2.0),
-    ],
-)
-def test_get_conjugacy_class_cycle_type_error(degree, cycle):
+def test_get_conjugacy_class_cycle_type_error(cycle):
     "Test the cycle parameter TypeError"
     with pytest.raises(
         TypeError,
-        match=".*Permutation must be of type sympy.combinatorics.permutations.Permutation.*",
+        match=".*Permutation must be of type sympy.combinatorics.Permutation.*",
     ):
-        ap.get_conjugacy_class(cycle, degree)
-
-
-@pytest.mark.parametrize(
-    "degree, cycle",
-    [
-        (3, Permutation(0, 1, 2, 3)),
-        (3, Permutation(2, 3)(0, 1)),
-        (4, Permutation(0, 1, 2, 3, 5)),
-        (4, Permutation(4, 1)),
-    ],
-)
-def test_get_conjugacy_class_cycle_value_error(degree, cycle):
-    "Test the cycle parameter ValueError if permutation maximum value is greater than the degree"
-    with pytest.raises(ValueError, match=".*Incompatible degree and permutation cycle.*"):
-        ap.get_conjugacy_class(cycle, degree)
+        ap.get_conjugacy_class(cycle)
 
 
 @pytest.mark.parametrize(
