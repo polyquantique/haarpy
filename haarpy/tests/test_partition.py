@@ -83,9 +83,9 @@ def test_set_partition_type_error(collection):
 
 
 @pytest.mark.parametrize("size", range(2, 14))
-def test_perfect_matchings_order(size):
+def test_pair_partitions_order(size):
     "test size of perfect matching partitions"
-    assert sum(1 for _ in ap.perfect_matchings(tuple(range(size)))) == (
+    assert sum(1 for _ in ap.pair_partitions(tuple(range(size)))) == (
         factorial2(size - 1) if not size % 2 else 0
     )
 
@@ -99,13 +99,13 @@ def test_perfect_matchings_order(size):
         12,
     ],
 )
-def test_perfect_matchings_type_error(seed):
+def test_pair_partitions_type_error(seed):
     "test perfect matching type error"
     with pytest.raises(
         TypeError,
         match="seed must be a tuple",
     ):
-        [_ for _ in ap.perfect_matchings(seed)]
+        [_ for _ in ap.pair_partitions(seed)]
 
 
 @pytest.mark.parametrize("size", range(1, 7))

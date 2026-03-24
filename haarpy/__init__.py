@@ -57,7 +57,7 @@ Functions
     twisted_spherical_function
     mobius_function
     set_partitions
-    perfect_matchings
+    pair_partitions
     partial_order
     meet_operation
     join_operation
@@ -69,7 +69,7 @@ Code details
 """
 from .partition import (
     set_partitions,
-    perfect_matchings,
+    pair_partitions,
     partial_order,
     meet_operation,
     join_operation,
@@ -161,7 +161,7 @@ __all__ = [
     "twisted_spherical_function",
     "mobius_function",
     "set_partitions",
-    "perfect_matchings",
+    "pair_partitions",
     "partial_order",
     "meet_operation",
     "join_operation",

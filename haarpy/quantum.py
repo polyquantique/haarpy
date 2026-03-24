@@ -13,6 +13,11 @@
 # limitations under the License.
 """
 Quantum groups Python interface
+
+References
+----------
+    [1] Banica, T., & Collins, B. (2007). Integration over compact quantum groups.
+    Publications of the Research Institute for Mathematical Sciences, 43(2), 277-302.
 """
 
 from functools import lru_cache

@@ -20,6 +20,8 @@ References
     matrices. arXiv preprint arXiv:2503.18453.
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
+    [3] Nica, A., & Speicher, R. (2006). Lectures on the combinatorics of free probability
+    (Vol. 13). Cambridge University Press.
 """
 
 from functools import lru_cache
@@ -68,10 +70,10 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
         yield ((first,),) + smaller
 
 
-def perfect_matchings(
+def pair_partitions(
     seed: tuple[int, ...],
 ) -> Iterator[tuple[tuple[int, ...], ...]]:
-    """Returns the partitions of a tuple in terms of perfect matchings.
+    """Returns the pair partitions of a given set.
 
     Parameters
     ----------
@@ -88,8 +90,8 @@ def perfect_matchings(
 
     Examples
     --------
-        >>> from haarpy import perfect_matchings
-        >>> for matching in perfect_matchings((0,1,2,3)):
+        >>> from haarpy import pair_partitions
+        >>> for matching in pair_partitions((0,1,2,3)):
         >>>     print(matching)
         ((0, 1), (2, 3))
         ((0, 2), (1, 3))
@@ -104,7 +106,7 @@ def perfect_matchings(
     for idx1 in range(1, len(seed)):
         item_partition = (seed[0], seed[idx1])
         rest = seed[1:idx1] + seed[idx1 + 1 :]
-        rest_partitions = perfect_matchings(rest)
+        rest_partitions = pair_partitions(rest)
         for p in rest_partitions:
             yield ((item_partition),) + p
 
