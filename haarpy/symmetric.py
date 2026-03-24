@@ -38,53 +38,52 @@ from haarpy import perfect_matchings, join_operation
 
 
 @lru_cache
-def get_conjugacy_class(perm: Permutation, degree: int) -> tuple:
+def get_conjugacy_class(permutation: Permutation) -> tuple[int, ...]:
     """Returns the conjugacy class of an element of the symmetric group Sp
 
     Parameters
     ----------
-        perm (Permutation) : permutation cycle from the symmetric group
-        degree (integer) : order of the symmetric group
+        permutation (Permutation) : permutation of the symmetric group
 
     Returns
     -------
-        tuple[int] : the conjugacy class in partition form
+        tuple[int] : the conjugacy class (cycle-type) of the permutation
 
     Raise
     -----
-        TypeError : order must be of type int
-        ValueError : if order is not an integer greaten than 1
-        TypeError : cycle must be of type sympy.combinatorics.permutations.Permutation
-        ValueError : incompatible degree and permutation cycle
+        TypeError : cycle must be of type sympy.combinatorics.Permutation
 
     Examples
     --------
         >>> from sympy.combinatorics import Permutation
         >>> from haarpy import get_conjugacy_class
-        >>> get_conjugacy_class(Permutation(5)(0,1,3), 6)
+        >>> get_conjugacy_class(Permutation(5)(0,1,3))
         (3, 1, 1, 1)
     """
-    if not isinstance(degree, int):
-        raise TypeError("degree must be of type int")
+    if not isinstance(permutation, Permutation):
+        raise TypeError("Permutation must be of type sympy.combinatorics.Permutation")
+    perm_array = permutation.array_form
+    degree = len(perm_array)
 
-    if degree < 1:
-        raise ValueError(
-            "The degree you have provided is too low. It must be an integer greater than 0."
-        )
-    if not isinstance(perm, Permutation):
-        raise TypeError("Permutation must be of type sympy.combinatorics.permutations.Permutation")
+    visited = [False] * degree
+    cycle_type = []
 
-    if perm.size > degree:
-        raise ValueError("Incompatible degree and permutation cycle")
+    for i in range(degree):
+        if not visited[i]:
+            j = i
+            cycle_len = 0
 
-    perm = perm * Permutation(degree - 1)
+            for _ in range(degree):
+                visited[j] = True
+                j = perm_array[j]
+                cycle_len += 1
+                if visited[j]:
+                    break
 
-    return tuple(
-        sorted(
-            (key for key, value in perm.cycle_structure.items() for _ in range(value)),
-            reverse=True,
-        )
-    )
+            cycle_type.append(cycle_len)
+
+    cycle_type.sort(reverse=True)
+    return tuple(cycle_type)
 
 
 def derivative_tableaux(

@@ -25,7 +25,7 @@ from functools import lru_cache
 from itertools import product
 from collections.abc import Sequence
 from fractions import Fraction
-from sympy import Symbol, simplify, binomial, factor, fraction
+from sympy import Symbol, binomial, factor, fraction, cancel, together
 from haarpy import set_partitions, meet_operation, join_operation, partial_order
 
 
@@ -123,7 +123,7 @@ def weingarten_permutation(
             / prod(dimension - i for i, _ in enumerate(partition))
             for partition in inferieur_partition_tuple
         )
-        numerator, denominator = fraction(simplify(weingarten))
+        numerator, denominator = fraction(cancel(together(weingarten)))
         weingarten = factor(numerator) / factor(denominator)
 
     return weingarten
@@ -205,7 +205,7 @@ def weingarten_centered_permutation(
             for i in range(singleton_set_size + 1)
         )
 
-        num, denum = fraction(simplify(weingarten))
+        num, denum = fraction(cancel(together(weingarten)))
         weingarten = factor(num) / factor(denum)
 
     return weingarten
@@ -336,7 +336,7 @@ def haar_integral_centered_permutation(
     )
 
     if isinstance(dimension, Symbol):
-        num, denum = fraction(simplify(integral))
+        num, denum = fraction(cancel(together(integral)))
         integral = factor(num) / factor(denum)
 
     return integral

@@ -29,7 +29,7 @@ from itertools import product
 from functools import lru_cache
 from typing import Union
 from collections import Counter
-from sympy import Symbol, Expr, factorial, factor, fraction, simplify
+from sympy import Symbol, Expr, factorial, factor, fraction, cancel, together
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from haarpy import (
@@ -88,7 +88,7 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
     double_partition = tuple(2 * part for part in partition)
     hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
-        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta, degree))
+        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta))
         for zeta in hyperocta.generate()
     )
     return Fraction(numerator, hyperocta.order())
@@ -196,8 +196,8 @@ def weingarten_orthogonal(
             * factorial(half_degree)
             / factorial(degree)
         )
-        numerator, denominator = fraction(simplify(weingarten))
-        weingarten = simplify(factor(numerator) / factor(denominator))
+        numerator, denominator = fraction(cancel(together(weingarten)))
+        weingarten = factor(numerator) / factor(denominator)
 
     return weingarten
 
@@ -269,7 +269,7 @@ def haar_integral_orthogonal(sequences: tuple[tuple[int]], orthogonal_dimension:
     )
 
     if isinstance(orthogonal_dimension, Expr):
-        numerator, denominator = fraction(simplify(integral))
+        numerator, denominator = fraction(cancel(together(integral)))
         integral = factor(numerator) / factor(denominator)
 
     return integral

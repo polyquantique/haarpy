@@ -27,7 +27,7 @@ from math import prod
 from fractions import Fraction
 from functools import lru_cache
 from itertools import product
-from sympy import Symbol, factorial, factor, fraction, simplify, Expr
+from sympy import Symbol, factorial, factor, fraction, cancel, together, Expr
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from sympy.core.numbers import Integer
@@ -87,7 +87,7 @@ def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) 
     duplicate_partition = tuple(part for part in partition for _ in range(2))
     hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
-        murn_naka_rule(duplicate_partition, get_conjugacy_class(~zeta * permutation, degree))
+        murn_naka_rule(duplicate_partition, get_conjugacy_class(~zeta * permutation))
         * zeta.signature()
         for zeta in hyperocta.generate()
     )
@@ -177,8 +177,8 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
             * factorial(half_degree)
             / factorial(degree)
         )
-        numerator, denominator = fraction(simplify(weingarten))
-        weingarten = simplify(factor(numerator) / factor(denominator))
+        numerator, denominator = fraction(cancel(together(weingarten)))
+        weingarten = factor(numerator) / factor(denominator)
 
     return weingarten
 
@@ -303,7 +303,7 @@ def haar_integral_symplectic(
     )
 
     if isinstance(half_dimension, Expr):
-        numerator, denominator = fraction(simplify(integral))
+        numerator, denominator = fraction(cancel(together(integral)))
         integral = factor(numerator) / factor(denominator)
 
     return integral

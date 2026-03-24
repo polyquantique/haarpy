@@ -25,7 +25,7 @@ from fractions import Fraction
 from functools import lru_cache
 from typing import Union
 from collections import Counter
-from sympy import Symbol, Expr, fraction, factor, simplify
+from sympy import Symbol, Expr, fraction, factor, cancel, together
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.core.numbers import Integer
 from haarpy import (
@@ -164,7 +164,7 @@ def haar_integral_circular_orthogonal(
     )
 
     if isinstance(group_dimension, Expr):
-        numerator, denominator = fraction(simplify(integral))
+        numerator, denominator = fraction(cancel(together(integral)))
         integral = factor(numerator) / factor(denominator)
 
     return integral
@@ -304,7 +304,7 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
     )
 
     if isinstance(half_dimension, Expr):
-        numerator, denominator = fraction(simplify(integral))
+        numerator, denominator = fraction(cancel(together(integral)))
         integral = factor(numerator) / factor(denominator)
 
     return integral

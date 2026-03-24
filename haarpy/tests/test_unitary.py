@@ -123,7 +123,7 @@ def test_weingarten_unitary_element(cycle, dimension, num, denum):
 def test_weingarten_reconciliation_numeric(cycle):
     "Numeric reconciliation of permutation and conjugacy class input"
     assert ap.weingarten_unitary(cycle, 9) == ap.weingarten_unitary(
-        ap.get_conjugacy_class(cycle, cycle.size), 9
+        ap.get_conjugacy_class(cycle), 9
     )
 
 
@@ -147,7 +147,7 @@ def test_weingarten_reconciliation_symbolic(cycle):
     "Symbolic reconciliation of permutation and conjugacy class input"
     d = Symbol("d")
     assert ap.weingarten_unitary(cycle, d) == ap.weingarten_unitary(
-        ap.get_conjugacy_class(cycle, cycle.size), d
+        ap.get_conjugacy_class(cycle), d
     )
 
 
@@ -216,7 +216,7 @@ def test_gram_orthogonality_elements(n):
 def test_gram_orthogonality_classes(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
     d = Symbol("d")
-    weight = lambda g: d ** (g.cycles) * ap.weingarten_unitary(ap.get_conjugacy_class(g, n), d)
+    weight = lambda g: d ** (g.cycles) * ap.weingarten_unitary(ap.get_conjugacy_class(g), d)
     orthogonality = sum(len(c) * weight(c.pop()) for c in SymmetricGroup(n).conjugacy_classes())
     assert simplify(orthogonality) == 1
 

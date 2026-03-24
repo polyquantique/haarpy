@@ -3,10 +3,9 @@
 ### New features
 * Added a new module `orthogonal` allowing the calculation of the orthogonal Weingarten function and its moments [(#28)](https://github.com/polyquantique/haarpy/pull/28).
 * Added a new module `symplectic` allowing the calculation of the symplectic Weingarten function [(#31)](https://github.com/polyquantique/haarpy/pull/31).
-* Added a new module `circular_ensembles` allowing the calculation of the circular orthogonal ensembles and circular symplectic ensembles Weingarten functions [(#32)](https://github.com/polyquantique/haarpy/pull/32).
+* Added a new module `circular_ensembles` allowing the calculation of the circular orthogonal ensembles and circular symplectic ensembles Weingarten functions [(#32)](https://github.com/polyquantique/haarpy/pull/32) and moments [(#43)](https://github.com/polyquantique/haarpy/pull/43).
 * Added a new module `permutation` allowing the calculation of the permutation matrices and centered permuation matrices' Weingarten functions as well as their moments [(#36)](https://github.com/polyquantique/haarpy/pull/36).
 * Added a new module `partition` allowing to generate partitions of a set as well as implementing some operations on them such as the meet and the join operations [(#36)](https://github.com/polyquantique/haarpy/pull/36).
-* Added moment calculation for Haar random symplectic matrices and circular symplectic ensemble [(#43)](https://github.com/polyquantique/haarpy/pull/43).
 
 ### Breaking changes
 
@@ -15,11 +14,14 @@
     * `weingarten_class()` -> `weingarten_unitary()`
     * `weingarten_element()` -> `weingarten_unitary()` The argument `degree` has been removed for the degree of the symmetric group is already contained in both the permutation and the conjugacy class.
     * `coset_type()` -> `coset_type_representative()`
+* `get_conjugacy_class()` : `degree` has been removed from the arguments since it is already contained in `permutation` [(#51)](https://github.com/polyquantique/haarpy/pull/51).
 
 ### Improvements
 
 * The `README` has been improved to describe the expanding capabilities of `haarpy` [(#39)](https://github.com/polyquantique/haarpy/pull/39).
 * Added references and examples to the docstrings. Slight modification to the docstring format  [(#47)](https://github.com/polyquantique/haarpy/pull/47).
+* `get_conjugacy_class()` has been sped up [(#51)](https://github.com/polyquantique/haarpy/pull/51).
+* `weingarten_...()` and `haar_integral_...()` have been sped up in [(#53)](https://github.com/polyquantique/haarpy/pull/53).
 
 ### Bug fixes
 
