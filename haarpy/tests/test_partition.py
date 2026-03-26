@@ -364,6 +364,31 @@ def test_non_crossing_pair_partition_is_non_crossing(degree):
         assert not ap.is_crossing_partition(partition)
 
 
+@pytest.mark.parametrize("degree", range(10))
+def test_non_crossing_partition_bijection(degree):
+    "test the bijection between non-crossing partitions and pair partitions"
+
+    def partition_fattening(partition):
+        def block_fattening(block):
+            yield (2 * block[0] - 1, 2 * block[-1])
+            if len(block) == 1:
+                return
+            for i, j in zip(block[:-1], block[1:]):
+                yield (2 * i, 2 * j - 1)
+
+        return tuple(
+            sorted(
+                (pair for block in partition for pair in block_fattening(block)), key=lambda x: x[0]
+            )
+        )
+
+    bijection = {partition_fattening(partition) for partition in ap.non_crossing_partitions(degree)}
+
+    assert {
+        pair_partition for pair_partition in ap.non_crossing_partitions(2 * degree, pair=True)
+    } == bijection
+
+
 @pytest.mark.parametrize(
     "partition",
     [
@@ -393,3 +418,9 @@ def test_crossing_partition_false(partition):
 def test_crossing_partition_true(partition):
     "Crossing partitions"
     assert ap.is_crossing_partition(partition)
+
+
+@pytest.mark.parametrize("degree", range(10))
+def test_gram_matrix_unitary(degree):
+    assert False
+    # INVERSE DIAGONAL AGAINST WEINGARTEN FUNCTIONS FOR ORTHOGONAL AND UNITARY

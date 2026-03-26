@@ -27,6 +27,7 @@ References
 from functools import lru_cache
 from collections.abc import Iterator
 from itertools import product
+from sympy import Symbol, Matrix, Expr
 
 
 def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
@@ -357,3 +358,45 @@ def is_crossing_partition(partition: tuple[tuple[int, ...], ...]) -> bool:
                     return True
 
     return False
+
+
+@lru_cache
+def gram_matrix(
+    partition_tuple: tuple[tuple[tuple[int, ...], ...], ...],
+    group_dimension: Symbol,
+) -> Matrix[Expr]:
+    """Generates the Gram matrix of a given input set of partitions
+
+    Parameters
+    ----------
+        partition_tuple (tuple[tuple[tuple[int]])) : set of partitions
+        group_dimension (Symbol) : the dimension of the underlying group
+
+    Returns
+    -------
+        Matrix[Expr] : the symbolic Gram matrix
+
+    Raise
+    -----
+        TypeError : group_dimension is neither a symbol or an integer
+
+    Examples
+    --------
+        >>> from haarpy import gram_matrix, pair_partitions
+        >>> is_crossing_partition(((0,2,4), (1,3)))
+        True
+        >>> is_crossing_partition(((0,3,4), (1,2)))
+        False
+    """
+    if not isinstance(group_dimension, (Expr, int)):
+        raise TypeError
+
+    return Matrix(
+        tuple(
+            tuple(
+                group_dimension ** len(join_operation(partition_row, partition_col))
+                for partition_col in partition_tuple
+            )
+            for partition_row in partition_tuple
+        )
+    )

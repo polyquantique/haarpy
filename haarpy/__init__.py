@@ -63,6 +63,7 @@ Functions
     join_operation
     non_crossing_partitions
     is_crossing_partition
+    gram_matrix
 
 Code details
 ------------
@@ -75,6 +76,7 @@ from .partition import (
     join_operation,
     non_crossing_partitions,
     is_crossing_partition,
+    gram_matrix,
 )
 
 from .symmetric import (
@@ -167,6 +169,7 @@ __all__ = [
     "join_operation",
     "non_crossing_partitions",
     "is_crossing_partition",
+    "gram_matrix",
 ]
 
 
