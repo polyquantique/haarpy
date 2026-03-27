@@ -223,7 +223,7 @@ def test_zonal_spherical_type_error(permutation, partition):
         (Permutation(0, 1, 2, 3, 4, 5), 2, d * (d - 1) * (d - 2) * (d + 2) * (d + 4)),
         (
             Permutation(0, 1, 2, 3, 4, 5, 6, 7),
-            -5 * d - 6,
+            -(5 * d + 6),
             d * (d - 1) * (d - 2) * (d - 3) * (d + 1) * (d + 2) * (d + 4) * (d + 6),
         ),
         (
@@ -238,7 +238,7 @@ def test_zonal_spherical_type_error(permutation, partition):
         ),
         (
             Permutation(4, 5, 6, 7),
-            -(d**3) - 6 * d**2 - 3 * d + 6,
+            -(d**3 + 6 * d**2 + 3 * d - 6),
             d * (d - 1) * (d - 2) * (d - 3) * (d + 1) * (d + 2) * (d + 4) * (d + 6),
         ),
         (
@@ -253,7 +253,7 @@ def test_weingarten_orthogonal_literature(permutation, num, denum):
     `Collins et al. Integration with Respect to the Haar Measure on Unitary, Orthogonal
     and Symplectic Group: <https://link.springer.com/article/10.1007/s00220-006-1554-3>`_
     """
-    assert ap.weingarten_orthogonal(permutation, d) == num / denum
+    assert ap.weingarten_orthogonal(permutation, d).equals(num / denum)
 
 
 @pytest.mark.parametrize("degree", range(2, 10, 2))

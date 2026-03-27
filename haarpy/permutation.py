@@ -25,8 +25,9 @@ from functools import lru_cache
 from itertools import product
 from collections.abc import Sequence
 from fractions import Fraction
-from sympy import Symbol, simplify, binomial, factor, fraction
+from sympy import Symbol, binomial
 from haarpy import set_partitions, meet_operation, join_operation, partial_order
+from ._utils import _simplify
 
 
 @lru_cache
@@ -117,14 +118,13 @@ def weingarten_permutation(
             for partition in inferieur_partition_tuple
         )
     else:
-        weingarten = sum(
+        weingarten_gen = (
             mobius_function(partition, first_partition)
             * mobius_function(partition, second_partition)
             / prod(dimension - i for i, _ in enumerate(partition))
             for partition in inferieur_partition_tuple
         )
-        numerator, denominator = fraction(simplify(weingarten))
-        weingarten = factor(numerator) / factor(denominator)
+        weingarten = _simplify(weingarten_gen)
 
     return weingarten
 
@@ -192,7 +192,7 @@ def weingarten_centered_permutation(
             for i in range(singleton_set_size + 1)
         )
     else:
-        weingarten = sum(
+        weingarten_gen = (
             (-1) ** i
             * binomial(singleton_set_size, i)
             * sum(
@@ -205,8 +205,7 @@ def weingarten_centered_permutation(
             for i in range(singleton_set_size + 1)
         )
 
-        num, denum = fraction(simplify(weingarten))
-        weingarten = factor(num) / factor(denum)
+        weingarten = _simplify(weingarten_gen)
 
     return weingarten
 
@@ -321,7 +320,7 @@ def haar_integral_centered_permutation(
         for unique in set(column_indices)
     )
 
-    integral = sum(
+    integral_gen = (
         weingarten_centered_permutation(
             partition_sigma,
             partition_tau,
@@ -335,8 +334,4 @@ def haar_integral_centered_permutation(
         and partial_order(partition_tau, column_partition)
     )
 
-    if isinstance(dimension, Symbol):
-        num, denum = fraction(simplify(integral))
-        integral = factor(num) / factor(denum)
-
-    return integral
+    return sum(integral_gen) if isinstance(dimension, int) else _simplify(integral_gen)

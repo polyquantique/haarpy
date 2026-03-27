@@ -29,7 +29,7 @@ from itertools import product
 from functools import lru_cache
 from typing import Union
 from collections import Counter
-from sympy import Symbol, Expr, factorial, factor, fraction, simplify
+from sympy import Symbol, Expr, factorial
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from haarpy import (
@@ -41,6 +41,7 @@ from haarpy import (
     coset_type,
     coset_type_representative,
 )
+from ._utils import _simplify
 
 
 @lru_cache
@@ -88,7 +89,7 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
     double_partition = tuple(2 * part for part in partition)
     hyperocta = HyperoctahedralGroup(degree // 2)
     numerator = sum(
-        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta, degree))
+        murn_naka_rule(double_partition, get_conjugacy_class(permutation * zeta))
         for zeta in hyperocta.generate()
     )
     return Fraction(numerator, hyperocta.order())
@@ -184,20 +185,16 @@ def weingarten_orthogonal(
             factorial(degree),
         )
     else:
-        weingarten = (
-            sum(
-                irrep_dim * zonal_spherical / coefficient
-                for irrep_dim, zonal_spherical, coefficient in zip(
-                    irrep_dimension_gen, zonal_spherical_gen, coefficient_gen
-                )
-                if coefficient
+        weingarten_gen = (
+            irrep_dim * zonal_spherical / coefficient
+            for irrep_dim, zonal_spherical, coefficient in zip(
+                irrep_dimension_gen, zonal_spherical_gen, coefficient_gen
             )
-            * 2**half_degree
-            * factorial(half_degree)
-            / factorial(degree)
+            if coefficient
         )
-        numerator, denominator = fraction(simplify(weingarten))
-        weingarten = simplify(factor(numerator) / factor(denominator))
+        weingarten = _simplify(
+            weingarten_gen, Fraction(2**half_degree * factorial(half_degree), factorial(degree))
+        )
 
     return weingarten
 
@@ -263,13 +260,9 @@ def haar_integral_orthogonal(sequences: tuple[tuple[int]], orthogonal_dimension:
         coset_type(cycle_j * ~cycle_i) for cycle_i, cycle_j in product(permutation_i, permutation_j)
     )
 
-    integral = sum(
+    integral_gen = (
         count * weingarten_orthogonal(coset, orthogonal_dimension)
         for coset, count in coset_mapping.items()
     )
 
-    if isinstance(orthogonal_dimension, Expr):
-        numerator, denominator = fraction(simplify(integral))
-        integral = factor(numerator) / factor(denominator)
-
-    return integral
+    return sum(integral_gen) if isinstance(orthogonal_dimension, int) else _simplify(integral_gen)
