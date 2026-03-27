@@ -27,7 +27,7 @@ from math import prod
 from fractions import Fraction
 from functools import lru_cache
 from itertools import product
-from sympy import Symbol, factorial, factor, fraction, simplify, Expr
+from sympy import Symbol, factorial, Expr
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from sympy.core.numbers import Integer
@@ -38,6 +38,7 @@ from haarpy import (
     irrep_dimension,
     hyperoctahedral_transversal,
 )
+from ._utils import _simplify
 
 
 @lru_cache
@@ -165,20 +166,16 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
             factorial(degree),
         )
     else:
-        weingarten = (
-            sum(
-                irrep_dim * zonal_spherical / coefficient
-                for irrep_dim, zonal_spherical, coefficient in zip(
-                    irrep_dimension_gen, twisted_spherical_gen, coefficient_gen
-                )
-                if coefficient
+        weingarten_gen = (
+            irrep_dim * zonal_spherical / coefficient
+            for irrep_dim, zonal_spherical, coefficient in zip(
+                irrep_dimension_gen, twisted_spherical_gen, coefficient_gen
             )
-            * 2**half_degree
-            * factorial(half_degree)
-            / factorial(degree)
+            if coefficient
         )
-        numerator, denominator = fraction(simplify(weingarten))
-        weingarten = simplify(factor(numerator) / factor(denominator))
+        weingarten = (
+            _simplify(weingarten_gen) * 2**half_degree * factorial(half_degree) / factorial(degree)
+        )
 
     return weingarten
 
@@ -296,14 +293,10 @@ def haar_integral_symplectic(
         for perm in hyperoctahedral_transversal(degree)
     )
 
-    integral = sum(
+    integral_gen = (
         perm_i[1] * perm_j[1] * weingarten_symplectic(perm_j[0] * ~perm_i[0], half_dimension)
         for perm_i, perm_j in product(permutation_i_tuple, permutation_j_tuple)
         if perm_i[1] * perm_j[1]
     )
 
-    if isinstance(half_dimension, Expr):
-        numerator, denominator = fraction(simplify(integral))
-        integral = factor(numerator) / factor(denominator)
-
-    return integral
+    return sum(integral_gen) if isinstance(half_dimension, int) else _simplify(integral_gen)

@@ -136,7 +136,7 @@ def test_weingarten_centered_permutation_hand_calculated(partition1, partition2,
     dimension = randint(10, 99)
     assert ap.weingarten_centered_permutation(
         partition1, partition2, d
-    ) == hand_calculated_weingarten[result_key] and ap.weingarten_centered_permutation(
+    ).equals(hand_calculated_weingarten[result_key]) and ap.weingarten_centered_permutation(
         partition1, partition2, dimension
     ) == Fraction(
         hand_calculated_weingarten[result_key].subs(d, dimension)
@@ -271,9 +271,9 @@ def test_haar_integral_centered_permutation_weingarten(row_indices, column_indic
         sum(value * hand_calculated_weingarten[key] for key, value in result_dict.items())
     )
     num, denum = fraction(result)
-    assert ap.haar_integral_centered_permutation(row_indices, column_indices, d) == factor(
-        num
-    ) / factor(denum)
+    assert ap.haar_integral_centered_permutation(row_indices, column_indices, d).equals(
+        factor(num) / factor(denum)
+    )
 
 
 @pytest.mark.parametrize(
