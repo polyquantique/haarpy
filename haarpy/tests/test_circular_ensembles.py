@@ -56,7 +56,7 @@ def test_weingarten_circular_orthogonal_hyperoctahedral_symbolic(half_degree):
         for permutation in SymmetricGroup(2 * half_degree).generate():
             hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = 1 / (d * (d + 1) * (d + 3))
-            assert ap.weingarten_circular_orthogonal(permutation, d) == (
+            assert ap.weingarten_circular_orthogonal(permutation, d).equals(
                 simplify((d + 2) * coefficient) if permutation in hyperoctahedral else -coefficient
             )
 
@@ -94,7 +94,7 @@ def test_weingarten_circular_symplectic_hyperoctahedral_symbolic(half_degree):
         for permutation in SymmetricGroup(2 * half_degree).generate():
             hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = permutation.signature() / (d * (2 * d - 1) * (2 * d - 3))
-            assert ap.weingarten_circular_symplectic(permutation, d) == (
+            assert ap.weingarten_circular_symplectic(permutation, d).equals(
                 simplify((d - 1) * coefficient)
                 if permutation in hyperoctahedral
                 else coefficient / 2

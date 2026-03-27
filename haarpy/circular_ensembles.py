@@ -25,7 +25,7 @@ from fractions import Fraction
 from functools import lru_cache
 from typing import Union
 from collections import Counter
-from sympy import Symbol, Expr, fraction, factor, cancel, together
+from sympy import Symbol, Expr
 from sympy.combinatorics import Permutation, SymmetricGroup
 from sympy.core.numbers import Integer
 from haarpy import (
@@ -34,6 +34,7 @@ from haarpy import (
     coset_type,
     stabilizer_coset,
 )
+from ._utils import _simplify
 
 
 @lru_cache
@@ -158,16 +159,12 @@ def haar_integral_circular_orthogonal(
         coset_type(permutation) for permutation in stabilizer_coset(seq_i, seq_j)
     )
 
-    integral = sum(
+    integral_gen = (
         count * weingarten_circular_orthogonal(coset, group_dimension)
         for coset, count in coset_mapping.items()
     )
 
-    if isinstance(group_dimension, Expr):
-        numerator, denominator = fraction(together(integral))
-        integral = factor(numerator) / factor(denominator)
-
-    return integral
+    return sum(integral_gen) if isinstance(group_dimension, int) else _simplify(integral_gen)
 
 
 @lru_cache
@@ -298,13 +295,13 @@ def haar_integral_circular_symplectic(sequences: tuple[tuple[Expr]], half_dimens
         if permutation(shifted_i) == shifted_j
     )
 
-    integral = coefficient * sum(
+    integral_gen = (
         weingarten_circular_symplectic(permutation, half_dimension)
         for permutation in permutation_tuple
     )
 
-    if isinstance(half_dimension, Expr):
-        numerator, denominator = fraction(cancel(together(integral)))
-        integral = factor(numerator) / factor(denominator)
-
-    return integral
+    return (
+        coefficient * sum(integral_gen)
+        if isinstance(half_dimension, int)
+        else _simplify(integral_gen, Fraction(coefficient, 1))
+    )

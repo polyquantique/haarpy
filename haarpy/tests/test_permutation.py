@@ -136,7 +136,7 @@ def test_weingarten_centered_permutation_hand_calculated(partition1, partition2,
     dimension = randint(10, 99)
     assert ap.weingarten_centered_permutation(
         partition1, partition2, d
-    ) == hand_calculated_weingarten[result_key] and ap.weingarten_centered_permutation(
+    ).equals(hand_calculated_weingarten[result_key]) and ap.weingarten_centered_permutation(
         partition1, partition2, dimension
     ) == Fraction(
         hand_calculated_weingarten[result_key].subs(d, dimension)
