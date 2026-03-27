@@ -27,7 +27,7 @@ from math import prod
 from fractions import Fraction
 from functools import lru_cache
 from itertools import product
-from sympy import Symbol, factorial, factor, fraction, cancel, together, Expr
+from sympy import Symbol, factorial, Expr
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from sympy.core.numbers import Integer
@@ -293,14 +293,10 @@ def haar_integral_symplectic(
         for perm in hyperoctahedral_transversal(degree)
     )
 
-    integral = sum(
+    integral_gen = (
         perm_i[1] * perm_j[1] * weingarten_symplectic(perm_j[0] * ~perm_i[0], half_dimension)
         for perm_i, perm_j in product(permutation_i_tuple, permutation_j_tuple)
         if perm_i[1] * perm_j[1]
     )
 
-    if isinstance(half_dimension, Expr):
-        numerator, denominator = fraction(cancel(together(integral)))
-        integral = factor(numerator) / factor(denominator)
-
-    return integral
+    return sum(integral_gen) if isinstance(half_dimension, int) else _simplify(integral_gen)
