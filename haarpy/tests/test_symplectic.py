@@ -186,12 +186,12 @@ def test_weingarten_symplectic_hyperoctahedral_symbolic(half_degree):
     """
     if half_degree == 1:
         for permutation in SymmetricGroup(2 * half_degree).generate():
-            assert ap.weingarten_symplectic(permutation, d) == (permutation.signature() / (2 * d))
+            assert ap.weingarten_symplectic(permutation, d).equals((permutation.signature() / (2 * d)))
     else:
         for permutation in SymmetricGroup(2 * half_degree).generate():
             hyperoctahedral = ap.HyperoctahedralGroup(half_degree)
             coefficient = permutation.signature() / (4 * d * (d - 1) * (2 * d + 1))
-            assert ap.weingarten_symplectic(permutation, d) == (
+            assert ap.weingarten_symplectic(permutation, d).equals(
                 simplify((2 * d - 1) * coefficient)
                 if permutation in hyperoctahedral
                 else coefficient
@@ -240,11 +240,11 @@ def test_weingarten_symplectic_orthogonal_relation(permutation):
     `Matsumoto. Weingarten calculus for matrix ensembles associated with compact symmetric spaces:
     <https://arxiv.org/abs/1301.5401>`_
     """
-    assert ap.weingarten_symplectic(permutation, d) == simplify(
+    assert ap.weingarten_symplectic(permutation, d).equals(simplify(
         (-1) ** (permutation.size // 2)
         * permutation.signature()
         * ap.weingarten_orthogonal(permutation, -2 * d)
-    )
+    ))
 
 
 @pytest.mark.parametrize(
@@ -408,4 +408,4 @@ def test_haar_integral_symplectic_weingarten_reconciliation(half_degree):
 
         assert ap.haar_integral_symplectic(
             (sequence, perm_sequence), d
-        ) == ap.weingarten_symplectic(perm, d)
+        ).equals(ap.weingarten_symplectic(perm, d))

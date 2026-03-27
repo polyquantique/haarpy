@@ -29,7 +29,7 @@ from typing import Union
 from itertools import product
 from collections import Counter
 from fractions import Fraction
-from sympy import Symbol, Expr, fraction, together, cancel, factor
+from sympy import Symbol, Expr
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from haarpy import (
@@ -38,6 +38,7 @@ from haarpy import (
     irrep_dimension,
     stabilizer_coset,
 )
+from ._utils import _simplify
 
 
 @lru_cache
@@ -150,17 +151,14 @@ def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension:
             for part, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
         ) * Fraction(1, factorial(degree) ** 2)
     else:
-        weingarten = (
-            sum(
-                irrep_dimension**2
-                * murn_naka_rule(partition, conjugacy_class)
-                / representation_dimension(partition, unitary_dimension)
-                for partition, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
-            )
-            / factorial(degree) ** 2
+        weingarten_gen = (
+            irrep_dimension**2
+            * murn_naka_rule(partition, conjugacy_class)
+            / representation_dimension(partition, unitary_dimension)
+            for partition, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
         )
-        numerator, denominator = fraction(cancel(together(weingarten)))
-        weingarten = factor(numerator) / factor(denominator)
+
+        weingarten = _simplify(weingarten_gen, Fraction(1, factorial(degree) ** 2))
 
     return weingarten
 
@@ -207,8 +205,6 @@ def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbo
     if len(seq_i) != len(seq_j) or len(seq_i_prime) != len(seq_j_prime):
         raise ValueError("Wrong tuple format")
 
-    degree = len(seq_i)
-
     class_mapping = Counter(
         get_conjugacy_class(cycle_i * ~cycle_j)
         for cycle_i, cycle_j in product(
@@ -217,13 +213,9 @@ def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbo
         )
     )
 
-    integral = sum(
+    integral_gen = (
         count * weingarten_unitary(conjugacy, unitary_dimension)
         for conjugacy, count in class_mapping.items()
     )
 
-    if isinstance(unitary_dimension, Expr):
-        numerator, denominator = fraction(cancel(together(integral)))
-        integral = factor(numerator) / factor(denominator)
-
-    return integral
+    return sum(integral_gen) if isinstance(unitary_dimension, int) else _simplify(integral_gen)

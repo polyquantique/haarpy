@@ -164,7 +164,7 @@ def haar_integral_circular_orthogonal(
     )
 
     if isinstance(group_dimension, Expr):
-        numerator, denominator = fraction(cancel(together(integral)))
+        numerator, denominator = fraction(together(integral))
         integral = factor(numerator) / factor(denominator)
 
     return integral

@@ -38,6 +38,7 @@ from haarpy import (
     irrep_dimension,
     hyperoctahedral_transversal,
 )
+from ._utils import _simplify
 
 
 @lru_cache
@@ -165,20 +166,16 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
             factorial(degree),
         )
     else:
-        weingarten = (
-            sum(
-                irrep_dim * zonal_spherical / coefficient
-                for irrep_dim, zonal_spherical, coefficient in zip(
-                    irrep_dimension_gen, twisted_spherical_gen, coefficient_gen
-                )
-                if coefficient
+        weingarten_gen = (
+            irrep_dim * zonal_spherical / coefficient
+            for irrep_dim, zonal_spherical, coefficient in zip(
+                irrep_dimension_gen, twisted_spherical_gen, coefficient_gen
             )
-            * 2**half_degree
-            * factorial(half_degree)
-            / factorial(degree)
+            if coefficient
         )
-        numerator, denominator = fraction(cancel(together(weingarten)))
-        weingarten = factor(numerator) / factor(denominator)
+        weingarten = (
+            _simplify(weingarten_gen) * 2**half_degree * factorial(half_degree) / factorial(degree)
+        )
 
     return weingarten
 

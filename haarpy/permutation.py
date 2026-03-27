@@ -123,7 +123,7 @@ def weingarten_permutation(
             / prod(dimension - i for i, _ in enumerate(partition))
             for partition in inferieur_partition_tuple
         )
-        numerator, denominator = fraction(cancel(together(weingarten)))
+        numerator, denominator = fraction(together(weingarten))
         weingarten = factor(numerator) / factor(denominator)
 
     return weingarten
@@ -205,7 +205,7 @@ def weingarten_centered_permutation(
             for i in range(singleton_set_size + 1)
         )
 
-        num, denum = fraction(cancel(together(weingarten)))
+        num, denum = fraction(together(weingarten))
         weingarten = factor(num) / factor(denum)
 
     return weingarten

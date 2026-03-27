@@ -271,9 +271,9 @@ def test_haar_integral_centered_permutation_weingarten(row_indices, column_indic
         sum(value * hand_calculated_weingarten[key] for key, value in result_dict.items())
     )
     num, denum = fraction(result)
-    assert ap.haar_integral_centered_permutation(row_indices, column_indices, d) == factor(
-        num
-    ) / factor(denum)
+    assert ap.haar_integral_centered_permutation(row_indices, column_indices, d).equals(
+        factor(num) / factor(denum)
+    )
 
 
 @pytest.mark.parametrize(
