@@ -364,7 +364,7 @@ def is_crossing_partition(partition: tuple[tuple[int, ...], ...]) -> bool:
 def gram_matrix(
     partition_tuple: tuple[tuple[tuple[int, ...], ...], ...],
     group_dimension: Symbol,
-) -> Matrix[Expr]:
+) -> Matrix:
     """Generates the Gram matrix of a given input set of partitions
 
     Parameters
@@ -374,7 +374,7 @@ def gram_matrix(
 
     Returns
     -------
-        Matrix[Expr] : the symbolic Gram matrix
+        Matrix : the symbolic Gram matrix
 
     Raise
     -----
@@ -382,11 +382,14 @@ def gram_matrix(
 
     Examples
     --------
-        >>> from haarpy import gram_matrix, pair_partitions
-        >>> is_crossing_partition(((0,2,4), (1,3)))
-        True
-        >>> is_crossing_partition(((0,3,4), (1,2)))
-        False
+        >>> from haarpy import gram_matrix
+        >>> from sympy import Symbol
+        >>> n = Symbol('n')
+        >>> pair_partition_tuple = (((0, 1), (2, 3)), ((0, 3), (1, 2)))
+        >>> gram_matrix(pair_partition_tuple, n)
+        Matrix([
+        [n**2,    n],
+        [   n, n**2]])
     """
     if not isinstance(group_dimension, (Expr, int)):
         raise TypeError

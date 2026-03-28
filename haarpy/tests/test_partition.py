@@ -18,10 +18,13 @@ Partition tests
 import pytest
 from collections import Counter
 from random import seed, choice
-from sympy import bell, factorial2, catalan
+from sympy import bell, factorial2, catalan, Symbol, factor, fraction
+from sympy.combinatorics import SymmetricGroup
 import haarpy as ap
+from haarpy._utils import _simplify
 
 seed(137)
+d = Symbol("d")
 
 
 @pytest.mark.parametrize("size", range(1, 7))
@@ -420,7 +423,70 @@ def test_crossing_partition_true(partition):
     assert ap.is_crossing_partition(partition)
 
 
-@pytest.mark.parametrize("degree", range(10))
-def test_gram_matrix_unitary(degree):
-    assert False
-    # INVERSE DIAGONAL AGAINST WEINGARTEN FUNCTIONS FOR ORTHOGONAL AND UNITARY
+@pytest.mark.parametrize("degree", range(1,4))
+def test_gram_matrix_weingarten_unitary(degree):
+    "Asserts that the inverse of the Gram matrix yield the unitary Weingarten functions"
+    partition_tuple = tuple(
+        tuple(
+            (i, j)
+            for i, j in enumerate(perm(range(degree,2*degree)))
+        )
+        for perm in SymmetricGroup(degree).generate()
+    )
+    weingarten_matrix = ap.gram_matrix(partition_tuple, d).inv()
+
+    for conjugacy in SymmetricGroup(degree).conjugacy_classes():
+        representative = conjugacy.pop()
+        partition = tuple(
+            (idx, degree + representative.array_form.index(idx))
+            for idx, _ in enumerate(representative.array_form)
+        )
+
+        col = partition_tuple.index(partition)
+        num, denum = fraction(weingarten_matrix[0, col])
+        weingarten = factor(num) / factor(denum)
+        assert weingarten == ap.weingarten_unitary(representative, d)
+
+
+@pytest.mark.parametrize("half_degree", range(1,3))
+def test_gram_matrix_weingarten_orthogonal(half_degree):
+    "Asserts that the inverse of the Gram matrix yield the orthogonal Weingarten functions"
+    partition_tuple = tuple(
+        perfect for perfect in ap.pair_partitions(tuple(i for i in range(2 * half_degree)))
+    )
+    weingarten_matrix = ap.gram_matrix(partition_tuple, d).inv()
+
+    already_tested = set()
+    for conjugacy in SymmetricGroup(2 * half_degree).conjugacy_classes():
+        representative = conjugacy.pop()
+        partition = (
+            (representative.array_form.index(2*idx), representative.array_form.index(2*idx+1))
+            for idx, _ in enumerate(representative.array_form[::2])
+        )
+        partition = sorted((map(sorted, partition)))
+        partition = tuple(map(tuple, partition))
+
+        if partition in already_tested:
+            continue
+        already_tested.add(partition)
+
+        col = partition_tuple.index(partition)
+        num, denum = fraction(weingarten_matrix[0, col])
+        weingarten = factor(num) / factor(denum)
+        assert weingarten == ap.weingarten_orthogonal(representative, d)
+
+
+@pytest.mark.parametrize(
+    "dimension",
+    [
+        'a',
+        0.1,
+    ],
+)
+def test_gram_matrix_type_error(dimension):
+    "Asserts typeError for wrong dimension type"
+    partition_tuple = tuple(
+        perfect for perfect in ap.pair_partitions(tuple(i for i in range(2)))
+    )
+    with pytest.raises(TypeError):
+        ap.gram_matrix(partition_tuple, dimension)
