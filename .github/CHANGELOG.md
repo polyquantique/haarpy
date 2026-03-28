@@ -16,6 +16,7 @@
     * `weingarten_element()` -> `weingarten_unitary()` The argument `degree` has been removed for the degree of the symmetric group is already contained in both the permutation and the conjugacy class.
     * `coset_type()` -> `coset_type_representative()`
 * `get_conjugacy_class()` : `degree` has been removed from the arguments since it is already contained in `permutation` [(#51)](https://github.com/polyquantique/haarpy/pull/51).
+* `sympy` requirements went from `1.12` to `1.14`. The version `1.14` has improved the inversion algorithm for inversion of symbolic matrices which is necessary to compute moments of quantum groups [(#54)](https://github.com/polyquantique/haarpy/pull/54).
 
 ### Improvements
 

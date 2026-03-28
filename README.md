@@ -157,7 +157,7 @@ pip install haarpy
 ## Compiling from source
 Haarpy has the following dependencies:
 * [Python](https://www.python.org/) >= 3.9
-* [SymPy](https://www.sympy.org) >= 1.12
+* [SymPy](https://www.sympy.org) >= 1.14
 
 
 ## How to cite this work
