@@ -39,6 +39,8 @@ Functions
     haar_integral_circular_symplectic
     haar_integral_permutation
     haar_integral_centered_permutation
+    haar_integral_free_symmetric
+    haar_integral_free_orthogonal
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -128,6 +130,11 @@ from .permutation import (
     haar_integral_centered_permutation,
 )
 
+from .quantum import (
+    haar_integral_free_symmetric,
+    haar_integral_free_orthogonal,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -145,6 +152,8 @@ __all__ = [
     "haar_integral_circular_symplectic",
     "haar_integral_permutation",
     "haar_integral_centered_permutation",
+    "haar_integral_free_symmetric",
+    "haar_integral_free_orthogonal",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",

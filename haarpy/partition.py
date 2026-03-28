@@ -263,18 +263,18 @@ def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[
         >>> from haarpy import non_crossing_partitions
         >>> for partition in non_crossing_partitions(3):
         >>>     print(partition)
-        ((1,), (2,), (3,))
-        ((1,), (2, 3))
-        ((1, 3), (2,))
-        ((1, 2), (3,))
-        ((1, 2, 3),)
+        ((0,), (1,), (2,))
+        ((0,), (1, 2))
+        ((0, 2), (1,))
+        ((0, 1), (2,))
+        ((0, 1, 2),)
         >>> for partition in non_crossing_partitions(6, pair = True):
         >>>     print(partition)
-        ((1, 6), (2, 5), (3, 4))
-        ((1, 6), (2, 3), (4, 5))
-        ((1, 4), (2, 3), (5, 6))
-        ((1, 2), (3, 6), (4, 5))
-        ((1, 2), (3, 4), (5, 6))
+        ((0, 5), (1, 4), (2, 3))
+        ((0, 5), (1, 2), (3, 4))
+        ((0, 3), (1, 2), (4, 5))
+        ((0, 1), (2, 5), (3, 4))
+        ((0, 1), (2, 3), (4, 5))
     """
     if not isinstance(n, int):
         raise TypeError
@@ -321,7 +321,7 @@ def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[
 
         elements.append(element)
 
-    for partition in recursion_partitions(list(range(n, 0, -1)), [], [], pair):
+    for partition in recursion_partitions(list(range(n-1, -1, -1)), [], [], pair):
         yield tuple(sorted(map(tuple, partition), key=lambda x: x[0]))
 
 

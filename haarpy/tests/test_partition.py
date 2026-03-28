@@ -373,11 +373,11 @@ def test_non_crossing_partition_bijection(degree):
 
     def partition_fattening(partition):
         def block_fattening(block):
-            yield (2 * block[0] - 1, 2 * block[-1])
+            yield (2 * block[0], 2 * block[-1] + 1)
             if len(block) == 1:
                 return
             for i, j in zip(block[:-1], block[1:]):
-                yield (2 * i, 2 * j - 1)
+                yield (2 * i + 1, 2 * j)
 
         return tuple(
             sorted(

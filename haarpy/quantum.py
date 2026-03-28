@@ -24,16 +24,40 @@ from functools import lru_cache
 from itertools import product
 from sympy import Expr, Symbol, fraction, together, cancel, factor
 from haarpy import non_crossing_partitions, gram_matrix
+from ._utils import _simplify
 
 
 @lru_cache
-def haar_integral_quantum(
+def _haar_integral_quantum(
     sequences: tuple[tuple[int, ...], ...],
     group_dimension: Symbol,
     pair: bool,
 ) -> Expr:
-    """ """
-    # RAISE ERROR IF GROUP NOT EXPR OR INT
+    """Returns the integral of a quantum group, either the free symmetric group or
+    the free orthogonal group
+
+    Parameters
+    ----------
+        sequences (tuple[tuple[int]]) : indices of matrix elements
+        group_dimension (Symbol) : dimension of the quantum group
+        pair (bool) : True for free orthogonal group, False for free symmetric group
+
+    Returns
+    -------
+        Expr : integral under the Haar measure
+
+    Raise
+    -----
+        TypeError : if the dimension is neither int nor Symbol
+        ValueError : if sequences do not contain 4 tuples
+        ValueError : if tuples i and j are of different length
+
+    See Also
+    --------
+        gram_matrix
+    """
+    if not isinstance(group_dimension, (Expr, int)):
+        raise TypeError
     if len(sequences) != 2:
         raise ValueError("Wrong tuple format")
     if len(sequences[0]) != len(sequences[1]):
@@ -41,6 +65,7 @@ def haar_integral_quantum(
 
     degree = len(sequences[0])
     partition_tuple = tuple(partition for partition in non_crossing_partitions(degree, pair))
+
     weingarten_matrix = gram_matrix(partition_tuple, group_dimension).inv()
 
     def is_elligible_partition(partition, sequence):
@@ -51,27 +76,23 @@ def haar_integral_quantum(
             for i in block
         )
 
-    elligible_row_partitions = (
-        partition
-        for partition in partition_tuple
+    elligible_row_indices = (
+        idx
+        for idx, partition in enumerate(partition_tuple)
         if is_elligible_partition(partition, sequences[0])
     )
-    elligible_col_partitions = (
-        partition
-        for partition in partition_tuple
+    elligible_col_indices = (
+        idx
+        for idx, partition in enumerate(partition_tuple)
         if is_elligible_partition(partition, sequences[1])
     )
 
-    integral = sum(
+    integral_gen = (
         weingarten_matrix[row_index, col_index]
-        for row_index, col_index in product(elligible_row_partitions, elligible_col_partitions)
+        for row_index, col_index in product(elligible_row_indices, elligible_col_indices)
     )
 
-    if isinstance(group_dimension, Symbol):
-        num, denum = fraction(cancel(together(integral)))
-        integral = factor(num) / factor(denum)
-
-    return integral
+    return sum(integral_gen) if isinstance(group_dimension, int) else _simplify(integral_gen)
 
 
 @lru_cache
@@ -79,8 +100,39 @@ def haar_integral_free_symmetric(
     sequences: tuple[tuple[int, ...], ...],
     group_dimension: Symbol,
 ) -> Expr:
-    """ """
-    return haar_integral_quantum(sequences, group_dimension, False)
+    """Returns the integral of the free symmetric group under the Haar measure
+
+    Parameters
+    ----------
+        sequences (tuple[tuple[int]]) : indices of matrix elements
+        group_dimension (Symbol) : dimension of the quantum group
+
+    Returns
+    -------
+        Expr : integral under the Haar measure
+
+    Raise
+    -----
+        TypeError : if the dimension is neither int nor Symbol
+        ValueError : if sequences do not contain 4 tuples
+        ValueError : if tuples i and j are of different length
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_free_symmetric
+        >>> d = Symbol("d")
+        >>> sequences = ((0, 1, 2), (2, 1, 0))
+        >>> haar_integral_free_symmetric(sequences, d)
+        1/(d*(d - 2)*(d - 1))
+        >>> haar_integral_free_symmetric(sequences, 4)
+        1/24
+
+    See Also
+    --------
+        _haar_integral_quantum
+    """
+    return _haar_integral_quantum(sequences, group_dimension, False)
 
 
 @lru_cache
@@ -89,4 +141,4 @@ def haar_integral_free_orthogonal(
     group_dimension: Symbol,
 ) -> Expr:
     """ """
-    return haar_integral_quantum(sequences, group_dimension, True)
+    return _haar_integral_quantum(sequences, group_dimension, True)
