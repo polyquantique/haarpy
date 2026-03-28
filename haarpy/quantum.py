@@ -111,12 +111,6 @@ def haar_integral_free_symmetric(
     -------
         Expr : integral under the Haar measure
 
-    Raise
-    -----
-        TypeError : if the dimension is neither int nor Symbol
-        ValueError : if sequences do not contain 4 tuples
-        ValueError : if tuples i and j are of different length
-
     Examples
     --------
         >>> from sympy import Symbol
