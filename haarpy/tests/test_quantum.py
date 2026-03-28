@@ -22,26 +22,26 @@ from sympy import Symbol, diag, fraction, factor, sqrt, simplify
 import haarpy as ap
 
 seed(137)
-d = Symbol('d')
+d = Symbol("d")
 
 
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((0,1), (0,0)),
-        ((0,1,0), (0,1,1)),
-        ((0,1,2), (0,1,1)),
-        ((1,0,0), (0,1,2)),
-        ((0,1,0), (0,1,2)),
-        ((0,1,2), (0,1,0)),
-        ((0,1,0,1), (0,1,0,0)),
-        ((1,0,0,2), (0,1,2,1)),
-        ((0,0,0,0), (0,1,2,3)),
-        ((0,0,0,1), (0,1,2,3)),
-        ((0,0,1,1), (0,1,2,3)),
-        ((1,2,0,1), (0,1,2,3)),
-        ((1,2,1,2), (1,2,0,1)),
-        ((1,2,0,1), (1,2,1,2)),
+        ((0, 1), (0, 0)),
+        ((0, 1, 0), (0, 1, 1)),
+        ((0, 1, 2), (0, 1, 1)),
+        ((1, 0, 0), (0, 1, 2)),
+        ((0, 1, 0), (0, 1, 2)),
+        ((0, 1, 2), (0, 1, 0)),
+        ((0, 1, 0, 1), (0, 1, 0, 0)),
+        ((1, 0, 0, 2), (0, 1, 2, 1)),
+        ((0, 0, 0, 0), (0, 1, 2, 3)),
+        ((0, 0, 0, 1), (0, 1, 2, 3)),
+        ((0, 0, 1, 1), (0, 1, 2, 3)),
+        ((1, 2, 0, 1), (0, 1, 2, 3)),
+        ((1, 2, 1, 2), (1, 2, 0, 1)),
+        ((1, 2, 0, 1), (1, 2, 1, 2)),
     ],
 )
 def test_free_symmetric_trivially_zero(sequences):
@@ -49,88 +49,87 @@ def test_free_symmetric_trivially_zero(sequences):
     (including first and last) are on the same row or column
     """
     assert not ap.haar_integral_free_symmetric(sequences, d)
-    assert not ap.haar_integral_free_symmetric(sequences, randint(5,20))
+    assert not ap.haar_integral_free_symmetric(sequences, randint(5, 20))
 
 
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((0,1), (0,1)),
-        ((0,1,2), (2,1,0)),
-        ((0,1,0), (0,1,0)),
-        ((0,1,2,3), (0,1,2,3)),
-        ((0,1,0,1), (0,1,0,1)),
-        ((0,1,2,3), (0,1,2,1)),
-        ((0,1,2,1), (0,1,2,3)),
-        ((0,1,0,1), (0,1,2,3)),
+        ((0, 1), (0, 1)),
+        ((0, 1, 2), (2, 1, 0)),
+        ((0, 1, 0), (0, 1, 0)),
+        ((0, 1, 2, 3), (0, 1, 2, 3)),
+        ((0, 1, 0, 1), (0, 1, 0, 1)),
+        ((0, 1, 2, 3), (0, 1, 2, 1)),
+        ((0, 1, 2, 1), (0, 1, 2, 3)),
+        ((0, 1, 0, 1), (0, 1, 2, 3)),
     ],
 )
 def test_free_symmetric_none_zero(sequences):
     "Test non-zero moments of free symmetric group"
     assert ap.haar_integral_free_symmetric(sequences, d)
-    assert ap.haar_integral_free_symmetric(sequences, randint(5,20))
+    assert ap.haar_integral_free_symmetric(sequences, randint(5, 20))
 
 
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((0,1), (0,0)),
-        ((0,1,0,1), (0,0,0,0)),
-        ((1,0,0,1), (0,1,0,1)),
-        ((0,1,2,3), (0,0,0,0)),
-        ((0,0,1,1,2,2), (0,0,0,1,1,1)),
-        ((0,1,2,0,1,2), (0,0,0,0,1,1)),
-        ((1,0,1,0,2,2), (0,0,1,1,1,1)),
+        ((0, 1), (0, 0)),
+        ((0, 1, 0, 1), (0, 0, 0, 0)),
+        ((1, 0, 0, 1), (0, 1, 0, 1)),
+        ((0, 1, 2, 3), (0, 0, 0, 0)),
+        ((0, 0, 1, 1, 2, 2), (0, 0, 0, 1, 1, 1)),
+        ((0, 1, 2, 0, 1, 2), (0, 0, 0, 0, 1, 1)),
+        ((1, 0, 1, 0, 2, 2), (0, 0, 1, 1, 1, 1)),
     ],
 )
 def test_free_orthogonal_trivially_zero(sequences):
-    """Integrals are if crossing
-    """
+    """Integrals are if crossing"""
     assert not ap.haar_integral_free_orthogonal(sequences, d)
-    assert not ap.haar_integral_free_orthogonal(sequences, randint(5,20))
+    assert not ap.haar_integral_free_orthogonal(sequences, randint(5, 20))
 
 
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((0,0), (0,0)),
-        ((0,0,0,0), (0,1,1,0)),
-        ((1,0,0,1), (0,1,1,0)),
-        ((1,0,0,1), (0,0,1,1)),
-        ((0,1,1,0,2,2), (0,0,0,0,0,0)),
-        ((0,1,2,2,1,0), (0,0,1,1,2,2)),
+        ((0, 0), (0, 0)),
+        ((0, 0, 0, 0), (0, 1, 1, 0)),
+        ((1, 0, 0, 1), (0, 1, 1, 0)),
+        ((1, 0, 0, 1), (0, 0, 1, 1)),
+        ((0, 1, 1, 0, 2, 2), (0, 0, 0, 0, 0, 0)),
+        ((0, 1, 2, 2, 1, 0), (0, 0, 1, 1, 2, 2)),
     ],
 )
 def test_free_orthogonal_none_zero(sequences):
     "Test non-zero moments of free symmetric group"
     assert ap.haar_integral_free_orthogonal(sequences, d)
-    assert ap.haar_integral_free_orthogonal(sequences, randint(5,20))
-
+    assert ap.haar_integral_free_orthogonal(sequences, randint(5, 20))
 
 
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((0,1), (0,1)),
-        ((0,1,2), (2,1,0)),
-        ((0,1,0), (0,1,0)),
-        ((0,1,2,3), (0,1,2,3)),
-        ((0,1,0,1), (0,1,0,1)),
-        ((0,1,2,3), (0,1,2,1)),
-        ((0,1,2,1), (0,1,2,3)),
-        ((0,1,0,1), (0,1,2,3)),
-        ((0,1), (0,0)),
-        ((0,1,0), (0,1,1)),
-        ((0,1,2), (0,1,0)),
-        ((0,1,0,1), (0,1,0,0)),
-        ((1,0,0,2), (0,1,2,1)),
-        ((0,0,0,0), (0,1,2,3)),
-        ((1,2,1,2), (1,2,0,1)),
-        ((1,2,0,1), (1,2,1,2)),
+        ((0, 1), (0, 1)),
+        ((0, 1, 2), (2, 1, 0)),
+        ((0, 1, 0), (0, 1, 0)),
+        ((0, 1, 2, 3), (0, 1, 2, 3)),
+        ((0, 1, 0, 1), (0, 1, 0, 1)),
+        ((0, 1, 2, 3), (0, 1, 2, 1)),
+        ((0, 1, 2, 1), (0, 1, 2, 3)),
+        ((0, 1, 0, 1), (0, 1, 2, 3)),
+        ((0, 1), (0, 0)),
+        ((0, 1, 0), (0, 1, 1)),
+        ((0, 1, 2), (0, 1, 0)),
+        ((0, 1, 0, 1), (0, 1, 0, 0)),
+        ((1, 0, 0, 2), (0, 1, 2, 1)),
+        ((0, 0, 0, 0), (0, 1, 2, 3)),
+        ((1, 2, 1, 2), (1, 2, 0, 1)),
+        ((1, 2, 0, 1), (1, 2, 1, 2)),
     ],
 )
 def test_free_quantum_relation(sequences):
     "Test relation between moments of free symmetric and free orthogonal"
+
     def partition_fattening(partition):
         def block_fattening(block):
             yield (2 * block[0], 2 * block[-1] + 1)
@@ -144,7 +143,7 @@ def test_free_quantum_relation(sequences):
                 (pair for block in partition for pair in block_fattening(block)), key=lambda x: x[0]
             )
         )
-    
+
     degree = len(sequences[0])
     partition_tuple = tuple(partition for partition in ap.non_crossing_partitions(degree))
 
@@ -167,18 +166,12 @@ def test_free_quantum_relation(sequences):
         if is_elligible_partition(partition, sequences[1])
     )
 
-    fat_partitions = tuple(
-        partition_fattening(partition)
-        for partition in partition_tuple
-    )
+    fat_partitions = tuple(partition_fattening(partition) for partition in partition_tuple)
 
-    d_sqrt = Symbol('n')
+    d_sqrt = Symbol("n")
     weingarten_orthogonal_matrix = ap.gram_matrix(fat_partitions, d_sqrt**2).inv()
     diagonal_matrix = diag(
-        *(
-            d_sqrt ** (degree - 2*len(partition))
-            for partition in partition_tuple
-        )
+        *(d_sqrt ** (degree - 2 * len(partition)) for partition in partition_tuple)
     )
     weingarten_matrix = diagonal_matrix @ weingarten_orthogonal_matrix @ diagonal_matrix
 
@@ -188,9 +181,8 @@ def test_free_quantum_relation(sequences):
     )
 
     num, denum = fraction(simplify(integral_gen))
-    integral = (
-        factor(num.subs({d_sqrt : sqrt(sqrt(d))}))
-        / factor(denum.subs({d_sqrt : sqrt(sqrt(d))}))
+    integral = factor(num.subs({d_sqrt: sqrt(sqrt(d))})) / factor(
+        denum.subs({d_sqrt: sqrt(sqrt(d))})
     )
 
     assert integral == ap.haar_integral_free_symmetric(sequences, d)
@@ -199,9 +191,9 @@ def test_free_quantum_relation(sequences):
 @pytest.mark.parametrize(
     "sequences",
     [
-        ((0,0,0,0), ),
+        ((0, 0, 0, 0),),
         ((0,), (1,), (2,)),
-        ((0,0,0,0), (0,0)),
+        ((0, 0, 0, 0), (0, 0)),
     ],
 )
 def test_quantum_group_test_sequence_error(sequences):
@@ -217,11 +209,11 @@ def test_quantum_group_test_sequence_error(sequences):
     "dimension",
     [
         "a",
-        {0,1},
+        {0, 1},
         None,
     ],
 )
 def test_quantum_group_test_type_error(dimension):
     "Test type error for wrong dimension format"
     with pytest.raises(TypeError):
-        ap.haar_integral_free_symmetric(((0,0), (0,0)), dimension)
+        ap.haar_integral_free_symmetric(((0, 0), (0, 0)), dimension)

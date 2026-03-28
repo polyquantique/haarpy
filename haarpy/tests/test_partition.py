@@ -347,7 +347,7 @@ def test_non_crossing_partition_is_non_crossing(degree):
 
 
 @pytest.mark.parametrize("degree", range(0, 10, 2))
-def test_non_crossing_partition_size(degree):
+def test_non_crossing_pair_partition_size(degree):
     "assert the number of non-crossing pair partitions coincides with the catatlan number"
     assert sum(1 for _ in ap.non_crossing_partitions(degree, pair=True)) == catalan(degree // 2)
 
@@ -393,6 +393,27 @@ def test_non_crossing_partition_bijection(degree):
 
 
 @pytest.mark.parametrize(
+    "n",
+    [
+        (1, 2, 3),
+        "a",
+        2.0,
+    ],
+)
+def test_non_crossing_partition_type_error(n):
+    "Test the type error"
+    with pytest.raises(TypeError):
+        [_ for _ in ap.non_crossing_partitions(n)]
+
+
+@pytest.mark.parametrize("n", range(-3, 6, 2))
+def test_non_crossing_partition_value_error(n):
+    "Test the value error for odd integer with pair partition or negative"
+    with pytest.raises(ValueError):
+        [_ for _ in ap.non_crossing_partitions(n, pair=True)]
+
+
+@pytest.mark.parametrize(
     "partition",
     [
         ((0, 4), (1,), (2,), (3,)),
@@ -423,14 +444,11 @@ def test_crossing_partition_true(partition):
     assert ap.is_crossing_partition(partition)
 
 
-@pytest.mark.parametrize("degree", range(1,4))
+@pytest.mark.parametrize("degree", range(1, 4))
 def test_gram_matrix_weingarten_unitary(degree):
     "Asserts that the inverse of the Gram matrix yield the unitary Weingarten functions"
     partition_tuple = tuple(
-        tuple(
-            (i, j)
-            for i, j in enumerate(perm(range(degree,2*degree)))
-        )
+        tuple((i, j) for i, j in enumerate(perm(range(degree, 2 * degree))))
         for perm in SymmetricGroup(degree).generate()
     )
     weingarten_matrix = ap.gram_matrix(partition_tuple, d).inv()
@@ -448,7 +466,7 @@ def test_gram_matrix_weingarten_unitary(degree):
         assert weingarten == ap.weingarten_unitary(representative, d)
 
 
-@pytest.mark.parametrize("half_degree", range(1,3))
+@pytest.mark.parametrize("half_degree", range(1, 3))
 def test_gram_matrix_weingarten_orthogonal(half_degree):
     "Asserts that the inverse of the Gram matrix yield the orthogonal Weingarten functions"
     partition_tuple = tuple(
@@ -460,7 +478,7 @@ def test_gram_matrix_weingarten_orthogonal(half_degree):
     for conjugacy in SymmetricGroup(2 * half_degree).conjugacy_classes():
         representative = conjugacy.pop()
         partition = (
-            (representative.array_form.index(2*idx), representative.array_form.index(2*idx+1))
+            (representative.array_form.index(2 * idx), representative.array_form.index(2 * idx + 1))
             for idx, _ in enumerate(representative.array_form[::2])
         )
         partition = sorted((map(sorted, partition)))
@@ -479,14 +497,12 @@ def test_gram_matrix_weingarten_orthogonal(half_degree):
 @pytest.mark.parametrize(
     "dimension",
     [
-        'a',
+        "a",
         0.1,
     ],
 )
 def test_gram_matrix_type_error(dimension):
     "Asserts typeError for wrong dimension type"
-    partition_tuple = tuple(
-        perfect for perfect in ap.pair_partitions(tuple(i for i in range(2)))
-    )
+    partition_tuple = tuple(perfect for perfect in ap.pair_partitions(tuple(i for i in range(2))))
     with pytest.raises(TypeError):
         ap.gram_matrix(partition_tuple, dimension)

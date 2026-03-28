@@ -255,8 +255,7 @@ def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[
     Raise
     -----
         TypeError : if n is not int
-        ValueError : if n < 0
-        ValueError : if pair is True and n is odd
+        ValueError : if n < 0 or if pair is True and n is odd
 
     Examples
     --------
@@ -278,9 +277,7 @@ def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[
     """
     if not isinstance(n, int):
         raise TypeError
-    if n < 0:
-        raise ValueError
-    if pair and n % 2:
+    if n < 0 or (pair and n % 2):
         raise ValueError
 
     def recursion_partitions(elements, active_partitions, inactive_partitions, pair):
@@ -321,7 +318,7 @@ def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[
 
         elements.append(element)
 
-    for partition in recursion_partitions(list(range(n-1, -1, -1)), [], [], pair):
+    for partition in recursion_partitions(list(range(n - 1, -1, -1)), [], [], pair):
         yield tuple(sorted(map(tuple, partition), key=lambda x: x[0]))
 
 
