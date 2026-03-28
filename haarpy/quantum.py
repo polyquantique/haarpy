@@ -22,7 +22,7 @@ References
 
 from functools import lru_cache
 from itertools import product
-from sympy import Expr, Symbol, fraction, together, cancel, factor
+from sympy import Expr, Symbol
 from haarpy import non_crossing_partitions, gram_matrix
 from ._utils import _simplify
 
@@ -134,5 +134,30 @@ def haar_integral_free_orthogonal(
     sequences: tuple[tuple[int, ...], ...],
     group_dimension: Symbol,
 ) -> Expr:
-    """ """
+    """Returns the integral of the free orthogonal group under the Haar measure
+
+    Parameters
+    ----------
+        sequences (tuple[tuple[int]]) : indices of matrix elements
+        group_dimension (Symbol) : dimension of the quantum group
+
+    Returns
+    -------
+        Expr : integral under the Haar measure
+
+    Examples
+    --------
+        >>> from sympy import Symbol
+        >>> from haarpy import haar_integral_free_symmetric
+        >>> d = Symbol("d")
+        >>> sequences = ((0, 1, 1, 0), (0, 0, 1, 1))
+        >>> haar_integral_free_symmetric(sequences, d)
+        -1/(d*(d - 1)*(d + 1))
+        >>> haar_integral_free_symmetric(sequences, 4)
+        -1/60
+
+    See Also
+    --------
+        _haar_integral_quantum
+    """
     return _haar_integral_quantum(sequences, group_dimension, True)
