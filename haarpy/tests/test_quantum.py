@@ -194,3 +194,34 @@ def test_free_quantum_relation(sequences):
     )
 
     assert integral == ap.haar_integral_free_symmetric(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "sequences",
+    [
+        ((0,0,0,0), ),
+        ((0,), (1,), (2,)),
+        ((0,0,0,0), (0,0)),
+    ],
+)
+def test_quantum_group_test_sequence_error(sequences):
+    "Test sequence error"
+    with pytest.raises(
+        ValueError,
+        match="Wrong tuple format",
+    ):
+        ap.haar_integral_free_symmetric(sequences, d)
+
+
+@pytest.mark.parametrize(
+    "dimension",
+    [
+        "a",
+        {0,1},
+        None,
+    ],
+)
+def test_quantum_group_test_type_error(dimension):
+    "Test type error for wrong dimension format"
+    with pytest.raises(TypeError):
+        ap.haar_integral_free_symmetric(((0,0), (0,0)), dimension)

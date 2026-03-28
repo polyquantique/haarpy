@@ -49,8 +49,8 @@ def _haar_integral_quantum(
     Raise
     -----
         TypeError : if the dimension is neither int nor Symbol
-        ValueError : if sequences do not contain 4 tuples
-        ValueError : if tuples i and j are of different length
+        ValueError : if sequences do not contain 2 tuples or if they are of different length 
+        ValueError : 
 
     See Also
     --------
@@ -58,10 +58,8 @@ def _haar_integral_quantum(
     """
     if not isinstance(group_dimension, (Expr, int)):
         raise TypeError
-    if len(sequences) != 2:
+    if len(sequences) != 2 or len(sequences[0]) != len(sequences[1]):
         raise ValueError("Wrong tuple format")
-    if len(sequences[0]) != len(sequences[1]):
-        raise
 
     degree = len(sequences[0])
     partition_tuple = tuple(partition for partition in non_crossing_partitions(degree, pair))
