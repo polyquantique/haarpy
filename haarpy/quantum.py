@@ -50,7 +50,6 @@ def _haar_integral_quantum(
     -----
         TypeError : if the dimension is neither int nor Symbol
         ValueError : if sequences do not contain 2 tuples or if they are of different length
-        ValueError :
 
     See Also
     --------
