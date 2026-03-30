@@ -21,7 +21,6 @@ from random import seed, choice
 from sympy import bell, factorial2, catalan, Symbol, factor, fraction
 from sympy.combinatorics import SymmetricGroup
 import haarpy as ap
-from haarpy._utils import _simplify
 
 seed(137)
 d = Symbol("d")
@@ -30,32 +29,30 @@ d = Symbol("d")
 @pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_size(size):
     "Assert the number of partitions is given by the Bell number"
-    assert sum(1 for _ in ap.set_partitions(tuple(range(size)))) == bell(size)
+    assert len(tuple(ap.set_partitions(tuple(range(size))))) == bell(size)
 
 
 @pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_maximum_partition(size):
     "Assert that there is a single maximum partition"
-    assert (
-        sum(
-            1
+    assert 1 == len(
+        tuple(
+            partition
             for partition in ap.set_partitions(tuple(range(size)))
             if len(partition) == 1 and len(partition[0]) == size
         )
-        == 1
     )
 
 
 @pytest.mark.parametrize("size", range(1, 7))
 def test_set_partition_minimum_partition(size):
     "Assert that there is a single minimum partition"
-    assert (
-        sum(
-            1
+    assert 1 == len(
+        tuple(
+            partition
             for partition in ap.set_partitions(tuple(range(size)))
-            if len(partition) == size and all(len(part) == 1 for part in partition)
+            if len(partition) == size and all(len(part) == 1 for part in partition)            
         )
-        == 1
     )
 
 
@@ -88,7 +85,7 @@ def test_set_partition_type_error(collection):
 @pytest.mark.parametrize("size", range(2, 14))
 def test_pair_partitions_order(size):
     "test size of perfect matching partitions"
-    assert sum(1 for _ in ap.pair_partitions(tuple(range(size)))) == (
+    assert len(tuple(ap.pair_partitions(tuple(range(size))))) == (
         factorial2(size - 1) if not size % 2 else 0
     )
 
@@ -125,12 +122,12 @@ def test_partial_order_maximum_partition_in(size):
 def test_partial_order_maximum_partition_out(size):
     "The maximal partition is contained within no partition but itself"
     maximum_partition = (tuple(range(size)),)
-    assert (
-        sum(
-            ap.partial_order(maximum_partition, partition)
+    assert 1 == len(
+        tuple(
+            partition
             for partition in ap.set_partitions(tuple(range(size)))
+            if ap.partial_order(maximum_partition, partition)
         )
-        == 1
     )
 
 
@@ -138,12 +135,12 @@ def test_partial_order_maximum_partition_out(size):
 def test_partial_order_minimum_partition_out(size):
     "No partition but itself is contained within the minimmal partition"
     minimum_partition = tuple((i,) for i in range(size))
-    assert (
-        sum(
-            ap.partial_order(partition, minimum_partition)
+    assert 1 == len(
+        tuple(
+            partition
             for partition in ap.set_partitions(tuple(range(size)))
+            if ap.partial_order(partition, minimum_partition)
         )
-        == 1
     )
 
 
@@ -330,7 +327,7 @@ def test_join_operation_size(size):
 @pytest.mark.parametrize("degree", range(10))
 def test_non_crossing_partition_size(degree):
     "assert the number of non-crossing partitions coincides with the catatlan number"
-    assert sum(1 for _ in ap.non_crossing_partitions(degree)) == catalan(degree)
+    assert len(tuple(ap.non_crossing_partitions(degree))) == catalan(degree)
 
 
 @pytest.mark.parametrize("degree", range(6))
@@ -349,7 +346,7 @@ def test_non_crossing_partition_is_non_crossing(degree):
 @pytest.mark.parametrize("degree", range(0, 10, 2))
 def test_non_crossing_pair_partition_size(degree):
     "assert the number of non-crossing pair partitions coincides with the catatlan number"
-    assert sum(1 for _ in ap.non_crossing_partitions(degree, pair=True)) == catalan(degree // 2)
+    assert len(tuple(ap.non_crossing_partitions(degree, pair=True))) == catalan(degree // 2)
 
 
 @pytest.mark.parametrize("degree", range(0, 8, 2))

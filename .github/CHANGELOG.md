@@ -6,7 +6,7 @@
 * Added a new module `circular_ensembles` allowing the calculation of the circular orthogonal ensembles and circular symplectic ensembles Weingarten functions [(#32)](https://github.com/polyquantique/haarpy/pull/32) and moments [(#43)](https://github.com/polyquantique/haarpy/pull/43).
 * Added a new module `permutation` allowing the calculation of the permutation matrices and centered permuation matrices' Weingarten functions as well as their moments [(#36)](https://github.com/polyquantique/haarpy/pull/36).
 * Added a new module `partition` allowing to generate partitions of a set as well as implementing some operations on them such as the meet and the join operations [(#36)](https://github.com/polyquantique/haarpy/pull/36).
-* Added a new module `quantum` allowing to computes moments of quantum groups (free symmetric and free orthogonal groups) [(#54)](https://github.com/polyquantique/haarpy/pull/54).
+* Added a new module `quantum` allowing to compute moments of quantum groups (free symmetric and free orthogonal groups) [(#54)](https://github.com/polyquantique/haarpy/pull/54).
 
 ### Breaking changes
 
@@ -16,7 +16,7 @@
     * `weingarten_element()` -> `weingarten_unitary()` The argument `degree` has been removed for the degree of the symmetric group is already contained in both the permutation and the conjugacy class.
     * `coset_type()` -> `coset_type_representative()`
 * `get_conjugacy_class()` : `degree` has been removed from the arguments since it is already contained in `permutation` [(#51)](https://github.com/polyquantique/haarpy/pull/51).
-* `sympy` requirements went from `1.12` to `1.14`. The version `1.14` has improved the inversion algorithm for inversion of symbolic matrices which is necessary to compute moments of quantum groups [(#54)](https://github.com/polyquantique/haarpy/pull/54).
+* `sympy` requirements went from `1.12` to `1.14`. The version `1.14` has improved the algorithm for inversion of symbolic matrices which is necessary to compute moments of quantum groups [(#54)](https://github.com/polyquantique/haarpy/pull/54).
 
 ### Improvements
 
