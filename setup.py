@@ -19,7 +19,7 @@ with open("haarpy/_version.py") as f:
     version = f.readlines()[-1].split()[-1].strip("\"'")
 
 
-requirements = ["sympy>=1.12"]
+requirements = ["sympy>=1.14"]
 
 classifiers = [
     "Development Status :: 4 - Beta",

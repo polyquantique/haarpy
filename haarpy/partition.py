@@ -20,14 +20,17 @@ References
     matrices. arXiv preprint arXiv:2503.18453.
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
+    [3] Nica, A., & Speicher, R. (2006). Lectures on the combinatorics of free probability
+    (Vol. 13). Cambridge University Press.
 """
 
 from functools import lru_cache
-from typing import Generator
+from collections.abc import Iterator
 from itertools import product
+from sympy import Symbol, Matrix, Expr
 
 
-def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
+def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
     """Returns the partitionning of a given collection (set) of objects
     into non-empty subsets.
 
@@ -68,10 +71,10 @@ def set_partitions(collection: tuple) -> Generator[tuple[tuple], None, None]:
         yield ((first,),) + smaller
 
 
-def perfect_matchings(
-    seed: tuple[int],
-) -> Generator[tuple[tuple[int]], None, None]:
-    """Returns the partitions of a tuple in terms of perfect matchings.
+def pair_partitions(
+    seed: tuple[int, ...],
+) -> Iterator[tuple[tuple[int, ...], ...]]:
+    """Returns the pair partitions of a given set.
 
     Parameters
     ----------
@@ -88,8 +91,8 @@ def perfect_matchings(
 
     Examples
     --------
-        >>> from haarpy import perfect_matchings
-        >>> for matching in perfect_matchings((0,1,2,3)):
+        >>> from haarpy import pair_partitions
+        >>> for matching in pair_partitions((0,1,2,3)):
         >>>     print(matching)
         ((0, 1), (2, 3))
         ((0, 2), (1, 3))
@@ -104,13 +107,15 @@ def perfect_matchings(
     for idx1 in range(1, len(seed)):
         item_partition = (seed[0], seed[idx1])
         rest = seed[1:idx1] + seed[idx1 + 1 :]
-        rest_partitions = perfect_matchings(rest)
+        rest_partitions = pair_partitions(rest)
         for p in rest_partitions:
             yield ((item_partition),) + p
 
 
 @lru_cache
-def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> bool:
+def partial_order(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> bool:
     """Checks if parition_1 <= partition_2 in terms of partial order
 
     For parition_1 and partition_2, two partitions of the same set, we call
@@ -145,7 +150,9 @@ def partial_order(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]
 
 
 @lru_cache
-def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> tuple[tuple]:
+def meet_operation(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> tuple[tuple[int, ...], ...]:
     """Returns the greatest lower bound of the two input partitions
 
     For parition_1 and partition_2, two partitions of the same set,
@@ -184,7 +191,9 @@ def meet_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
 
 
 @lru_cache
-def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> tuple[tuple]:
+def join_operation(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> tuple[tuple[int, ...], ...]:
     """Returns the least upper bound of the two input partitions
 
     For parition_1 and partition_2, two partitions of the same set,
@@ -231,8 +240,90 @@ def join_operation(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]
     )
 
 
+def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[int, ...], ...]]:
+    """Yields non crossing partitions of [n] = {1,2,...,n}
+
+    Parameters
+    ----------
+        n (int) : the size of the partitioned set [n]
+        pair (bool) : True if limited to pair partitions
+
+    Returns
+    -------
+        Iterator : yields the non-crossing partitions
+
+    Raise
+    -----
+        TypeError : if n is not int
+        ValueError : if n < 0 or if pair is True and n is odd
+
+    Examples
+    --------
+        >>> from haarpy import non_crossing_partitions
+        >>> for partition in non_crossing_partitions(3):
+        >>>     print(partition)
+        ((0,), (1,), (2,))
+        ((0,), (1, 2))
+        ((0, 2), (1,))
+        ((0, 1), (2,))
+        ((0, 1, 2),)
+        >>> for partition in non_crossing_partitions(6, pair = True):
+        >>>     print(partition)
+        ((0, 5), (1, 4), (2, 3))
+        ((0, 5), (1, 2), (3, 4))
+        ((0, 3), (1, 2), (4, 5))
+        ((0, 1), (2, 5), (3, 4))
+        ((0, 1), (2, 3), (4, 5))
+    """
+    if not isinstance(n, int):
+        raise TypeError
+    if n < 0 or (pair and n % 2):
+        raise ValueError
+
+    def recursion_partitions(elements, active_partitions, inactive_partitions, pair):
+        if not elements:
+            if not pair or all(
+                len(block) == 2 for block in active_partitions + inactive_partitions
+            ):
+                yield active_partitions + inactive_partitions
+            return
+
+        element = elements.pop()
+
+        # pair partitions pruning
+        if pair:
+            open_blocks = sum(1 for b in active_partitions if len(b) == 1)
+            if open_blocks > len(elements) + 1:
+                elements.append(element)
+                return
+
+        active_partitions.append([element])
+        yield from recursion_partitions(elements, active_partitions, inactive_partitions, pair)
+        active_partitions.pop()
+
+        size = len(active_partitions)
+        for block in active_partitions[::-1]:
+            if not pair or len(block) < 2:
+                block.append(element)
+                yield from recursion_partitions(
+                    elements, active_partitions, inactive_partitions, pair
+                )
+                block.pop()
+
+            # remove potential crossing
+            inactive_partitions.append(active_partitions.pop())
+
+        for _ in range(size):
+            active_partitions.append(inactive_partitions.pop())
+
+        elements.append(element)
+
+    for partition in recursion_partitions(list(range(n - 1, -1, -1)), [], [], pair):
+        yield tuple(sorted(map(tuple, partition), key=lambda x: x[0]))
+
+
 @lru_cache
-def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
+def is_crossing_partition(partition: tuple[tuple[int, ...], ...]) -> bool:
     """Checks if a given partition is crossing
 
     Parameters
@@ -264,3 +355,48 @@ def is_crossing_partition(partition: tuple[tuple[int]]) -> bool:
                     return True
 
     return False
+
+
+@lru_cache
+def gram_matrix(
+    partition_tuple: tuple[tuple[tuple[int, ...], ...], ...],
+    group_dimension: Symbol,
+) -> Matrix:
+    """Generates the Gram matrix of a given input set of partitions
+
+    Parameters
+    ----------
+        partition_tuple (tuple[tuple[tuple[int]])) : set of partitions
+        group_dimension (Symbol) : the dimension of the underlying group
+
+    Returns
+    -------
+        Matrix : the symbolic Gram matrix
+
+    Raise
+    -----
+        TypeError : group_dimension is neither a symbol or an integer
+
+    Examples
+    --------
+        >>> from haarpy import gram_matrix
+        >>> from sympy import Symbol
+        >>> n = Symbol('n')
+        >>> pair_partition_tuple = (((0, 1), (2, 3)), ((0, 3), (1, 2)))
+        >>> gram_matrix(pair_partition_tuple, n)
+        Matrix([
+        [n**2,    n],
+        [   n, n**2]])
+    """
+    if not isinstance(group_dimension, (Expr, int)):
+        raise TypeError
+
+    return Matrix(
+        tuple(
+            tuple(
+                group_dimension ** len(join_operation(partition_row, partition_col))
+                for partition_col in partition_tuple
+            )
+            for partition_row in partition_tuple
+        )
+    )

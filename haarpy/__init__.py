@@ -39,6 +39,8 @@ Functions
     haar_integral_circular_symplectic
     haar_integral_permutation
     haar_integral_centered_permutation
+    haar_integral_free_symmetric
+    haar_integral_free_orthogonal
     get_conjugacy_class
     derivative_tableaux
     semi_standard_young_tableaux
@@ -57,22 +59,26 @@ Functions
     twisted_spherical_function
     mobius_function
     set_partitions
-    perfect_matchings
+    pair_partitions
     partial_order
     meet_operation
     join_operation
+    non_crossing_partitions
     is_crossing_partition
+    gram_matrix
 
 Code details
 ------------
 """
 from .partition import (
     set_partitions,
-    perfect_matchings,
+    pair_partitions,
     partial_order,
     meet_operation,
     join_operation,
+    non_crossing_partitions,
     is_crossing_partition,
+    gram_matrix,
 )
 
 from .symmetric import (
@@ -124,6 +130,11 @@ from .permutation import (
     haar_integral_centered_permutation,
 )
 
+from .quantum import (
+    haar_integral_free_symmetric,
+    haar_integral_free_orthogonal,
+)
+
 from ._version import __version__
 
 __all__ = [
@@ -141,6 +152,8 @@ __all__ = [
     "haar_integral_circular_symplectic",
     "haar_integral_permutation",
     "haar_integral_centered_permutation",
+    "haar_integral_free_symmetric",
+    "haar_integral_free_orthogonal",
     "get_conjugacy_class",
     "derivative_tableaux",
     "semi_standard_young_tableaux",
@@ -159,11 +172,13 @@ __all__ = [
     "twisted_spherical_function",
     "mobius_function",
     "set_partitions",
-    "perfect_matchings",
+    "pair_partitions",
     "partial_order",
     "meet_operation",
     "join_operation",
+    "non_crossing_partitions",
     "is_crossing_partition",
+    "gram_matrix",
 ]
 
 

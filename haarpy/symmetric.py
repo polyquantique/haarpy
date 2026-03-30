@@ -34,7 +34,7 @@ from sympy.combinatorics import (
     SymmetricGroup,
     DirectProduct,
 )
-from haarpy import perfect_matchings, join_operation
+from haarpy import pair_partitions, join_operation
 
 
 @lru_cache
@@ -471,14 +471,14 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
     See Also
     --------
-        perfect_matchings
+        pair_partitions
     """
     if degree % 2:
         raise ValueError("degree should be a factor of 2")
     if degree == 2:
         return (Permutation(1),)
     flatten_pmp = (
-        tuple(i for pair in pmp for i in pair) for pmp in perfect_matchings(tuple(range(degree)))
+        tuple(i for pair in pmp for i in pair) for pmp in pair_partitions(tuple(range(degree)))
     )
     return (Permutation(pmp) for pmp in flatten_pmp)
 
