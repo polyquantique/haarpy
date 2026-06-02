@@ -26,7 +26,7 @@ References
 
 from math import factorial, prod
 from functools import lru_cache
-from typing import Generator
+from collections.abc import Iterator
 from fractions import Fraction
 from sympy.combinatorics import (
     Permutation,
@@ -87,8 +87,8 @@ def get_conjugacy_class(permutation: Permutation) -> tuple[int, ...]:
 
 
 def derivative_tableaux(
-    tableau: tuple[tuple[int]], increment: int, partition: tuple[int]
-) -> Generator[tuple[tuple[int]], None, None]:
+    tableau: tuple[tuple[int, ...], ...], increment: int, partition: tuple[int, ...]
+) -> Iterator[tuple[tuple[int, ...], ...]]:
     """Takes a single tableau and adds the selected number to its contents
     in a way that keeps it semi-standard. All possible tableaux are yielded
 
@@ -133,8 +133,8 @@ def derivative_tableaux(
 
 @lru_cache
 def semi_standard_young_tableaux(
-    partition: tuple[int], conjugacy_class: tuple[int]
-) -> set[tuple[tuple[int]]]:
+    partition: tuple[int, ...], conjugacy_class: tuple[int, ...]
+) -> set[tuple[tuple[int, ...], ...]]:
     """all eligible semi-standard young tableaux based of the partition
 
     Parameters
@@ -167,7 +167,9 @@ def semi_standard_young_tableaux(
 
 
 @lru_cache
-def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int]) -> bool:
+def proper_border_strip(
+    tableau: tuple[tuple[int, ...], ...], conjugacy_class: tuple[int, ...]
+) -> bool:
     """Returns True if input Young tableau is a valid border-strip tableau
 
     Parameters
@@ -215,7 +217,7 @@ def proper_border_strip(tableau: tuple[tuple[int]], conjugacy_class: tuple[int])
 
 
 @lru_cache
-def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
+def murn_naka_rule(partition: tuple[int, ...], conjugacy_class: tuple[int, ...]) -> int:
     """Implementation of the Murnaghan-Nakayama rule for the characters irreducible
     representations of the symmetric group Sp
 
@@ -257,7 +259,7 @@ def murn_naka_rule(partition: tuple[int], conjugacy_class: tuple[int]) -> int:
 
 
 @lru_cache
-def irrep_dimension(partition: tuple[int]) -> int:
+def irrep_dimension(partition: tuple[int, ...]) -> int:
     """Returns the dimension of the irrep of the symmetric group Sp labelled by the input partition
 
     Parameters
@@ -286,7 +288,7 @@ def irrep_dimension(partition: tuple[int]) -> int:
 
 
 @lru_cache
-def sorting_permutation(*sequence: tuple[int]) -> Permutation:
+def sorting_permutation(*sequence: tuple[int, ...]) -> Permutation:
     """Returns the sorting permutation of a given sequence
 
     If two sequences, sequence_1 and sequence_2, are given as parameters,
@@ -329,7 +331,7 @@ def sorting_permutation(*sequence: tuple[int]) -> Permutation:
 
 
 # pylint: disable=invalid-name
-def YoungSubgroup(partition: tuple[int]) -> PermutationGroup:
+def YoungSubgroup(partition: tuple[int, ...]) -> PermutationGroup:
     """Returns the Young subgroup of a given input partition
 
     Parameters
@@ -363,7 +365,7 @@ def YoungSubgroup(partition: tuple[int]) -> PermutationGroup:
     return DirectProduct(*[SymmetricGroup(part) for part in partition])
 
 
-def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
+def stabilizer_coset(*sequence: tuple) -> Iterator[Permutation]:
     """Returns all permutations that, when acting on sequence[0], return sequence[1]
 
     For a single input, the function returns the stabilizer group with respect to the sequence.
@@ -376,7 +378,7 @@ def stabilizer_coset(*sequence: tuple) -> Generator[Permutation, None, None]:
 
     Returns
     -------
-        Generator[Permutation] : permutations that, when acting on sequence[0], return sequence[1]
+        Iterator[Permutation] : permutations that, when acting on sequence[0], return sequence[1]
 
     Raise
     -----
@@ -450,7 +452,7 @@ def HyperoctahedralGroup(degree: int) -> PermutationGroup:
     return PermutationGroup(transpositions + double_transpositions)
 
 
-def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, None]:
+def hyperoctahedral_transversal(degree: int) -> Iterator[Permutation]:
     """Returns a generator with the permutations of M_2k, the complete set of coset
     representatives of S_2k/H_k
 
@@ -460,7 +462,7 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
     Returns
     -------
-        Generator[Permutation] : the permutations of M_2k
+        Iterator[Permutation] : the permutations of M_2k
 
     Examples
     --------
@@ -484,7 +486,7 @@ def hyperoctahedral_transversal(degree: int) -> Generator[Permutation, None, Non
 
 
 @lru_cache
-def coset_type(permutation: Permutation) -> tuple[int]:
+def coset_type(permutation: Permutation) -> tuple[int, ...]:
     """Returns the coset-type of a given permutation of S_2k
 
     Parameters
@@ -532,7 +534,7 @@ def coset_type(permutation: Permutation) -> tuple[int]:
 
 
 @lru_cache
-def coset_type_representative(partition: tuple[int]) -> Permutation:
+def coset_type_representative(partition: tuple[int, ...]) -> Permutation:
     """Returns a representative permutation of S_2k for a given
     input coset-type (partition of k)
 

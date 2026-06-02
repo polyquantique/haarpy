@@ -42,7 +42,7 @@ from ._utils import _simplify
 
 
 @lru_cache
-def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) -> Fraction:
+def twisted_spherical_function(permutation: Permutation, partition: tuple[int, ...]) -> Fraction:
     """Returns the twisted spherical function of the Gelfand pair (S_2k, H_k)
 
     Parameters
@@ -182,7 +182,7 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
 
 @lru_cache
 def haar_integral_symplectic(
-    sequences: tuple[tuple[Expr]],
+    sequences: tuple[tuple[Expr, ...], ...],
     half_dimension: Symbol,
 ) -> Expr:
     """Returns integral over symplectic group polynomial sampled at random from the Haar measure

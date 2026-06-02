@@ -42,7 +42,7 @@ from ._utils import _simplify
 
 
 @lru_cache
-def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -> Expr:
+def representation_dimension(partition: tuple[int, ...], unitary_dimension: Symbol) -> Expr:
     """Returns the dimension of the unitary group U(d) labelled by the input partition
 
     Parameters
@@ -89,7 +89,9 @@ def representation_dimension(partition: tuple[int], unitary_dimension: Symbol) -
 
 
 @lru_cache
-def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension: Symbol) -> Expr:
+def weingarten_unitary(
+    cycle: Union[Permutation, tuple[int, ...]], unitary_dimension: Symbol
+) -> Expr:
     """Returns the Weingarten function
 
     The function works with both a permutation or a conjugacy class as a partition
@@ -164,7 +166,9 @@ def weingarten_unitary(cycle: Union[Permutation, tuple[int]], unitary_dimension:
 
 
 @lru_cache
-def haar_integral_unitary(sequences: tuple[tuple[int]], unitary_dimension: Symbol) -> Expr:
+def haar_integral_unitary(
+    sequences: tuple[tuple[int, ...], ...], unitary_dimension: Symbol
+) -> Expr:
     """Returns integral over unitary group polynomial sampled at random from the Haar measure
 
     Parameters
