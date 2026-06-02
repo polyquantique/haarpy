@@ -45,7 +45,7 @@ from ._utils import _simplify
 
 
 @lru_cache
-def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) -> Fraction:
+def zonal_spherical_function(permutation: Permutation, partition: tuple[int, ...]) -> Fraction:
     """Returns the zonal spherical function of the Gelfand pair (S_2k, H_k)
 
     Parameters
@@ -97,18 +97,18 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int]) ->
 
 @lru_cache
 def weingarten_orthogonal(
-    permutation: Union[Permutation, tuple[int]], orthogonal_dimension: Symbol
+    permutation: Union[Permutation, tuple[int, ...]], orthogonal_dimension: Symbol
 ) -> Expr:
     """Returns the orthogonal Weingarten function
 
     Parameters
     ----------
         permutation (Permutation, tuple[int]) : a permutation of S_2k or its coset-type
-        orthogonal_dimension (int): dimension of the orthogonal group
+        orthogonal_dimension (Symbol): dimension of the orthogonal group
 
     Returns
     -------
-        Symbol : the Weingarten function
+        Expr : the Weingarten function
 
     Raise
     -----
@@ -200,13 +200,15 @@ def weingarten_orthogonal(
 
 
 @lru_cache
-def haar_integral_orthogonal(sequences: tuple[tuple[int]], orthogonal_dimension: Symbol) -> Expr:
+def haar_integral_orthogonal(
+    sequences: tuple[tuple[int, ...], ...], orthogonal_dimension: Symbol
+) -> Expr:
     """Returns the integral over orthogonal group polynomial sampled at random from the Haar measure
 
     Parameters
     ----------
         sequences (tuple[tuple[int]]) : indices of matrix elements
-        orthogonal_dimension (int) : dimension of the orthogonal group
+        orthogonal_dimension (Symbol) : dimension of the orthogonal group
 
     Returns
     -------

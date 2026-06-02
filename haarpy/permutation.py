@@ -31,7 +31,9 @@ from ._utils import _simplify
 
 
 @lru_cache
-def mobius_function(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> int:
+def mobius_function(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> int:
     """Returns the Möbius function of two given partitions
 
     Parameters
@@ -66,8 +68,8 @@ def mobius_function(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int
 
 @lru_cache
 def weingarten_permutation(
-    first_partition: tuple[tuple[int]],
-    second_partition: tuple[tuple[int]],
+    first_partition: tuple[tuple[int, ...], ...],
+    second_partition: tuple[tuple[int, ...], ...],
     dimension: Symbol,
 ) -> Symbol:
     """Returns the Weingarten function for random permutation matrices
@@ -131,8 +133,8 @@ def weingarten_permutation(
 
 @lru_cache
 def weingarten_centered_permutation(
-    first_partition: tuple[tuple[int]],
-    second_partition: tuple[tuple[int]],
+    first_partition: tuple[tuple[int, ...], ...],
+    second_partition: tuple[tuple[int, ...], ...],
     dimension: Symbol,
 ) -> Symbol:
     """Returns the Weingarten function for centered random permutation matrices
@@ -212,8 +214,8 @@ def weingarten_centered_permutation(
 
 @lru_cache
 def haar_integral_permutation(
-    row_indices: tuple[int],
-    column_indices: tuple[int],
+    row_indices: tuple[int, ...],
+    column_indices: tuple[int, ...],
     dimension: Symbol,
 ) -> Symbol:
     """Returns the integral over Haar random permutation matrices
@@ -272,8 +274,8 @@ def haar_integral_permutation(
 
 @lru_cache
 def haar_integral_centered_permutation(
-    row_indices: tuple[int],
-    column_indices: tuple[int],
+    row_indices: tuple[int, ...],
+    column_indices: tuple[int, ...],
     dimension: Symbol,
 ) -> Symbol:
     """Returns the integral over Haar random centered permutation matrices

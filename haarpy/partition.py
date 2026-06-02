@@ -40,7 +40,7 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
 
     Returns
     -------
-        generator(tuple[tuple]) : all partitions of the input collection
+        Iterator(tuple[tuple]) : all partitions of the input collection
 
     Raise
     -----
@@ -83,7 +83,7 @@ def pair_partitions(
 
     Returns
     -------
-        generator : all the single-double partitions of the tuple
+        Iterator[tuple[tuple[int]]] : all the single-double partitions of the tuple
 
     Raise
     -----
