@@ -27,8 +27,8 @@ A Python library for Weingarten calculus and integration of groups and ensembles
    :caption: Haarpy API
 
    code/symmetric
-   .. code/partition
-   code/permutation
+   code/partition
+   .. code/permutation
    code/unitary
    code/orthogonal
    code/symplectic

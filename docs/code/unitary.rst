@@ -1,5 +1,5 @@
-The unitary group
-==================
+Unitary group Python API
+========================
 
 This module provides tools for computations of integrals of polynomials on the unitary group.
 

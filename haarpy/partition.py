@@ -18,8 +18,10 @@ References
 ----------
     [1] Collins, B., & Nagatsu, M. (2025). Weingarten calculus for centered random permutation
     matrices. arXiv preprint arXiv:2503.18453.
+
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
+
     [3] Nica, A., & Speicher, R. (2006). Lectures on the combinatorics of free probability
     (Vol. 13). Cambridge University Press.
 """
@@ -32,7 +34,7 @@ from sympy import Symbol, Matrix, Expr
 
 def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
     """Returns the partitionning of a given collection (set) of objects
-    into non-empty subsets.
+    into non-empty subsets
 
     Parameters
     ----------
@@ -42,8 +44,8 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
     -------
         Iterator(tuple[tuple]) : all partitions of the input collection
 
-    Raise
-    -----
+    Raises
+    ------
         ValueError : if the collection is not a tuple
 
     Examples
@@ -85,8 +87,8 @@ def pair_partitions(
     -------
         Iterator[tuple[tuple[int]]] : all the single-double partitions of the tuple
 
-    Raise
-    -----
+    Raises
+    ------
         TypeError : if the seed is not a tuple
 
     Examples
@@ -252,8 +254,8 @@ def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[
     -------
         Iterator : yields the non-crossing partitions
 
-    Raise
-    -----
+    Raises
+    ------
         TypeError : if n is not int
         ValueError : if n < 0 or if pair is True and n is odd
 
@@ -373,8 +375,8 @@ def gram_matrix(
     -------
         Matrix : the symbolic Gram matrix
 
-    Raise
-    -----
+    Raises
+    ------
         TypeError : group_dimension is neither a symbol or an integer
 
     Examples

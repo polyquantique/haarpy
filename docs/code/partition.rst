@@ -1,8 +1,8 @@
-Symmetric group Python API
+Partition Python API
 ==========================
 
 Description
 
-.. automodule:: haarpy.symmetric
+.. automodule:: haarpy.partition
    :members:
    :member-order: bysource
