@@ -19,6 +19,7 @@ References
     [1] Collins, B. (2003). Moments and cumulants of polynomial random variables on unitarygroups,
     the Itzykson-Zuber integral, and free probability. International Mathematics Research Notices,
     2003(17), 953-982.
+    
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
@@ -43,26 +44,34 @@ from ._utils import _simplify
 
 @lru_cache
 def representation_dimension(partition: tuple[int, ...], unitary_dimension: Symbol) -> Expr:
-    """Returns the dimension of the unitary group U(d) labelled by the input partition
+    """Returns the dimension of the unitary group's representation labelled by the input partition
 
     Parameters
     ----------
-        partition (tuple[int]) : a partition labelling a representation of U(d)
-        unitary_dimension (Symbol) : dimension d of the unitary matrix U
+    partition : tuple[int, ...]
+        A partition labelling a representation of the unitary group :math:`U(d)`
+    
+    unitary_dimension : Symbol
+        The dimension :math:`d` of the unitary group
 
     Returns
     -------
-        Expr : the dimension of the representation of U(d) labeled by the partition
+    Expr
+        The dimension of the unitary group's representation labelled by the input partition
+
+    Notes
+    -----
+    LINK TO THEORY AND ALGORITHMS
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import representation_dimension
-        >>> d = Symbol("d")
-        >>> representation_dimension((2,1,1), 4)
-        15
-        >>> representation_dimension((2,1,1), d)
-        d*(d/2 - 1/2)*(d - 2)*(d + 1)/4
+    >>> from sympy import Symbol
+    >>> from haarpy import representation_dimension
+    >>> d = Symbol("d")
+    >>> representation_dimension((2,1,1), 4)
+    15
+    >>> representation_dimension((2,1,1), d)
+    d*(d/2 - 1/2)*(d - 2)*(d + 1)/4
     """
     conjugate_partition = tuple(
         sum(1 for part in partition if i < part) for i in range(partition[0])
@@ -105,10 +114,12 @@ def weingarten_unitary(
     -------
         Expr : the Weingarten function
 
-    Raise
+    Raises
     -----
-        TypeError : if unitary_dimension has the wrong type
-        TypeError : if cycle has the wrong type
+    TypeError
+        if unitary_dimension has the wrong type
+    TypeError
+        if cycle has the wrong type
 
     Examples
     --------
@@ -180,10 +191,12 @@ def haar_integral_unitary(
     -------
         Expr : integral under the Haar measure
 
-    Raise
+    Raises
     -----
-        ValueError : if sequences do not contain 4 tuples
-        ValueError : if tuples i and j are of different length
+    ValueError
+        if sequences do not contain 4 tuples
+    ValueError
+        if tuples i and j are of different length
 
     Examples
     --------
