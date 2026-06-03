@@ -5,3 +5,4 @@ Description
 
 .. automodule:: haarpy.symmetric
    :members:
+   :member-order: bysource
