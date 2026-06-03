@@ -19,14 +19,13 @@ References
     [1] Collins, B. (2003). Moments and cumulants of polynomial random variables on unitarygroups,
     the Itzykson-Zuber integral, and free probability. International Mathematics Research Notices,
     2003(17), 953-982.
-    
+
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
 """
 
 from math import factorial, prod
 from functools import lru_cache
-from typing import Union
 from itertools import product
 from collections import Counter
 from fractions import Fraction
@@ -50,7 +49,7 @@ def representation_dimension(partition: tuple[int, ...], unitary_dimension: Symb
     ----------
     partition : tuple[int, ...]
         A partition labelling a representation of the unitary group :math:`U(d)`
-    
+
     unitary_dimension : Symbol
         The dimension :math:`d` of the unitary group
 
@@ -58,10 +57,6 @@ def representation_dimension(partition: tuple[int, ...], unitary_dimension: Symb
     -------
     Expr
         The dimension of the unitary group's representation labelled by the input partition
-
-    Notes
-    -----
-    LINK TO THEORY AND ALGORITHMS
 
     Examples
     --------
@@ -98,44 +93,56 @@ def representation_dimension(partition: tuple[int, ...], unitary_dimension: Symb
 
 
 @lru_cache
-def weingarten_unitary(
-    cycle: Union[Permutation, tuple[int, ...]], unitary_dimension: Symbol
-) -> Expr:
+def weingarten_unitary(cycle: Permutation | tuple[int, ...], unitary_dimension: Symbol) -> Expr:
     """Returns the Weingarten function
 
     The function works with both a permutation or a conjugacy class as a partition
 
     Parameters
     ----------
-        cycle (Permutation, tuple[int]) : permutation from the symmetric group or its cycle-type
-        unitary_dimension (Symbol) : dimension d of the unitary matrix U
+    cycle : Permutation | tuple[int, ...]
+        A permutation from the symmetric group or a partition reprensenting its cycle-type
+
+    unitary_dimension : Symbol
+        The dimension :math:`d` of the unitary matrix :math:`U(d)`
 
     Returns
     -------
-        Expr : the Weingarten function
+    Expr
+        The Weingarten function
 
     Raises
     -----
     TypeError
-        if unitary_dimension has the wrong type
+        If unitary_dimension has the wrong type
     TypeError
-        if cycle has the wrong type
+        If cycle has the wrong type
+
+    Notes
+    -----
+    Since the unitary Weingarten function is a class function on the symmetric group, the argument
+    may be given either as a permutation or as its cycle type
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import weingarten_unitary
-        >>> d = Symbol("d")
-        >>> weingarten_unitary(Permutation(2)(0, 1), 4)
-        Fraction(-1, 180)
-        >>> weingarten_unitary(Permutation(2)(0, 1), d)
-        -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
-        >>> weingarten_unitary((2, 1), d)
-        -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
+    >>> from sympy import Symbol
+    >>> from haarpy import weingarten_unitary
+    >>> d = Symbol("d")
+    >>> weingarten_unitary(Permutation(2)(0, 1), 4)
+    Fraction(-1, 180)
+    >>> weingarten_unitary(Permutation(2)(0, 1), d)
+    -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
+    >>> weingarten_unitary((2, 1), d)
+    -1/((d - 2)*(d - 1)*(d + 1)*(d + 2))
 
     See Also
     --------
-        murn_naka_rule, representation_dimension, sympy.utilities.iterables.partitions
+    :func:`haarpy.symmetric.murn_naka_rule`
+        Implementation of the Murnaghan-Nakayama rule for the characters irreducible
+        representations of the symmetric group :math:`S_p`
+    :func:`haarpy.unitary.representation_dimension`
+        Computes the dimension of the unitary group's representation labelled by a
+        given partition
     """
     if not isinstance(unitary_dimension, (Expr, int)):
         raise TypeError("unitary_dimension must be an instance of int or sympy.Expr")

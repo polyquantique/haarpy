@@ -3,21 +3,34 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Haarpy documentation
+Haarpy Documentation
 ====================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+A Python library for Weingarten calculus and integration of groups and ensembles equipped with the Haar measure.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Background
+   :maxdepth: 1
+   :caption: Background on Weingarten calculus
 
-   theory/unitary
+   .. theory/weingarten
+   theory/compact
+   theory/circular
+   theorry/quantum
+   theory/permutation
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
+   :caption: Tutorials and examples
+
+.. toctree::
+   :maxdepth: 1
    :caption: Haarpy API
 
+   code/symmetric
+   .. code/partition
+   code/permutation
    code/unitary
+   code/orthogonal
+   code/symplectic
+   code/circular_ensembles
+   code/quantum
