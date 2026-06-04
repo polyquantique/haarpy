@@ -31,6 +31,6 @@ A Python library for Weingarten calculus and integration of groups and ensembles
    code/permutation
    code/unitary
    code/orthogonal
-   .. code/symplectic
+   code/symplectic
    code/circular_ensembles
    code/quantum

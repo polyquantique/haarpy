@@ -53,7 +53,7 @@ def zonal_spherical_function(permutation: Permutation, partition: tuple[int, ...
     ----------
     permutation : Permutation
         A permutation of the symmetric group :math:`S_{2p}`
-    
+
     partition : tuple[int, ...]
         An integer partition of :math:`p`
 

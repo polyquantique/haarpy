@@ -38,22 +38,32 @@ def _haar_integral_quantum(
 
     Parameters
     ----------
-        sequences (tuple[tuple[int]]) : indices of matrix elements
-        group_dimension (Symbol) : dimension of the quantum group
-        pair (bool) : True for free orthogonal group, False for free symmetric group
+    sequences : tuple[tuple[int, ...], ...]
+        The indices of matrix elements
+
+    group_dimension : Symbol
+        The dimension of the quantum group
+
+    pair : bool
+        ``True`` for free orthogonal group, ``False`` for free symmetric group
 
     Returns
     -------
-        Expr : integral under the Haar measure
+    Expr
+        The integral under the Haar measure
 
-    Raise
-    -----
-        TypeError : if the dimension is neither int nor Symbol
-        ValueError : if sequences do not contain 2 tuples or if they are of different length
+    Raises
+    ------
+    TypeError
+        If the dimension is neither ``int`` nor ``Symbol``
+    ValueError : if sequences do not contain 2 tuples or if they are of different length
 
     See Also
     --------
-        gram_matrix
+    :func:`haarpy.partition.gram_matrix`
+        Generates the Gram matrix of a given input set of partitions
+    :func:`haarpy.partition.non_crossing_partitions`
+        Yields non crossing partitions of the set :math:`[n] = \{1,2,...,n\}`
     """
     if not isinstance(group_dimension, (Expr, int)):
         raise TypeError
@@ -101,27 +111,34 @@ def haar_integral_free_symmetric(
 
     Parameters
     ----------
-        sequences (tuple[tuple[int]]) : indices of matrix elements
-        group_dimension (Symbol) : dimension of the quantum group
+    sequences : tuple[tuple[int, ...], ...]
+        Sequences of matrix elements
+
+    group_dimension : Symbol
+        The dimension of the free symmetric group
 
     Returns
     -------
-        Expr : integral under the Haar measure
+    Expr
+        The integral under the Haar measure
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import haar_integral_free_symmetric
-        >>> d = Symbol("d")
-        >>> sequences = ((0, 1, 2), (2, 1, 0))
-        >>> haar_integral_free_symmetric(sequences, d)
-        1/(d*(d - 2)*(d - 1))
-        >>> haar_integral_free_symmetric(sequences, 4)
-        1/24
+    >>> from sympy import Symbol
+    >>> from haarpy import haar_integral_free_symmetric
+    >>> d = Symbol("d")
+    >>> sequences = ((0, 1, 2), (2, 1, 0))
+    >>> haar_integral_free_symmetric(sequences, d)
+    1/(d*(d - 2)*(d - 1))
+    >>> haar_integral_free_symmetric(sequences, 4)
+    1/24
 
     See Also
     --------
-        _haar_integral_quantum
+    :func:`haarpy.partition.gram_matrix`
+        Generates the Gram matrix of a given input set of partitions
+    :func:`haarpy.partition.non_crossing_partitions`
+        Yields non crossing partitions of the set :math:`[n] = \{1,2,...,n\}`
     """
     return _haar_integral_quantum(sequences, group_dimension, False)
 
@@ -135,26 +152,33 @@ def haar_integral_free_orthogonal(
 
     Parameters
     ----------
-        sequences (tuple[tuple[int]]) : indices of matrix elements
-        group_dimension (Symbol) : dimension of the quantum group
+    sequences : tuple[tuple[int, ...], ...]
+        Sequences of matrix elements
+
+    group_dimension : Symbol
+        The dimension of the free orthogonal group
 
     Returns
     -------
-        Expr : integral under the Haar measure
+    Expr
+        The integral under the Haar measure
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import haar_integral_free_symmetric
-        >>> d = Symbol("d")
-        >>> sequences = ((0, 1, 1, 0), (0, 0, 1, 1))
-        >>> haar_integral_free_symmetric(sequences, d)
-        -1/(d*(d - 1)*(d + 1))
-        >>> haar_integral_free_symmetric(sequences, 4)
-        -1/60
+    >>> from sympy import Symbol
+    >>> from haarpy import haar_integral_free_symmetric
+    >>> d = Symbol("d")
+    >>> sequences = ((0, 1, 1, 0), (0, 0, 1, 1))
+    >>> haar_integral_free_symmetric(sequences, d)
+    -1/(d*(d - 1)*(d + 1))
+    >>> haar_integral_free_symmetric(sequences, 4)
+    -1/60
 
     See Also
     --------
-        _haar_integral_quantum
+    :func:`haarpy.partition.gram_matrix`
+        Generates the Gram matrix of a given input set of partitions
+    :func:`haarpy.partition.non_crossing_partitions`
+        Yields non crossing partitions of the set :math:`[n] = \{1,2,...,n\}`
     """
     return _haar_integral_quantum(sequences, group_dimension, True)
