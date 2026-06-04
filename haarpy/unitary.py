@@ -94,9 +94,7 @@ def representation_dimension(partition: tuple[int, ...], unitary_dimension: Symb
 
 @lru_cache
 def weingarten_unitary(cycle: Permutation | tuple[int, ...], unitary_dimension: Symbol) -> Expr:
-    """Returns the Weingarten function
-
-    The function works with both a permutation or a conjugacy class as a partition
+    """Returns the unitary Weingarten function
 
     Parameters
     ----------
@@ -112,7 +110,7 @@ def weingarten_unitary(cycle: Permutation | tuple[int, ...], unitary_dimension: 
         The Weingarten function
 
     Raises
-    -----
+    ------
     TypeError
         If unitary_dimension has the wrong type
     TypeError
@@ -121,7 +119,7 @@ def weingarten_unitary(cycle: Permutation | tuple[int, ...], unitary_dimension: 
     Notes
     -----
     Since the unitary Weingarten function is a class function on the symmetric group, the argument
-    may be given either as a permutation or as its cycle type
+    may be given either as a permutation or as its cycle-type
 
     Examples
     --------
@@ -187,39 +185,46 @@ def weingarten_unitary(cycle: Permutation | tuple[int, ...], unitary_dimension: 
 def haar_integral_unitary(
     sequences: tuple[tuple[int, ...], ...], unitary_dimension: Symbol
 ) -> Expr:
-    """Returns integral over unitary group polynomial sampled at random from the Haar measure
+    """Returns the integral of a monomial over the unitary group
 
     Parameters
     ----------
-        sequences (tuple[tuple[int]]) : indices of matrix elements
-        unitary_dimension (Symbol) : dimension of the unitary group
+    sequences : tuple[tuple[int, ...], ...]
+        Sequences of matrix elements
+
+    unitary_dimension : Symbol
+        The dimension of the unitary group
 
     Returns
     -------
-        Expr : integral under the Haar measure
+    Expr
+        The integral under the Haar measure
 
     Raises
-    -----
+    ------
     ValueError
         if sequences do not contain 4 tuples
     ValueError
-        if tuples i and j are of different length
+        if the input sequences are of different lengths
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import haar_integral_unitary
-        >>> d = Symbol("d")
-        >>> seq_i, seq_j = (0, 1, 2), (0, 0, 1)
-        >>> seq_i_prime, seq_j_prime = (0, 1, 2), (0, 1, 0)
-        >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), 5)
-        Fraction(-1, 840)
-        >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), d)
-        -1/(d*(d - 1)*(d + 1)*(d + 2))
+    >>> from sympy import Symbol
+    >>> from haarpy import haar_integral_unitary
+    >>> d = Symbol("d")
+    >>> seq_i, seq_j = (0, 1, 2), (0, 0, 1)
+    >>> seq_i_prime, seq_j_prime = (0, 1, 2), (0, 1, 0)
+    >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), 5)
+    Fraction(-1, 840)
+    >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), d)
+    -1/(d*(d - 1)*(d + 1)*(d + 2))
 
     See Also
     --------
-        stabilizer_coset, weingarten_unitary
+    :func:`haarpy.symmetric.stabilizer_coset`
+        Returns all permutations sending a first sequence to a second sequence
+    :func:`haarpy.unitary.weingarten_unitary`
+        Returns the unitary Weingarten function
     """
     if len(sequences) != 4:
         raise ValueError("Wrong tuple format")
