@@ -24,6 +24,7 @@
 * Added references and examples to the docstrings. Slight modification to the docstring format  [(#47)](https://github.com/polyquantique/haarpy/pull/47).
 * `get_conjugacy_class()` has been sped up [(#51)](https://github.com/polyquantique/haarpy/pull/51).
 * `weingarten_...()` and `haar_integral_...()` have been sped up by building logic to simplify rational functions in `utils._simplify`  [(#53)](https://github.com/polyquantique/haarpy/pull/53).
+* Added documentation [(#59)](https://github.com/polyquantique/haarpy/pull/59).
 
 ### Bug fixes
 
