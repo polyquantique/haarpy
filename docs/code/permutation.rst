@@ -1,7 +1,7 @@
-Permutation matrices Python API
-==========================
+Permutation matrices
+====================
 
-Description
+This module provides tools for computations of integrals of Haar random permutation matrices.
 
 .. automodule:: haarpy.permutation
    :members:

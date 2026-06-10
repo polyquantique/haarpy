@@ -1,5 +1,5 @@
-Partition Python API
-==========================
+Partition
+=========
 
 Description
 

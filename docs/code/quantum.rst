@@ -1,5 +1,5 @@
-Quantum groups Python API
-========================
+Quantum groups
+==============
 
 This module provides tools for computations of integrals of polynomials on the quantum groups.
 

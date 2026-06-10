@@ -1,5 +1,5 @@
-Circular ensembles Python API
-========================
+Circular ensembles
+==================
 
 This module provides tools for computations of integrals of polynomials on the circular ensembles.
 

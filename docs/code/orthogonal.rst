@@ -1,5 +1,5 @@
-orthogonal group Python API
-========================
+Orthogonal group
+================
 
 This module provides tools for computations of integrals of polynomials on the orthogonal group.
 

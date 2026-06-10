@@ -1,0 +1,8 @@
+sphinx
+pydata-sphinx-theme
+myst-parser
+sphinx-autodoc-typehints
+sphinx-copybutton
+sphinx-autobuild
+sympy>=1.14
+ipykernel

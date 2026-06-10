@@ -1,5 +1,5 @@
-Symplectic group Python API
-========================
+Symplectic group
+================
 
 This module provides tools for computations of integrals of polynomials on the symplectic group.
 
