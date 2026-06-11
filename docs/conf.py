@@ -27,6 +27,8 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx_autodoc_typehints",
     "myst_parser",
+    "nbsphinx",
+    "sphinx_copybutton",
 ]
 
 bibtex_bibfiles = ["references.bib"]

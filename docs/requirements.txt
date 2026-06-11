@@ -1,4 +1,7 @@
+docutils
 sphinx
+sphinx_copybutton
+nbsphinx
 pydata-sphinx-theme
 myst-parser
 sphinx-autodoc-typehints

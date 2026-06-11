@@ -8,15 +8,12 @@ Haarpy Documentation
 
 A Python library for Weingarten calculus and integration of groups and ensembles equipped with the Haar measure.
 
-..
-   toctree::
+.. toctree::
    :maxdepth: 1
    :caption: Getting started
 
-   .. /installation
-   .. /quickstart
-   .. /tutorials
-   .. /examples
+   tutorials/installation
+   tutorials/guide.ipynb
 
 ..
    toctree::
