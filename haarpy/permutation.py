@@ -25,31 +25,37 @@ from functools import lru_cache
 from itertools import product
 from collections.abc import Sequence
 from fractions import Fraction
-from sympy import Symbol, binomial
+from sympy import Expr, Symbol, binomial
 from haarpy import set_partitions, meet_operation, join_operation, partial_order
 from ._utils import _simplify
 
 
 @lru_cache
-def mobius_function(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int]]) -> int:
+def mobius_function(
+    partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
+) -> int:
     """Returns the Möbius function of two given partitions
 
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]) : the intersected partition
-        partition_2 (tuple[tuple[int]]) : the partition summed over
+    partition_1 : tuple[tuple[int]
+        The intersected partition
+
+    partition_2 : tuple[tuple[int]]
+        The partition summed over
 
     Returns
     -------
-        int : the value of the Möbius function
+    int
+        The value of the Möbius function
 
     Examples
     --------
-        >>> from haarpy import mobius_function
-        >>> partition_1 = ((0, 3), (1, 2), (4,), (5,))
-        >>> partition_2 = ((0, 1, 2), (3, 4, 5))
-        >>> mobius_function(partition_1, partition_2)
-        -2
+    >>> from haarpy import mobius_function
+    >>> partition_1 = ((0, 3), (1, 2), (4,), (5,))
+    >>> partition_2 = ((0, 1, 2), (3, 4, 5))
+    >>> mobius_function(partition_1, partition_2)
+    -2
     """
     partition_set_1 = tuple(set(block) for block in partition_1)
     partition_set_2 = tuple(set(block) for block in partition_2)
@@ -66,37 +72,46 @@ def mobius_function(partition_1: tuple[tuple[int]], partition_2: tuple[tuple[int
 
 @lru_cache
 def weingarten_permutation(
-    first_partition: tuple[tuple[int]],
-    second_partition: tuple[tuple[int]],
+    first_partition: tuple[tuple[int, ...], ...],
+    second_partition: tuple[tuple[int, ...], ...],
     dimension: Symbol,
-) -> Symbol:
+) -> Expr:
     """Returns the Weingarten function for random permutation matrices
 
     Parameters
     ----------
-        first_partition (tuple(tuple(int))) : a set partition of integer k
-        second_partition (tuple(tuple(int))) : a set partition of integer k
-        dimension (Symbol) : the dimension of the random permutation matrices
+    first_partition : tuple[tuple[int, ...], ...]
+        A partition of the set of :math:`k` integers :math:`[k] = \{1,2,\dots, k\}`
+
+    second_partition : tuple[tuple[int, ...], ...]
+        A second partition of the same set
+
+    dimension : Symbol
+        The dimension of the random permutation matrices
 
     Returns
     -------
-        Symbol : the Weingarten function
+    Expr
+        The Weingarten function
 
     Example
     -------
-        >>> from sympy import Symbol
-        >>> from haarpy import weingarten_permutation
-        >>> d = Symbol('d')
-        >>> partition_1 = ((0, 1, 2), (3,))
-        >>> partition_2 = ((0,), (1, 2, 3))
-        >>> weingarten_permutation(partition_1, partition_2, 4)
-        Fraction(5, 24)
-        >>> weingarten_permutation(partition_1, partition_2, d)
-        (d + 1)/(d*(d - 3)*(d - 2)*(d - 1))
+    >>> from sympy import Symbol
+    >>> from haarpy import weingarten_permutation
+    >>> d = Symbol('d')
+    >>> partition_1 = ((0, 1, 2), (3,))
+    >>> partition_2 = ((0,), (1, 2, 3))
+    >>> weingarten_permutation(partition_1, partition_2, 4)
+    Fraction(5, 24)
+    >>> weingarten_permutation(partition_1, partition_2, d)
+    (d + 1)/(d*(d - 3)*(d - 2)*(d - 1))
 
     See Also
     --------
-        meet_operation, mobius_function
+    :func:`haarpy.partition.meet_operation`
+        Returns the greatest lower bound of the two input partitions
+    :func:`haarpy.permutation.mobius_function`
+        Returns the Möbius function of two given partitions
     """
     disjoint_partition_tuple = tuple(
         (partition for partition in set_partitions(block))
@@ -131,37 +146,48 @@ def weingarten_permutation(
 
 @lru_cache
 def weingarten_centered_permutation(
-    first_partition: tuple[tuple[int]],
-    second_partition: tuple[tuple[int]],
+    first_partition: tuple[tuple[int, ...], ...],
+    second_partition: tuple[tuple[int, ...], ...],
     dimension: Symbol,
-) -> Symbol:
+) -> Expr:
     """Returns the Weingarten function for centered random permutation matrices
 
     Parameters
     ----------
-        first_partition (tuple(tuple(int))) : a set partition of integer k
-        second_partition (tuple(tuple(int))) : a set partition of integer k
-        dimension (Symbol) : the dimension of the centered random permutation matrices
+    first_partition : tuple[tuple[int, ...], ...]
+        A partition of the set of :math:`k` integers :math:`[k] = \{1,2,\dots, k\}`
+
+    second_partition : tuple[tuple[int, ...], ...]
+        A second partition of the same set
+
+    dimension : Symbol
+        The dimension of the random permutation matrices
 
     Returns
     -------
-        Symbol : the Weingarten function
+    Expr
+        The Weingarten function
 
     Example
     -------
-        >>> from sympy import Symbol
-        >>> from haarpy import weingarten_centered_permutation
-        >>> d = Symbol('d')
-        >>> partition_1 = ((0,), (1,), (2,))
-        >>> partition_2 = ((0, 2), (1,))
-        >>> weingarten_centered_permutation(partition_1, partition_2, 3)
-        Fraction(-1, 9)
-        >>> weingarten_centered_permutation(partition_1, partition_2, d)
-        -2/(d**2*(d - 2)*(d - 1))
+    >>> from sympy import Symbol
+    >>> from haarpy import weingarten_centered_permutation
+    >>> d = Symbol('d')
+    >>> partition_1 = ((0,), (1,), (2,))
+    >>> partition_2 = ((0, 2), (1,))
+    >>> weingarten_centered_permutation(partition_1, partition_2, 3)
+    Fraction(-1, 9)
+    >>> weingarten_centered_permutation(partition_1, partition_2, d)
+    -2/(d**2*(d - 2)*(d - 1))
 
     See Also
     --------
-        join_operation, meet_operation, mobius_function
+    :func:`haarpy.partition.meet_operation`
+        Returns the greatest lower bound of the two input partitions
+    :func:`haarpy.partition.join_operation`
+        Returns the least upper bound of the two input partitions
+    :func:`haarpy.permutation.mobius_function`
+        Returns the Möbius function of two given partitions
     """
     singleton_set_size = sum(
         1 for block in join_operation(first_partition, second_partition) if len(block) == 1
@@ -212,37 +238,48 @@ def weingarten_centered_permutation(
 
 @lru_cache
 def haar_integral_permutation(
-    row_indices: tuple[int],
-    column_indices: tuple[int],
+    row_indices: tuple[int, ...],
+    column_indices: tuple[int, ...],
     dimension: Symbol,
-) -> Symbol:
+) -> Expr:
     """Returns the integral over Haar random permutation matrices
 
     Parameters
     ----------
-        row_indices (tuple(int)) : sequence of row indices
-        column_indices (tuple(int)) : sequence of column indices
+    row_indices : tuple[int, ...]
+        A sequence of row indices
+
+    column_indices : tuple[int, ...]
+        A sequence of column indices
 
     Returns
     -------
-        Symbol : integral under the Haar measure
+    Expr
+        The integral under the Haar measure
 
-    Raise
-    -----
-        TypeError : if row_indices and column_indices are not Sequence
-        ValueError : if row_indices and column_indices are of different length
+    Raises
+    ------
+    TypeError
+        If the input parameters are not of type ``Sequence``
+    ValueError
+        If the input sequences are of different length
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import haar_integral_permutation
-        >>> d = Symbol('d')
-        >>> row_indices = (0, 1, 2, 2)
-        >>> column_indices = (1, 0, 2, 2)
-        >>> haar_integral_permutation(row_indices, column_indices, 3)
-        Fraction(1, 6)
-        >>> haar_integral_permutation(row_indices, column_indices, d)
-        1/(d*(d - 2)*(d - 1))
+    >>> from sympy import Symbol
+    >>> from haarpy import haar_integral_permutation
+    >>> d = Symbol('d')
+    >>> row_indices = (0, 1, 2, 2)
+    >>> column_indices = (1, 0, 2, 2)
+    >>> haar_integral_permutation(row_indices, column_indices, 3)
+    Fraction(1, 6)
+    >>> haar_integral_permutation(row_indices, column_indices, d)
+    1/(d*(d - 2)*(d - 1))
+
+    See Also
+    --------
+    :func:`haarpy.permutation.weingarten_permutation`
+        Returns the Weingarten function for random permutation matrices
     """
     if not (isinstance(row_indices, Sequence) and isinstance(column_indices, Sequence)):
         raise TypeError
@@ -272,38 +309,50 @@ def haar_integral_permutation(
 
 @lru_cache
 def haar_integral_centered_permutation(
-    row_indices: tuple[int],
-    column_indices: tuple[int],
+    row_indices: tuple[int, ...],
+    column_indices: tuple[int, ...],
     dimension: Symbol,
-) -> Symbol:
+) -> Expr:
     """Returns the integral over Haar random centered permutation matrices
 
-    Args:
-        row_indices (tuple(int)) : sequence of row indices
-        column_indices (tuple(int)) : sequence of column indices
+    Parameters
+    ----------
+    row_indices : tuple[int, ...]
+        A sequence of row indices
 
-    Returns:
-        Symbol : integral under the Haar measure
+    column_indices : tuple[int, ...]
+        A sequence of column indices
 
-    Raise:
-        TypeError : if row_indices and column_indices are not Sequence
-        ValueError : if row_indices and column_indices are of different length
+    Returns
+    -------
+    Expr
+        The integral under the Haar measure
+
+    Raises
+    ------
+    TypeError
+        If the input parameters are not of type ``Sequence``
+    ValueError
+        If the input sequences are of different length
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import haar_integral_centered_permutation
-        >>> d = Symbol('d')
-        >>> row_indices = (0, 1, 2)
-        >>> column_indices = (0, 1, 1)
-        >>> haar_integral_centered_permutation(row_indices, column_indices, 3)
-        Fraction(-1, 27)
-        >>> haar_integral_centered_permutation(row_indices, column_indices, d)
-        -2/(d**3*(d - 1))
+    >>> from sympy import Symbol
+    >>> from haarpy import haar_integral_centered_permutation
+    >>> d = Symbol('d')
+    >>> row_indices = (0, 1, 2)
+    >>> column_indices = (0, 1, 1)
+    >>> haar_integral_centered_permutation(row_indices, column_indices, 3)
+    Fraction(-1, 27)
+    >>> haar_integral_centered_permutation(row_indices, column_indices, d)
+    -2/(d**3*(d - 1))
 
     See Also
     --------
-        partial_order, weingarten_centered_permutation
+    :func:`haarpy.partition.partial_order`
+        Compares two partitions in terms of partial order
+    :func:`haarpy.permutation.weingarten_centered_permutation`
+        Returns the Weingarten function for centered random permutation matrices
     """
     if not (isinstance(row_indices, Sequence) and isinstance(column_indices, Sequence)):
         raise TypeError

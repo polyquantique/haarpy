@@ -18,8 +18,10 @@ References
 ----------
     [1] Collins, B., & Śniady, P. (2006). Integration with respect to the Haar measure on unitary,
     orthogonal and symplectic group. Communications in Mathematical Physics, 264(3), 773-795.
+
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
+
     [3] Macdonald, I. G. (1998). Symmetric functions and Hall polynomials. Oxford university press.
 """
 
@@ -42,35 +44,45 @@ from ._utils import _simplify
 
 
 @lru_cache
-def twisted_spherical_function(permutation: Permutation, partition: tuple[int]) -> Fraction:
-    """Returns the twisted spherical function of the Gelfand pair (S_2k, H_k)
+def twisted_spherical_function(permutation: Permutation, partition: tuple[int, ...]) -> Fraction:
+    """Returns the twisted spherical function of the Gelfand pair :math:`(S_{2p}, H_p)`
 
     Parameters
     ----------
-        permutation (Permutation) : a permutation of the symmetric group S_2k
-        partition (tuple[int]) : a partition of k
+    permutation : Permutation
+        A permutation of the symmetric group :math:`S_{2p}`
+
+    partition : tuple[int, ...]
+        An integer partition of :math:`p`
 
     Returns
     -------
-        Fraction : the twisted spherical function of the given permutation
+    Fraction
+        The twisted spherical function of the given permutation
 
-    Raise
-    -----
-        TypeError : if partition is not a tuple
-        TypeError : if permutation argument is not a permutation.
-        ValueError : if the degree of the permutation is not a factor of 2
-        ValueError : if the degree of the partition and the permutation are incompatible
+    Raises
+    ------
+    TypeError
+        If ``partition`` is not of type ``tuple``
+    TypeError
+        If ``permutation`` of type ``Permutation``
+    ValueError
+        If the degree of the permutation is odd
+    ValueError
+        If the partition and the permutation are incompatible
 
     Examples
     --------
-        >>> from sympy.combinatorics import Permutation
-        >>> from haarpy import twisted_spherical_function
-        >>> twisted_spherical_function(Permutation(5, 0, 1, 2), (2, 1))
-        Fraction(1, 4)
+    >>> from sympy.combinatorics import Permutation
+    >>> from haarpy import twisted_spherical_function
+    >>> twisted_spherical_function(Permutation(5, 0, 1, 2), (2, 1))
+    Fraction(1, 4)
 
     See Also
     --------
-        murn_naka_rule
+    :func:`haarpy.symmetric.murn_naka_rule`
+        Implementation of the Murnaghan-Nakayama rule for the characters irreducible
+        representations of the symmetric group
     """
     if not isinstance(partition, tuple):
         raise TypeError
@@ -101,31 +113,36 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
 
     Parameters
     ----------
-        permutation (Permutation) : a permutation of the symmetric group S_2k
-        half_dimension (Symbol) : half the dimension of the symplectic group
+    permutation : Permutation
+        A permutation of the symmetric group :math:`S_{2p}`
+    half_dimension : Symbol
+        Half the dimension of the symplectic group
 
     Returns
     -------
-        Expr : the Weingarten function
+    Expr
+        The Weingarten function
 
-    Raise
-    -----
-        ValueError : if the degree 2k of the symmetric group S_2k is not a factor of 2
+    Raises
+    ------
+    ValueError
+        If the degree :math:`2p` of the symmetric group :math:`S_{2p}` is odd
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from sympy.combinatorics import Permutation
-        >>> from haarpy import weingarten_symplectic
-        >>> d = Symbol("d")
-        >>> weingarten_symplectic(Permutation(0, 1, 2, 3, 4, 5), 7)
-        Fraction(-1, 201600)
-        >>> weingarten_symplectic(Permutation(0, 1, 2, 3, 4, 5), d)
-        -1/(8*d*(d - 2)*(d - 1)*(d + 1)*(2*d + 1))
+    >>> from sympy import Symbol
+    >>> from sympy.combinatorics import Permutation
+    >>> from haarpy import weingarten_symplectic
+    >>> d = Symbol("d")
+    >>> weingarten_symplectic(Permutation(0, 1, 2, 3, 4, 5), 7)
+    Fraction(-1, 201600)
+    >>> weingarten_symplectic(Permutation(0, 1, 2, 3, 4, 5), d)
+    -1/(8*d*(d - 2)*(d - 1)*(d + 1)*(2*d + 1))
 
     See Also
     --------
-        twisted_spherical_function, sympy.utilities.iterables.partitions
+    :func:`haarpy.symplectic.twisted_spherical_function`
+        Computes the twisted spherical function of the Gelfand pair :math:`(S_{2p}, H_p)`
     """
     degree = permutation.size
     if degree % 2:
@@ -182,48 +199,63 @@ def weingarten_symplectic(permutation: Permutation, half_dimension: Symbol) -> E
 
 @lru_cache
 def haar_integral_symplectic(
-    sequences: tuple[tuple[Expr]],
+    sequences: tuple[tuple[Expr, ...], ...],
     half_dimension: Symbol,
 ) -> Expr:
     """Returns integral over symplectic group polynomial sampled at random from the Haar measure
 
     Parameters
     ----------
-        sequences (tuple[tuple[Expr]]) : indices of matrix elements
-        half_dimension (Symbol) : half the dimension of the symplectic group
+    sequences : tuple[tuple[Expr, ...], ...]
+        Indices of matrix elements
+
+    half_dimension : Symbol
+        Half the dimension of the symplectic group
 
     Returns
     -------
-        Expr : integral under the Haar measure
+    Expr
+        Integral under the Haar measure
 
-    Raise
-    -----
-        ValueError : if sequences do not contain 2 tuples
-        ValueError : if tuples i and j are of different length
-        TypeError : if the half_dimension is not int nor Symbol
-        TypeError : if dimension is int and sequence is not
-        ValueError : if all sequence indices are not between 0 and 2*dimension - 1
-        TypeError : if sequence containt something else than Expr
-        TypeError : if symbolic sequences have the wrong format
+    Raises
+    ------
+    ValueError
+        If ``sequences`` do not contain 2 tuples
+    ValueError
+        If the sequences are of different lengths
+    TypeError
+        If ``half_dimension`` is neither ``int`` or ``Symbol``
+    TypeError
+        If ``half_dimension`` is an ``int`` but ``sequences`` contain a ``Symbol``
+    ValueError
+        If not all sequence indices are between ``0`` and ``2*half_dimension - 1``
+    TypeError
+        If ``sequences`` containt something else than ``Expr`` and ``int``
+    TypeError
+        If symbolic sequences have the wrong format
 
     Examples
     --------
-        >>> from sympy import Symbol
-        >>> from haarpy import haar_integral_symplectic
+    >>> from sympy import Symbol
+    >>> from haarpy import haar_integral_symplectic
 
-        >>> d = Symbol("d")
-        >>> sequence_1, sequence_2 = (0, 1, 2, d, d+1, d+2), (0, 0, 0, d, d, d)
-        >>> haar_integral_symplectic((sequence_1, sequence_2), d)
-        1/(4*d*(d + 1)*(2*d + 1))
+    >>> d = Symbol("d")
+    >>> sequence_1, sequence_2 = (0, 1, 2, d, d+1, d+2), (0, 0, 0, d, d, d)
+    >>> haar_integral_symplectic((sequence_1, sequence_2), d)
+    1/(4*d*(d + 1)*(2*d + 1))
 
-        >>> d = 4
-        >>> sequence_1, sequence_2 = (0, 1, 2, d, d+1, d+2), (0, 0, 0, d, d, d)
-        >>> haar_integral_symplectic((sequence_1, sequence_2), d)
-        Fraction(1, 720)
+    >>> d = 4
+    >>> sequence_1, sequence_2 = (0, 1, 2, d, d+1, d+2), (0, 0, 0, d, d, d)
+    >>> haar_integral_symplectic((sequence_1, sequence_2), d)
+    Fraction(1, 720)
 
     See Also
     --------
-        hyperoctahedral_transversal, weingarten_symplectic
+    :func:`haarpy.symmetric.hyperoctahedral_transversal`
+        Yields the permutations of :math:`M_{2p}`, the complete set of coset
+        representatives of the quotient group :math:`S_{2p}/H_p`
+    :func:`haarpy.symplectic.weingarten_symplectic`
+        Returns the symplectic Weingarten function
     """
     if len(sequences) != 2:
         raise ValueError("Wrong sequence format")

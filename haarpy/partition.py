@@ -18,8 +18,10 @@ References
 ----------
     [1] Collins, B., & Nagatsu, M. (2025). Weingarten calculus for centered random permutation
     matrices. arXiv preprint arXiv:2503.18453.
+
     [2] Matsumoto, S. (2013). Weingarten calculus for matrix ensembles associated with compact
     symmetric spaces. arXiv preprint arXiv:1301.5401.
+
     [3] Nica, A., & Speicher, R. (2006). Lectures on the combinatorics of free probability
     (Vol. 13). Cambridge University Press.
 """
@@ -32,30 +34,33 @@ from sympy import Symbol, Matrix, Expr
 
 def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
     """Returns the partitionning of a given collection (set) of objects
-    into non-empty subsets.
+    into non-empty subsets
 
     Parameters
     ----------
-        collection (tuple) : an indexable iterable to be partitionned
+    collection :tuple
+        An indexable iterable to be partitionned
 
     Returns
     -------
-        generator(tuple[tuple]) : all partitions of the input collection
+    Iterator : tuple[tuple]
+        All partitions of the input collection
 
-    Raise
-    -----
-        ValueError : if the collection is not a tuple
+    Raises
+    ------
+    ValueError
+        If the collection is not a tuple
 
     Examples
     --------
-        >>> from haarpy import set_partitions
-        >>> for partition in set_partitions((0,1,2)):
-        >>>     print(partition)
-        ((0, 1, 2),)
-        ((0,), (1, 2))
-        ((0, 1), (2,))
-        ((0, 2), (1,))
-        ((0,), (1,), (2,))
+    >>> from haarpy import set_partitions
+    >>> for partition in set_partitions((0,1,2)):
+    >>>     print(partition)
+    ((0, 1, 2),)
+    ((0,), (1, 2))
+    ((0, 1), (2,))
+    ((0, 2), (1,))
+    ((0,), (1,), (2,))
     """
     if not isinstance(collection, tuple):
         raise TypeError("collection must be a tuple")
@@ -74,29 +79,32 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
 def pair_partitions(
     seed: tuple[int, ...],
 ) -> Iterator[tuple[tuple[int, ...], ...]]:
-    """Returns the pair partitions of a given set.
+    """Returns the pair partitions of a given set
 
     Parameters
     ----------
-        seed (tuple[int]) : a tuple representing the (multi-)set that will be partitioned.
-            Note that it must hold that ``len(s) >= 2``
+    seed : tuple[int]
+        A tuple representing the (multi-)set that will be partitioned.
+        Note that it must hold that ``len(s) >= 2``
 
     Returns
     -------
-        generator : all the single-double partitions of the tuple
+    Iterator[tuple[tuple[int]]]
+        All the single-double partitions of the tuple
 
-    Raise
-    -----
-        TypeError : if the seed is not a tuple
+    Raises
+    ------
+    TypeError
+        If the seed is not a tuple
 
     Examples
     --------
-        >>> from haarpy import pair_partitions
-        >>> for matching in pair_partitions((0,1,2,3)):
-        >>>     print(matching)
-        ((0, 1), (2, 3))
-        ((0, 2), (1, 3))
-        ((0, 3), (1, 2))
+    >>> from haarpy import pair_partitions
+    >>> for matching in pair_partitions((0,1,2,3)):
+    >>>     print(matching)
+    ((0, 1), (2, 3))
+    ((0, 2), (1, 3))
+    ((0, 3), (1, 2))
     """
     if not isinstance(seed, tuple):
         raise TypeError("seed must be a tuple")
@@ -116,31 +124,37 @@ def pair_partitions(
 def partial_order(
     partition_1: tuple[tuple[int, ...], ...], partition_2: tuple[tuple[int, ...], ...]
 ) -> bool:
-    """Checks if parition_1 <= partition_2 in terms of partial order
-
-    For parition_1 and partition_2, two partitions of the same set, we call
-    partition_1 <= partition_2 if and only if each block of partition_1 is
-    contained in some block of partition_2
+    """Checks if ``parition_1 <= partition_2`` in terms of partial order
 
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]]) : the partition of lower order
-        partition_2 (tuple[tuple[int]]) : the partition of higher order
+    partition_1 : tuple[tuple[int]]
+        The partition of lower order
+
+    partition_2 : tuple[tuple[int]]
+        The partition of higher order
 
     Returns
     -------
-        bool : True if partition_1 <= partition_2
+    bool
+        ``True`` if ``partition_1 <= partition_2``
+
+    Notes
+    -----
+    For ``parition_1`` and ``partition_2``, two partitions of the same set, we call
+    ``partition_1 <= partition_2`` if and only if each block of ``partition_1`` is
+    contained in some block of ``partition_2``
 
     Examples
     --------
-        >>> from haarpy import partial_order
-        >>> partition_1 = ((0, 1), (2, 3), (4,))
-        >>> partition_2 = ((0, 1), (2, 3, 4))
-        >>> partition_3 = ((0, 4), (1, 2, 3))
-        >>> partial_order(partition_1, partition_2)
-        True
-        >>> partial_order(partition_1, partition_3)
-        False
+    >>> from haarpy import partial_order
+    >>> partition_1 = ((0, 1), (2, 3), (4,))
+    >>> partition_2 = ((0, 1), (2, 3, 4))
+    >>> partition_3 = ((0, 4), (1, 2, 3))
+    >>> partial_order(partition_1, partition_2)
+    True
+    >>> partial_order(partition_1, partition_3)
+    False
     """
     for part in partition_1:
         if all(not set(part).issubset(bigger_part) for bigger_part in partition_2):
@@ -155,28 +169,34 @@ def meet_operation(
 ) -> tuple[tuple[int, ...], ...]:
     """Returns the greatest lower bound of the two input partitions
 
-    For parition_1 and partition_2, two partitions of the same set,
-    the meet operation yields the greatest lower bound of both partitions
-
-    The meet operation symbol is ∧, for instance
-    ((0, 1), (2, 3), (4,)) ∧ ((0, 1, 2), (3, 4)) = ((0, 1), (2,), (3,), (4,))
-
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]]) : partition of a set
-        partition_2 (tuple[tuple[int]]) : partition of a set
+    partition_1 : tuple[tuple[int]]
+        The partition of a set
+
+    partition_2 : tuple[tuple[int]]
+        A second partition of the same set
 
     Returns
     -------
-        tuple[tuple] : greatest lower bound
+    tuple[tuple]
+        The greatest lower bound
+
+    Notes
+    -----
+    For ``parition_1`` and ``partition_2``, two partitions of the same set,
+    the meet operation yields the greatest lower bound of both partitions
+
+    The meet operation symbol is ``∧``, for instance
+    ``((0, 1), (2, 3), (4,)) ∧ ((0, 1, 2), (3, 4)) = ((0, 1), (2,), (3,), (4,))``
 
     Examples
     --------
-        >>> from haarpy import meet_operation
-        >>> partition_1 = ((0, 1), (2, 3), (4,))
-        >>> partition_2 = ((0, 1, 2), (3, 4))
-        >>> meet_operation(partition_1, partition_2)
-        ((0, 1), (2,), (3,), (4,))
+    >>> from haarpy import meet_operation
+    >>> partition_1 = ((0, 1), (2, 3), (4,))
+    >>> partition_2 = ((0, 1, 2), (3, 4))
+    >>> meet_operation(partition_1, partition_2)
+    ((0, 1), (2,), (3,), (4,))
     """
     partition_1 = tuple(set(part) for part in partition_1)
     partition_2 = tuple(set(part) for part in partition_2)
@@ -196,28 +216,34 @@ def join_operation(
 ) -> tuple[tuple[int, ...], ...]:
     """Returns the least upper bound of the two input partitions
 
-    For parition_1 and partition_2, two partitions of the same set,
-    the join operation yields the least upper bound of both partitions
-
-    The join operation symbol is ∨, for instance
-    ((0, 1), (2,), (3, 4)) ∨ ((0, 2), (1,), (3,), (4,)) = ((0, 1, 2), (3, 4))
-
     Parameters
     ----------
-        partition_1 (tuple[tuple[int]]) : partition of a set
-        partition_2 (tuple[tuple[int]]) : partition of a set
+    partition_1 : tuple[tuple[int]]
+        The partition of a set
+
+    partition_2 : tuple[tuple[int]]
+        A second partition of the same set
 
     Returns
     ------
-        tuple[tuple[int]] : least upper bound
+    tuple[tuple[int]]
+        The least upper bound
+
+    Notes
+    -----
+    For ``parition_1`` and ``partition_2``, two partitions of the same set,
+    the join operation yields the least upper bound of both partitions
+
+    The join operation symbol is ``∨``, for instance
+    ``((0, 1), (2,), (3, 4)) ∨ ((0, 2), (1,), (3,), (4,)) = ((0, 1, 2), (3, 4))``
 
     Examples
     --------
-        >>> from haarpy import join_operation
-        >>> partition_1 = ((0, 1), (2,), (3, 4))
-        >>> partition_2 = ((0, 2), (1,), (3,), (4,))
-        >>> join_operation(partition_1, partition_2)
-        ((0, 1, 2), (3, 4))
+    >>> from haarpy import join_operation
+    >>> partition_1 = ((0, 1), (2,), (3, 4))
+    >>> partition_2 = ((0, 2), (1,), (3,), (4,))
+    >>> join_operation(partition_1, partition_2)
+    ((0, 1, 2), (3, 4))
     """
     parent = [
         {index for value in block1 for index, block2 in enumerate(partition_2) if value in block2}
@@ -241,39 +267,45 @@ def join_operation(
 
 
 def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[int, ...], ...]]:
-    """Yields non crossing partitions of [n] = {1,2,...,n}
+    """Yields non crossing partitions of the set :math:`[n] = \{1,2,...,n\}`
 
     Parameters
     ----------
-        n (int) : the size of the partitioned set [n]
-        pair (bool) : True if limited to pair partitions
+    n : int
+        The size of the partitioned set :math:`[n]`
+
+    pair : bool
+        ``True`` to yield only pair partitions
 
     Returns
     -------
-        Iterator : yields the non-crossing partitions
+    Iterator[tuple[tuple[int, ...], ...]]
+        Yields the non-crossing partitions
 
-    Raise
-    -----
-        TypeError : if n is not int
-        ValueError : if n < 0 or if pair is True and n is odd
+    Raises
+    ------
+    TypeError
+        If parameter ``n`` is not of type ``int``
+    ValueError
+        If ``n < 0`` or if pair is ``True`` and ``n`` is odd
 
     Examples
     --------
-        >>> from haarpy import non_crossing_partitions
-        >>> for partition in non_crossing_partitions(3):
-        >>>     print(partition)
-        ((0,), (1,), (2,))
-        ((0,), (1, 2))
-        ((0, 2), (1,))
-        ((0, 1), (2,))
-        ((0, 1, 2),)
-        >>> for partition in non_crossing_partitions(6, pair = True):
-        >>>     print(partition)
-        ((0, 5), (1, 4), (2, 3))
-        ((0, 5), (1, 2), (3, 4))
-        ((0, 3), (1, 2), (4, 5))
-        ((0, 1), (2, 5), (3, 4))
-        ((0, 1), (2, 3), (4, 5))
+    >>> from haarpy import non_crossing_partitions
+    >>> for partition in non_crossing_partitions(3):
+    >>>     print(partition)
+    ((0,), (1,), (2,))
+    ((0,), (1, 2))
+    ((0, 2), (1,))
+    ((0, 1), (2,))
+    ((0, 1, 2),)
+    >>> for partition in non_crossing_partitions(6, pair = True):
+    >>>     print(partition)
+    ((0, 5), (1, 4), (2, 3))
+    ((0, 5), (1, 2), (3, 4))
+    ((0, 3), (1, 2), (4, 5))
+    ((0, 1), (2, 5), (3, 4))
+    ((0, 1), (2, 3), (4, 5))
     """
     if not isinstance(n, int):
         raise TypeError
@@ -328,19 +360,21 @@ def is_crossing_partition(partition: tuple[tuple[int, ...], ...]) -> bool:
 
     Parameters
     ----------
-        partition (tuple[tuple[int]])) : partition of a set
+    partition : tuple[tuple[int, ...], ...]
+        The partition of a set
 
     Returns
     -------
-        bool : True if the partition is crossing, False otherwise
+    bool
+        ``True`` if the partition is crossing, ``False`` otherwise
 
     Examples
     --------
-        >>> from haarpy import is_crossing_partition
-        >>> is_crossing_partition(((0,2,4), (1,3)))
-        True
-        >>> is_crossing_partition(((0,3,4), (1,2)))
-        False
+    >>> from haarpy import is_crossing_partition
+    >>> is_crossing_partition(((0,2,4), (1,3)))
+    True
+    >>> is_crossing_partition(((0,3,4), (1,2)))
+    False
     """
     filtered_partition = tuple(
         block for block in partition if len(block) != 1 and block[0] + 1 != block[-1]
@@ -366,27 +400,32 @@ def gram_matrix(
 
     Parameters
     ----------
-        partition_tuple (tuple[tuple[tuple[int]])) : set of partitions
-        group_dimension (Symbol) : the dimension of the underlying group
+    partition_tuple : tuple[tuple[tuple[int, ...], ...], ...]
+        A set of partitions
+
+    group_dimension : Symbol
+        The dimension of the underlying group
 
     Returns
     -------
-        Matrix : the symbolic Gram matrix
+    Matrix
+        The symbolic Gram matrix
 
-    Raise
-    -----
-        TypeError : group_dimension is neither a symbol or an integer
+    Raises
+    ------
+    TypeError
+        If the parameter ``group_dimension`` is neither a symbol or an integer
 
     Examples
     --------
-        >>> from haarpy import gram_matrix
-        >>> from sympy import Symbol
-        >>> n = Symbol('n')
-        >>> pair_partition_tuple = (((0, 1), (2, 3)), ((0, 3), (1, 2)))
-        >>> gram_matrix(pair_partition_tuple, n)
-        Matrix([
-        [n**2,    n],
-        [   n, n**2]])
+    >>> from haarpy import gram_matrix
+    >>> from sympy import Symbol
+    >>> n = Symbol('n')
+    >>> pair_partition_tuple = (((0, 1), (2, 3)), ((0, 3), (1, 2)))
+    >>> gram_matrix(pair_partition_tuple, n)
+    Matrix([
+    [n**2,    n],
+    [   n, n**2]])
     """
     if not isinstance(group_dimension, (Expr, int)):
         raise TypeError
