@@ -1,3 +1,4 @@
+haarpy
 docutils
 sphinx
 sphinx_copybutton
