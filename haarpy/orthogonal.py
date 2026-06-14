@@ -23,14 +23,17 @@ References
     symmetric spaces. arXiv preprint arXiv:1301.5401.
 
     [3] Macdonald, I. G. (1998). Symmetric functions and Hall polynomials. Oxford university press.
+
+    [4] Gorin, T., & López, G. V. (2008). Monomial integrals on the classical groups. Journal of
+    mathematical physics, 49(1).
 """
 
-from math import prod
+from math import prod, comb
 from fractions import Fraction
 from itertools import product
 from functools import lru_cache
 from collections import Counter
-from sympy import Symbol, Expr, factorial
+from sympy import Symbol, Expr, factorial, rf, Integer, Rational
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from haarpy import (
@@ -42,7 +45,7 @@ from haarpy import (
     coset_type,
     coset_type_representative,
 )
-from ._utils import _simplify
+from ._utils import _simplify, _generate_matrices_with_row_sums, _vector_multinomial
 
 
 @lru_cache
@@ -306,3 +309,140 @@ def haar_integral_orthogonal(
     )
 
     return sum(integral_gen) if isinstance(orthogonal_dimension, int) else _simplify(integral_gen)
+
+
+@lru_cache
+def _column_integral_orthogonal(col_vector: tuple[int, ...], group_dimension: Symbol) -> Expr:
+    """Integral over a single column of an orthogonal matrix
+
+    Parameters
+    ----------
+    col_vector : tuple[int, ...]
+        A vector of power of the orthogonal entries
+
+    group_dimension : Symbol
+        The dimension of the orthogonal group
+
+    Returns
+    -------
+    Expr
+        The integral under the Haar measure
+    """
+    if any(x % 2 for x in col_vector):
+        return 0
+
+    half_total = sum(col_vector) // 2
+
+    numerator = Integer(1)
+    for col_element in col_vector:
+        numerator *= rf(Rational(1, 2), col_element // 2)
+
+    denominator = rf(
+        (
+            group_dimension / 2
+            if isinstance(group_dimension, Symbol)
+            else Rational(group_dimension, 2)
+        ),
+        half_total,
+    )
+
+    return _simplify(numerator / denominator)
+
+
+@lru_cache
+def _haar_integral_orthogonal_gorin(
+    power_matrix: tuple[tuple[int, ...], ...],
+    group_dimension: Symbol | int,
+) -> Expr:
+    """
+    """
+    row_count, col_count = len(power_matrix), len(power_matrix[0])
+    if col_count == 1:
+        column = tuple(power_matrix[i][0] for i in range(row_count))
+        return _column_integral_orthogonal(column, group_dimension)
+
+    # last column recursion
+    last_col = tuple(power_matrix[i][col_count - 1] for i in range(row_count))
+    last_col_sum = sum(last_col)
+
+    # most probably remove since already tested that all rows and columns are even
+    if last_col_sum % 2:
+        return 0
+
+    power_matrix_crop = tuple(tuple(row[: col_count - 1]) for row in power_matrix)
+
+    # the following can be removed if previously remove 0 rows and columns
+    if last_col_sum == 0:
+        return _haar_integral_orthogonal_gorin(power_matrix_crop, group_dimension)
+
+    integral = 0
+    # kappa[i] is even and 0 <= kappa[i] <= last_col[i]
+    kappa_vector_options = [list(range(0, m + 1, 2)) for m in last_col]
+
+    # iterate on last column
+    for kappa_vector in product(*kappa_vector_options):
+        kappa_vector = tuple(kappa_vector)
+        kappa_sum = sum(kappa_vector)
+
+        # most probably can remove, kappa should never be odd
+        if kappa_sum % 2:
+            continue
+
+        vector_binomial = prod(comb(m, k) for m, k in zip(last_col, kappa_vector))
+        kappa_integral = _column_integral_orthogonal(kappa_vector, group_dimension)
+
+        # I don't believe that should ever happen if kappa is never zero
+        if kappa_integral == 0:
+            continue
+
+        a, b = last_col_sum // 2, kappa_sum // 2
+        z1 = (
+            group_dimension / 2
+            if isinstance(group_dimension, Symbol)
+            else Rational(group_dimension, 2)
+        )
+        z2 = Rational(col_count - 1, 2)
+        b_function = _simplify((-1) ** (a - b) * rf(z1, b) * rf(z1, a - b) / rf(z1 - z2, a))
+
+        col_coefficient = vector_binomial * kappa_integral * b_function
+
+        prescribed_row_sum = tuple(m - k for m, k in zip(last_col, kappa_vector))
+
+        # iterate over power truncated power matrices
+        reduced_integral = 0
+        for power_matrix_k in _generate_matrices_with_row_sums(prescribed_row_sum, col_count - 1):
+            kcs_vector = tuple(
+                sum(power_matrix_k[i][j] for i in range(len(power_matrix_k)))
+                for j in range(len(power_matrix_k[0]))
+            )
+
+            # Only even column sums contribute, because of the one-vector average
+            if any(x % 2 for x in kcs_vector):
+                continue
+
+            kcs_integral = _column_integral_orthogonal(kcs_vector, group_dimension)
+
+            # I don't believe the following should happen
+            if kcs_integral == 0:
+                continue
+
+            next_power_matrix = tuple(
+                tuple(a + b for a, b in zip(row_m, row_k))
+                for row_m, row_k in zip(power_matrix_crop, power_matrix_k)
+            )
+
+            recursive_integral = _haar_integral_orthogonal_gorin(next_power_matrix, group_dimension)
+
+            # should never happen
+            if recursive_integral == 0:
+                continue
+
+            reduced_integral += (
+                Integer(_vector_multinomial(prescribed_row_sum, power_matrix_k))
+                * kcs_integral
+                * recursive_integral
+            )
+
+        integral += col_coefficient * reduced_integral
+
+    return _simplify(integral)
