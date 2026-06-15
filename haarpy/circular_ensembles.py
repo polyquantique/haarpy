@@ -86,7 +86,7 @@ def weingarten_circular_symplectic(permutation: Permutation, cse_dimension: Symb
     Parameters
     ----------
     permutation : Permutation
-        A permutation of the symmetric group :math:`S_{2p}
+        A permutation of the symmetric group :math:`S_{2p}``
 
     cse_dimension : int
         The dimension of the circular symplectic ensemble
