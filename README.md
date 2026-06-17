@@ -27,7 +27,7 @@
 
 
 
-Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) (orthogonal, unitary and symplectic) their associated [circular ensembles](https://en.wikipedia.org/wiki/Circular_ensemble) and the group of permutation matrices.
+Haarpy is a Python library for the symbolic calculation of [Weingarten functions](https://en.wikipedia.org/wiki/Weingarten_function) and related averages of matrix ensembles under their [Haar measure](https://pennylane.ai/qml/demos/tutorial_haar_measure): these include the [classical compact groups](https://arxiv.org/abs/math-ph/0609050) (orthogonal, unitary and symplectic) their associated [circular ensembles](https://en.wikipedia.org/wiki/Circular_ensemble) and the group of permutation matrices. For more information, please see the [documentation](https://haarpy.readthedocs.io).
 
 
 ## Haarpy in action
