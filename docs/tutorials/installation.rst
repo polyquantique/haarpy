@@ -12,7 +12,7 @@ Haarpy requires Python version 3.10 or later. Installation of Haarpy and its dep
 Compiling from source
 ---------------------
 
-The Walrus has the following dependencies:
+Haarpy has the following dependencies:
 
 * `Python <http://python.org/>`_ >= 3.10
 * `SymPy <https://www.sympy.org/>`_ >=1.14.0
