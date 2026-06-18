@@ -423,3 +423,44 @@ def test_haar_integral_orthogonal_value_error(sequences):
     "Test haar integral value error"
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_orthogonal(sequences, d)
+
+@pytest.mark.parametrize(
+    "monomial, structure, algo, result",
+    [
+        (((2,0,0,2), (0,1,1,0), (2,0,0,0)), "matrix", "Collins", 0),
+        (((1,0), (0,1)), "matrix", "Collins", 0),
+        (((1,4,2,2), (2,0,4,6), (2,2,2,2), (4,6,8,10)), "matrix", "Collins", 0),
+        (((),),"matrix", "Collins", 1),
+        (((),()),"matrix", "Collins", 1),
+        (((0,),),"matrix", "Collins", 1),
+        (((0,0),(0,0)),"matrix", "Collins", 1),
+        (((1,1,2,2), (1,2,2,2)), "sequences", "Collins", 0),
+        (((1,2,2,2), (2,2,2,2)), "sequences", "Collins", 0),
+        (((1,1,1,1,1), (2,2,2,2,2)), "sequences", "Collins", 0),
+        (((),()), "sequences", "Collins", 1), 
+        (((2,0,0,2), (0,1,1,0), (2,0,0,0)), "matrix", "Gorin", 0),
+        (((1,0), (0,1)), "matrix", "Gorin", 0),
+        (((1,4,2,2), (2,0,4,6), (2,2,2,2), (4,6,8,10)), "matrix", "Gorin", 0),
+        (((),),"matrix", "Gorin", 1),
+        (((),()),"matrix", "Gorin", 1),
+        (((0,),),"matrix", "Gorin", 1),
+        (((0,0),(0,0)),"matrix", "Gorin", 1),
+        (((1,1,2,2), (1,2,2,2)), "sequences", "Gorin", 0),
+        (((1,2,2,2), (2,2,2,2)), "sequences", "Gorin", 0),
+        (((1,1,1,1,1), (2,2,2,2,2)), "sequences", "Gorin", 0),
+        (((),()), "sequences", "Gorin", 1),
+    ]
+)
+def test_haar_integral_orthogonal_trivial(monomial, structure, algo, result):
+    "Test the trivial integrals"
+    assert ap.haar_integral_orthogonal(monomial, d, algo, structure) == result
+
+
+# TEST THAT COLLINS AND GORIN AGREE - USE DIFFERENT INPUT TYPE
+# TEST GORIN AGREE WITH WG FUNCTION FOR SPECIFIC POWER MATRIX AND SPECIFIC SEQUENCES
+# TEST ALL TRIVIAL CASES
+# TEST ALL ERROR ASSERTIONS
+# TEST SPECIAL CASES IN GORIN AND COLLINS FUNCTIONS AS WELL
+# TEST EMPTY SEQUENCE AND EMPTY MATRIX AND MATRIX OF 0 RETURNS 1
+
+#  power_matrix = ((2,0,0),(0,4,2),(2,0,2))

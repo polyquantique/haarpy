@@ -234,6 +234,10 @@ def haar_integral_unitary(
     if len(seq_i) != len(seq_j) or len(seq_i_prime) != len(seq_j_prime):
         raise ValueError("Wrong tuple format")
 
+    #integral over the Haar measure
+    if len(seq_i) == 0:
+        return 1
+    
     class_mapping = Counter(
         get_conjugacy_class(cycle_i * ~cycle_j)
         for cycle_i, cycle_j in product(
