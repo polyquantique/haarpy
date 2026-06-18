@@ -22,13 +22,13 @@ from fractions import Fraction
 from sympy import Add, Mul, together, fraction, factor, factor_list, Expr, PolificationFailed
 
 
-def _simplify(expr_iter: Iterable[Expr], constant: Fraction = Fraction(1, 1)) -> Expr:
+def _simplify(expr_iter: Expr | Iterable[Expr], constant: Fraction = Fraction(1, 1)) -> Expr:
     """Factorizes a sum of rational fraction into a
     single factorized, simplified fraction
 
     Parameters
     ----------
-    expr : Expr
+    expr_iter : Expr | Itearable[Expr]
         The expression to be simplified
 
     constant : Fraction
@@ -39,7 +39,7 @@ def _simplify(expr_iter: Iterable[Expr], constant: Fraction = Fraction(1, 1)) ->
     Expr
         The simplified fraction
     """
-    equation = together(Add(*expr_iter))
+    equation = together(expr_iter if isinstance(expr_iter, Expr) else Add(*expr_iter))
     # automatically factorises the denominator
     num, denum = fraction(constant * equation)
 
@@ -168,7 +168,9 @@ def _sequence_to_matrix(
     row_index_tuple: tuple[tuple[int, ...], ...],
     col_index_tuple: tuple[tuple[int, ...], ...],
 ) -> tuple[tuple[int, ...], ...]:
-    "Converts sequences of row and column indices to a power matrix"
+    """Converts sequences of row and column indices to a power matrix.
+        Will generate has many matrices as there are inputs
+    """
     if len(row_index_tuple) != len(col_index_tuple):
         raise ValueError
     if not all(len(row) == len(col) for row, col in zip(row_index_tuple, col_index_tuple)):

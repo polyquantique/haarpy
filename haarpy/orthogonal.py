@@ -318,7 +318,7 @@ def _column_integral_orthogonal(col_vector: tuple[int, ...], group_dimension: Sy
         half_total,
     )
 
-    return _simplify(numerator / denominator)
+    return numerator / denominator
 
 
 @lru_cache
@@ -388,7 +388,7 @@ def _haar_integral_orthogonal_gorin(
             else Rational(group_dimension, 2)
         )
         z2 = Rational(col_count - 1, 2)
-        b_function = _simplify((-1) ** (a - b) * rf(z1, b) * rf(z1, a - b) / rf(z1 - z2, a))
+        b_function = (-1) ** (a - b) * rf(z1, b) * rf(z1, a - b) / rf(z1 - z2, a)
 
         col_coefficient = vector_binomial * kappa_integral * b_function
 
@@ -439,7 +439,7 @@ def haar_integral_orthogonal(
     monomial : tuple[tuple[int, ...], ...],
     orthogonal_dimension : Symbol | int, 
     algorithm : str = "collins",
-    input : str = "sequence",
+    input : str = "sequences",
 ) -> Expr:
     """Returns the integral over orthogonal group polynomial sampled at random from the Haar measure
 
@@ -465,7 +465,7 @@ def haar_integral_orthogonal(
     Raises
     ------
     TypeError
-        If ``algorithm`` or ``orthogonal_dimension`` are not of type ``str``
+        If ``algorithm``, ``orthogonal_dimension`` or ``orthogonal_dimension`` have the wrong type
     ValueError
         If ``algorithm`` is neither ``Collins`` nor ``Gorin``
     ValueError
@@ -500,19 +500,13 @@ def haar_integral_orthogonal(
     """
     #CHANGE SEQUENCES AND POWER_MATRIX TO MONOMIAL!!!!!!!!
     #ADD EXAMPLES WITH THE COLLINS ALGORITHM
-    if not isinstance(algorithm, str) or not isinstance(input, str):
-        raise  TypeError
-    
-    if not isinstance(orthogonal_dimension, (Symbol, int)):
+    if not isinstance(algorithm, str) or not isinstance(input, str) or not isinstance(orthogonal_dimension, (Symbol, int)):
         raise TypeError
     
     algorithm, input = algorithm.lower(), input.lower()
 
-    if not algorithm in ("collins", "gorin"):
-        raise ValueError
-    
-    if not input in ("matrix", "sequences"):
-        raise ValueError
+    if not algorithm in ("collins", "gorin") or not input in ("matrix", "sequences"):
+        raise ValueError("The 'algorithm must be either 'Collins' or 'Gorin'.\nThe 'input' must be either 'matrix' or 'sequences'")
     
     # trivial case
     if input == "sequences":
@@ -521,9 +515,8 @@ def haar_integral_orthogonal(
         if len(monomial[0]) % 2:
             return 0
 
-    #ADD ERRORS IF THE POWER MATRIX IS NOT A PROPER POWER MATRIX
     #TEST THAT BOTH ALGORITHMS AGREE
-    #TEST THAT THE GORIN INTEGRAL MATCH THE WEINGARTEN FUNCTION WITH SETUP CORRECTLY
+    #TEST THAT THE GORIN INTEGRAL MATCH THE WEINGARTEN FUNCTION WHEN POWER MATRIX IS SETUP CORRECTLY
     #trivial case
     if input == "matrix":
         if not _is_power_matrix(monomial):
@@ -538,9 +531,14 @@ def haar_integral_orthogonal(
             return 0
     
     if algorithm == "gorin":
-        #DO _matrix_to_sequence(sequence_to_matrix(monomial)) to remove zero or define a 0 removal function
-        power_matrix = _sequence_to_matrix((monomial[0],), (monomial[1],))[0] if input == "sequence" else monomial
+        if input == "sequences":
+            power_matrix = _sequence_to_matrix((monomial[0],), (monomial[1],))[0]
+        elif input == "matrix":
+            #removes zero rows and columns
+            sequences = _matrix_to_sequence(monomial)
+            power_matrix = _sequence_to_matrix((sequences[0],), (sequences[1],))[0]
         return _haar_integral_orthogonal_gorin(power_matrix, orthogonal_dimension)
     elif algorithm == "collins":
+        #MAKE SURE TO ALSO TEST _MATRIX_TO_SEQUENCE IN THAT CASE
         sequences = _matrix_to_sequence(monomial) if input == "matrix" else monomial
         return _haar_integral_orthogonal_collins(sequences, orthogonal_dimension)
