@@ -131,6 +131,22 @@ def _vector_multinomial(
     return out
 
 
+def _is_power_matrix(power_matrix: tuple[tuple[int, ...], ...] | list[list[int]]) -> bool:
+    "Return true if the input is a proper power matrix"
+    if not isinstance(power_matrix, (tuple, list)):
+        return False
+
+    if not all(isinstance(row, (tuple, list)) for row in power_matrix):
+        return False
+
+    if not all(
+        isinstance(element, int) and element >= 0 for row in power_matrix for element in row
+    ):
+        return False
+
+    return True
+
+
 def _matrix_to_sequence(
     power_matrix: tuple[tuple[int, ...], ...],
 ) -> tuple[tuple[int, ...], tuple[int, ...]]:
