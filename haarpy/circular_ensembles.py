@@ -26,7 +26,7 @@ from functools import lru_cache
 from collections import Counter, defaultdict
 from itertools import permutations, product, chain
 from sympy import Symbol, Expr
-from sympy.combinatorics import Permutation, SymmetricGroup
+from sympy.combinatorics import Permutation
 from sympy.core.numbers import Integer
 from haarpy import (
     weingarten_orthogonal,
@@ -188,6 +188,7 @@ def haar_integral_circular_orthogonal(
 
     return sum(integral_gen) if isinstance(group_dimension, int) else _simplify(integral_gen)
 
+
 def admissible_permutations(shifted_i, shifted_j):
     if Counter(shifted_i) != Counter(shifted_j):
         return
@@ -213,7 +214,8 @@ def admissible_permutations(shifted_i, shifted_j):
     for blocks in product(*block_generators):
         mapping = sorted(chain.from_iterable(blocks))
         yield Permutation([i for _, i in mapping])
-            
+
+      
 @lru_cache
 def haar_integral_circular_symplectic(
     sequences: tuple[tuple[Expr, ...], ...], half_dimension: Expr
