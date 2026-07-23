@@ -15,13 +15,15 @@
 Circular ensembles tests
 """
 
-from math import prod
-from random import seed, randint
+from math import prod, factorial
+from collections import Counter
+from random import seed, randint, shuffle
 from fractions import Fraction
 from sympy import Symbol, simplify, factorial, factorial2
 from sympy.combinatorics import SymmetricGroup
 import pytest
 import haarpy as ap
+from haarpy.circular_ensembles import _admissible_permutations
 
 seed(137)
 d = Symbol("d")
@@ -358,3 +360,38 @@ def test_haar_integral_circular_symplectic_wrong_dimension_format(dimension):
 def test_haar_integral_circular_symplectic_zero_cases(sequences, dimension):
     "Test cases that yield zero"
     assert not ap.haar_integral_circular_symplectic(sequences, dimension)
+
+
+@pytest.mark.parametrize(
+    "seq_i, seq_j",
+    [
+        ((1, 3, 2), (1, 3, 3)),
+        ((1, 3, 3, 2), (1, 3, 3)),
+        ((1, 1, 1, 1), (1, 1, 1, 2)),
+    ],
+)
+def test_admissible_permutations_empty(seq_i, seq_j):
+    "test instance for which there are no admissible permutation"
+    assert next(_admissible_permutations(seq_i, seq_j), None) is None
+
+
+@pytest.mark.parametrize(
+    "sequence",
+    [
+        [1, 3, 2],
+        [1, 3, 3, 2],
+        [1, 1, 1, 1],
+        [1, 1, 1, 1, 2, 2, 2],
+    ],
+)
+def test_admissible_permutations_not_empty(sequence):
+    "test the size and admissible permutations"
+    shuffled_sequence = sequence.copy()
+    shuffle(shuffled_sequence)
+
+    counter = 0
+    for permutation in _admissible_permutations(sequence, shuffled_sequence):
+        assert permutation(sequence) == shuffled_sequence
+        counter += 1
+
+    assert counter == prod(factorial(i) for i in Counter(sequence).values())
