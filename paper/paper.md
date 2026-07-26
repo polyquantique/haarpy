@@ -30,7 +30,7 @@ There is a multiplicity of applications, both in physics and in mathematics, req
 Rather than relying on Monte Carlo simulation, which provides approximate results [@mezzadri2006generate], Haarpy enables exact analytical computation of such moments.
 
 Under the hood, Haarpy reduces the computation of integrals over the relevant ensembles to Weingarten calculus.
-This field has grown rapidly over the past few decades, following the foundational work of Collins, who introduced the terminology [@collins2003moments] [@collins2006integration].
+This field has grown rapidly over the past few decades, following the foundational work of Collins, who introduced the terminology [@collins2003moments; @collins2006integration].
 This machinery is exposed through functions such as `weingarten_unitary`, `weingarten_orthogonal` and `weingarten_symplectic` while the associated integrals are accessed through functions such as `haar_integral_unitary`, `haar_integral_orthogonal` and `haar_integral_symplectic`.
 A full description of Haarpy's functionalities can be found in the library [documentation](https://haarpy.readthedocs.io).
 
