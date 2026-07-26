@@ -69,9 +69,9 @@ In particular, moments are computed on demand rather than retrieved from tabulat
 
 Core Weingarten functionality is complemented by auxiliary tools, including:
 
-- Implementation of the Murnaghan-Nakayama rule for characters of irreducible representations of the symmetric group [@james2006representation],
+- Implementation of the Murnaghan-Nakayama rule for characters of irreducible representations of the symmetric group [@james1978representation],
 
-- Functions for computing dimensions of irreducible representations of the symmetric and unitary groups [@james2006representation],
+- Functions for computing dimensions of irreducible representations of the symmetric and unitary groups [@james1978representation],
 
 - Generators yielding the permutations of the hyperoctahedral group and Young group [@macdonald1998symmetric],
 
