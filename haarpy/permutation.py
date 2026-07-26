@@ -76,7 +76,7 @@ def weingarten_permutation(
     second_partition: tuple[tuple[int, ...], ...],
     dimension: Symbol,
 ) -> Expr:
-    """Returns the Weingarten function for random permutation matrices
+    r"""Returns the Weingarten function for random permutation matrices
 
     Parameters
     ----------
@@ -150,7 +150,7 @@ def weingarten_centered_permutation(
     second_partition: tuple[tuple[int, ...], ...],
     dimension: Symbol,
 ) -> Expr:
-    """Returns the Weingarten function for centered random permutation matrices
+    r"""Returns the Weingarten function for centered random permutation matrices
 
     Parameters
     ----------

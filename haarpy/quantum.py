@@ -33,7 +33,7 @@ def _haar_integral_quantum(
     group_dimension: Symbol,
     pair: bool,
 ) -> Expr:
-    """Returns the integral of a quantum group, either the free symmetric group or
+    r"""Returns the integral of a quantum group, either the free symmetric group or
     the free orthogonal group
 
     Parameters
@@ -107,7 +107,7 @@ def haar_integral_free_symmetric(
     sequences: tuple[tuple[int, ...], ...],
     group_dimension: Symbol,
 ) -> Expr:
-    """Returns the integral of the free symmetric group under the Haar measure
+    r"""Returns the integral of the free symmetric group under the Haar measure
 
     Parameters
     ----------
@@ -148,7 +148,7 @@ def haar_integral_free_orthogonal(
     sequences: tuple[tuple[int, ...], ...],
     group_dimension: Symbol,
 ) -> Expr:
-    """Returns the integral of the free orthogonal group under the Haar measure
+    r"""Returns the integral of the free orthogonal group under the Haar measure
 
     Parameters
     ----------
