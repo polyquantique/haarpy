@@ -23,9 +23,11 @@ References
 from math import prod
 from fractions import Fraction
 from functools import lru_cache
-from collections import Counter
+from collections import Counter, defaultdict
+from collections.abc import Iterator
+from itertools import permutations, product, chain
 from sympy import Symbol, Expr
-from sympy.combinatorics import Permutation, SymmetricGroup
+from sympy.combinatorics import Permutation
 from sympy.core.numbers import Integer
 from haarpy import (
     weingarten_orthogonal,
@@ -188,6 +190,47 @@ def haar_integral_circular_orthogonal(
     return sum(integral_gen) if isinstance(group_dimension, int) else _simplify(integral_gen)
 
 
+def _admissible_permutations(
+    shifted_i: tuple[int, ...], shifted_j: tuple[int, ...]
+) -> Iterator[Permutation]:
+    """Yields the set of permutations sending `shifted_i` to `shifted_j`
+
+    Parameters
+    ----------
+    shifted_i : tuple[int, ...]
+        Sequence of integer
+
+    shifted_j : tuple[int, ...]
+        Sequence of integer
+
+    Returns
+    -------
+    Iterator[Permutation]
+        The admissible permutations
+    """
+    if Counter(shifted_i) != Counter(shifted_j):
+        return
+
+    pos_i = defaultdict(list)
+    pos_j = defaultdict(list)
+
+    for k, (a, b) in enumerate(zip(shifted_i, shifted_j)):
+        pos_i[a].append(k)
+        pos_j[b].append(k)
+
+    block_generators = []
+
+    for value in pos_i:
+        dst = pos_j[value]
+        src = pos_i[value]
+
+        block_generators.append([list(zip(dst, perm)) for perm in permutations(src)])
+
+    for blocks in product(*block_generators):
+        mapping = sorted(chain.from_iterable(blocks))
+        yield Permutation([i for _, i in mapping])
+
+
 @lru_cache
 def haar_integral_circular_symplectic(
     sequences: tuple[tuple[Expr, ...], ...], half_dimension: Expr
@@ -324,11 +367,7 @@ def haar_integral_circular_symplectic(
     else:
         raise TypeError
 
-    permutation_tuple = (
-        permutation
-        for permutation in SymmetricGroup(degree).generate()
-        if permutation(shifted_i) == shifted_j
-    )
+    permutation_tuple = _admissible_permutations(shifted_i, shifted_j)
 
     integral_gen = (
         weingarten_circular_symplectic(permutation, half_dimension)
