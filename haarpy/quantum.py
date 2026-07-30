@@ -169,9 +169,9 @@ def haar_integral_free_orthogonal(
     >>> from haarpy import haar_integral_free_symmetric
     >>> d = Symbol("d")
     >>> sequences = ((0, 1, 1, 0), (0, 0, 1, 1))
-    >>> haar_integral_free_symmetric(sequences, d)
+    >>> haar_integral_free_orthogonal(sequences, d)
     -1/(d*(d - 1)*(d + 1))
-    >>> haar_integral_free_symmetric(sequences, 4)
+    >>> haar_integral_free_orthogonal(sequences, 4)
     -1/60
 
     See Also
