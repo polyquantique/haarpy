@@ -22,6 +22,7 @@ References
 
 from functools import lru_cache
 from itertools import product
+from fractions import Fraction
 from sympy import Expr, Symbol
 from haarpy import non_crossing_partitions, gram_matrix
 from ._utils import _simplify
@@ -99,7 +100,7 @@ def _haar_integral_quantum(
         for row_index, col_index in product(elligible_row_indices, elligible_col_indices)
     )
 
-    return sum(integral_gen) if isinstance(group_dimension, int) else _simplify(integral_gen)
+    return Fraction(sum(integral_gen)) if isinstance(group_dimension, int) else _simplify(integral_gen)
 
 
 @lru_cache
@@ -131,7 +132,7 @@ def haar_integral_free_symmetric(
     >>> haar_integral_free_symmetric(sequences, d)
     1/(d*(d - 2)*(d - 1))
     >>> haar_integral_free_symmetric(sequences, 4)
-    1/24
+    Fraction(1, 24)
 
     See Also
     --------
@@ -169,10 +170,10 @@ def haar_integral_free_orthogonal(
     >>> from haarpy import haar_integral_free_symmetric
     >>> d = Symbol("d")
     >>> sequences = ((0, 1, 1, 0), (0, 0, 1, 1))
-    >>> haar_integral_free_symmetric(sequences, d)
+    >>> haar_integral_free_orthogonal(sequences, d)
     -1/(d*(d - 1)*(d + 1))
-    >>> haar_integral_free_symmetric(sequences, 4)
-    -1/60
+    >>> haar_integral_free_orthogonal(sequences, 4)
+    Fraction(-1, 60)
 
     See Also
     --------

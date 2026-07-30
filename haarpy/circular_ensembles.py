@@ -275,7 +275,7 @@ def haar_integral_circular_symplectic(
     >>> d = Symbol("d")
     >>> seq_i_num, seq_j_num = (0, 3, 2, 1), (0, 1, 2, 3)
     >>> haar_integral_circular_symplectic((seq_i_num, seq_j_num), 2)
-    Fraction(1, 6)
+    Fraction(-1, 12)
     >>> seq_i_symb, seq_j_symb = (0, d+1, d, 1), (0, 1, d, d + 1)
     >>> haar_integral_circular_symplectic((seq_i_symb, seq_j_symb), d)
     -1/(2*d*(2*d - 3)*(2*d - 1))
