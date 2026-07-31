@@ -39,7 +39,7 @@ Built on top of the SymPy symbolic engine, Haarpy allows users to retain symboli
 # Statement of need
 
 The computation of averages over Haar-distributed random matrices is of growing importance in quantum information theory [@martinez2024linear; @cardin2024photon; @turkeshi2025magic], random matrix theory [@bordenave2024strong; @daigle2025mixed], and statistical physics [@cotler2017chaos; @potters2020first].
-These averages describe the typical behavior of complex systems, including entanglement properties, randomness, and statistical correlations.
+These averages describe the typical behavior of complex systems, including their quantum and classical correlations.
 
 Standard approaches typically rely either on Monte Carlo simulation, which approximates integrals through sampling, or on manual analytical derivations, which often involves intricate combinatorics.
 
