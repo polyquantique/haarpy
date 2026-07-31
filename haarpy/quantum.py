@@ -167,7 +167,7 @@ def haar_integral_free_orthogonal(
     Examples
     --------
     >>> from sympy import Symbol
-    >>> from haarpy import haar_integral_free_symmetric
+    >>> from haarpy import haar_integral_free_orthogonal
     >>> d = Symbol("d")
     >>> sequences = ((0, 1, 1, 0), (0, 0, 1, 1))
     >>> haar_integral_free_orthogonal(sequences, d)
