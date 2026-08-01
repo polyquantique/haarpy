@@ -259,7 +259,6 @@ def _haar_integral_orthogonal_collins(
     seq_i, seq_j = sequences
     degree = len(seq_i)
 
-    #integral over the Haar measure
     if degree == 0:
         return 1
 
@@ -435,7 +434,7 @@ def _haar_integral_orthogonal_gorin(
 
         integral += col_coefficient * reduced_integral
 
-    return _simplify(integral)
+    return _simplify(integral) if isinstance(group_dimension, Symbol) else Fraction(integral)
 
 
 @lru_cache

@@ -72,8 +72,7 @@ def _generate_matrices_with_row_sums(
     row_sums: tuple[int, ...],
     col_count: int,
 ) -> Iterable[tuple[tuple[int, ...], ...]]:
-    """
-    Generate all nonnegative integer matrices with prescribed row sums
+    """Generate all nonnegative integer matrices with prescribed row sums
 
     Parameters
     ----------
@@ -86,7 +85,7 @@ def _generate_matrices_with_row_sums(
     Returns
     -------
     iterator of tuple[tuple[int, ...], ...]
-        Yielded all nonnegative integer matrix with prescribed row sum
+        Yields all nonnegative integer matrix with prescribed row sum
     """
 
     def generate_compositions(total: int, length: int) -> Iterable[tuple[int, ...]]:
@@ -112,7 +111,21 @@ def _generate_matrices_with_row_sums(
 def _vector_multinomial(
     row_sums: tuple[int, ...], power_matrix: tuple[tuple[int, ...], ...]
 ) -> int:
-    """Product of multinomial coefficients"""
+    """Product of multinomial coefficients
+
+    Parameters
+    ----------
+    row_sums : tuple[int, ...]
+        Sum of each row
+
+    power_matrix : tuple[tuple[int, ...], ...]
+        Power matrix of non-negative integers
+
+    Returns
+    -------
+    int
+        the product of the multinomial coefficients
+    """
 
     def multinomial(total: int, parts: Iterable[int]) -> int:
         """Multinomial coefficient total! / prod parts_i!"""
@@ -132,7 +145,18 @@ def _vector_multinomial(
 
 
 def _is_power_matrix(power_matrix: tuple[tuple[int, ...], ...] | list[list[int]]) -> bool:
-    "Return true if the input is a proper power matrix"
+    """Return true if the input is a proper power matrix
+
+    Parameters
+    ----------
+    power_matrix : tuple[tuple[int, ...], ...] | list[list[int]]
+        a power matrix
+
+    Returns
+    -------
+    bool
+        `True` if proper power matrix
+    """
     if not isinstance(power_matrix, (tuple, list)):
         return False
 
@@ -150,7 +174,18 @@ def _is_power_matrix(power_matrix: tuple[tuple[int, ...], ...] | list[list[int]]
 def _matrix_to_sequence(
     power_matrix: tuple[tuple[int, ...], ...],
 ) -> tuple[tuple[int, ...], tuple[int, ...]]:
-    "Converts power matrix to sequences of row and column indices"
+    """Converts power matrix to sequences of row and column indices
+
+    Parameters
+    ----------
+    power_matrix : tuple[tuple[int, ...], ...] | list[list[int]]
+        a power matrix
+
+    Returns
+    -------
+    tuple[tuple[int, ...], tuple[int, ...]]
+        the associated row and column sequences
+    """
     row_index = tuple(
         i for i, j in enumerate(sum(k for k in row) for row in power_matrix) for _ in range(j)
     )
@@ -167,9 +202,22 @@ def _matrix_to_sequence(
 def _sequence_to_matrix(
     row_index_tuple: tuple[tuple[int, ...], ...],
     col_index_tuple: tuple[tuple[int, ...], ...],
-) -> tuple[tuple[int, ...], ...]:
+) -> list[tuple[tuple[int, ...], ...]]:
     """Converts sequences of row and column indices to a power matrix.
         Will generate has many matrices as there are inputs
+
+    Parameters
+    ----------
+    row_index_tuple: tuple[tuple[int, ...], ...]
+        a tuple of tuples of row indices
+
+    col_index_tuple: tuple[tuple[int, ...], ...]
+        a tuple of tuples of column indices
+
+    Returns
+    -------
+    list[tuple[tuple[int, ...], tuple[int, ...]]]
+        a list of power matrices
     """
     if len(row_index_tuple) != len(col_index_tuple):
         raise ValueError
