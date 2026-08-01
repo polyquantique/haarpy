@@ -399,13 +399,13 @@ def test_haar_integral_orthogonal_column_numeric(power_tuple):
         )
 
 
-@pytest.mark.parametrize("dimension, half_power", product(range(2, 5), range(1, 4)))
-def test_haar_integral_orthogonal_trace(dimension, half_power):
+@pytest.mark.parametrize("dimension", range(2, 7))
+def test_haar_integral_orthogonal_trace(dimension):
     "Test based on the integral of the power of the trace"
-    for half in range(1, min(dimension + 1, 4)):
+    for half_power in range(1, min(dimension + 1, 4)):
         integral = sum(
             ap.haar_integral_orthogonal((seq_i, seq_i), dimension)
-            for seq_i in product(range(dimension), repeat=2 * half)
+            for seq_i in product(range(dimension), repeat=2 * half_power)
         )
         assert integral == factorial2(2 * half_power - 1)
 
