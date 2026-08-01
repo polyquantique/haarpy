@@ -15,7 +15,7 @@
 Utility Python interface
 """
 
-from math import factorial
+from math import factorial, prod
 from itertools import product
 from collections.abc import Iterable
 from fractions import Fraction
@@ -87,14 +87,8 @@ def _generate_matrices_with_row_sums(
     iterator of tuple[tuple[int, ...], ...]
         Yields all nonnegative integer matrix with prescribed row sum
     """
-
     def generate_compositions(total: int, length: int) -> Iterable[tuple[int, ...]]:
         "Generate all length-tuples of nonnegative integers summing to total"
-        if length == 0:
-            if total == 0:
-                yield tuple()
-            return
-
         if length == 1:
             yield (total,)
             return
@@ -126,10 +120,8 @@ def _vector_multinomial(
     int
         the product of the multinomial coefficients
     """
-
-    def multinomial(total: int, parts: Iterable[int]) -> int:
+    def multinomial(total: int, parts: tuple[int, ...]) -> int:
         """Multinomial coefficient total! / prod parts_i!"""
-        parts = list(parts)
         if sum(parts) != total:
             return 0
 
@@ -138,10 +130,7 @@ def _vector_multinomial(
             out //= factorial(p)
         return out
 
-    out = 1
-    for s, row in zip(row_sums, power_matrix):
-        out *= multinomial(s, row)
-    return out
+    return prod(multinomial(s, row) for s, row in zip(row_sums, power_matrix))
 
 
 def _is_power_matrix(power_matrix: tuple[tuple[int, ...], ...] | list[list[int]]) -> bool:
