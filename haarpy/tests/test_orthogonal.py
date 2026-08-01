@@ -23,7 +23,7 @@ import pytest
 from sympy import Symbol, factorial2
 from sympy.combinatorics import Permutation, SymmetricGroup
 import haarpy as ap
-from haarpy.orthogonal import _haar_integral_orthogonal_gorin, _column_integral_orthogonal
+from haarpy.orthogonal import _column_integral_orthogonal
 
 seed(137)
 d = Symbol("d")
@@ -413,29 +413,29 @@ def test_haar_integral_orthogonal_trace(dimension):
 @pytest.mark.parametrize(
     "monomial, structure, algo, result",
     [
-        (((2,0,0,2), (0,1,1,0), (2,0,0,0)), "matrix", "Collins", 0),
-        (((1,0), (0,1)), "matrix", "Collins", 0),
-        (((1,4,2,2), (2,0,4,6), (2,2,2,2), (4,6,8,10)), "matrix", "Collins", 0),
-        (((),),"matrix", "Collins", 1),
-        (((),()),"matrix", "Collins", 1),
-        (((0,),),"matrix", "Collins", 1),
-        (((0,0),(0,0)),"matrix", "Collins", 1),
-        (((1,1,2,2), (1,2,2,2)), "sequences", "Collins", 0),
-        (((1,2,2,2), (2,2,2,2)), "sequences", "Collins", 0),
-        (((1,1,1,1,1), (2,2,2,2,2)), "sequences", "Collins", 0),
-        (((),()), "sequences", "Collins", 1),
-        (((2,0,0,2), (0,1,1,0), (2,0,0,0)), "matrix", "Gorin", 0),
-        (((1,0), (0,1)), "matrix", "Gorin", 0),
-        (((1,4,2,2), (2,0,4,6), (2,2,2,2), (4,6,8,10)), "matrix", "Gorin", 0),
-        (((),),"matrix", "Gorin", 1),
-        (((),()),"matrix", "Gorin", 1),
-        (((0,),),"matrix", "Gorin", 1),
-        (((0,0),(0,0)),"matrix", "Gorin", 1),
-        (((1,1,2,2), (1,2,2,2)), "sequences", "Gorin", 0),
-        (((1,2,2,2), (2,2,2,2)), "sequences", "Gorin", 0),
-        (((1,1,1,1,1), (2,2,2,2,2)), "sequences", "Gorin", 0),
-        (((),()), "sequences", "Gorin", 1),
-    ]
+        (((2, 0, 0, 2), (0, 1, 1, 0), (2, 0, 0, 0)), "matrix", "Collins", 0),
+        (((1, 0), (0, 1)), "matrix", "Collins", 0),
+        (((1, 4, 2, 2), (2, 0, 4, 6), (2, 2, 2, 2), (4, 6, 8, 10)), "matrix", "Collins", 0),
+        (((),), "matrix", "Collins", 1),
+        (((), ()), "matrix", "Collins", 1),
+        (((0,),), "matrix", "Collins", 1),
+        (((0, 0), (0, 0)), "matrix", "Collins", 1),
+        (((1, 1, 2, 2), (1, 2, 2, 2)), "sequences", "Collins", 0),
+        (((1, 2, 2, 2), (2, 2, 2, 2)), "sequences", "Collins", 0),
+        (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), "sequences", "Collins", 0),
+        (((), ()), "sequences", "Collins", 1),
+        (((2, 0, 0, 2), (0, 1, 1, 0), (2, 0, 0, 0)), "matrix", "Gorin", 0),
+        (((1, 0), (0, 1)), "matrix", "Gorin", 0),
+        (((1, 4, 2, 2), (2, 0, 4, 6), (2, 2, 2, 2), (4, 6, 8, 10)), "matrix", "Gorin", 0),
+        (((),), "matrix", "Gorin", 1),
+        (((), ()), "matrix", "Gorin", 1),
+        (((0,),), "matrix", "Gorin", 1),
+        (((0, 0), (0, 0)), "matrix", "Gorin", 1),
+        (((1, 1, 2, 2), (1, 2, 2, 2)), "sequences", "Gorin", 0),
+        (((1, 2, 2, 2), (2, 2, 2, 2)), "sequences", "Gorin", 0),
+        (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), "sequences", "Gorin", 0),
+        (((), ()), "sequences", "Gorin", 1),
+    ],
 )
 def test_haar_integral_orthogonal_trivial(monomial, structure, algo, result):
     "Test the trivial integrals"
@@ -445,22 +445,22 @@ def test_haar_integral_orthogonal_trivial(monomial, structure, algo, result):
 @pytest.mark.parametrize(
     "monomial, structure",
     [
-        (((),()), "sequences"),
-        (((0,0,1,1), (1,0,0,1)), "sequences"),
-        (((0,0,1,1,2,2), (1,2,2,0,0,1)), "sequences"),
-        (((0,0,1,1,2,2,2,2), (2,2,1,2,2,0,0,1)),"sequences"),
-        (((0,0,1,1,2,2,2,2), (4,4,1,4,4,5,5,1)),"sequences"),
+        (((), ()), "sequences"),
+        (((0, 0, 1, 1), (1, 0, 0, 1)), "sequences"),
+        (((0, 0, 1, 1, 2, 2), (1, 2, 2, 0, 0, 1)), "sequences"),
+        (((0, 0, 1, 1, 2, 2, 2, 2), (2, 2, 1, 2, 2, 0, 0, 1)), "sequences"),
+        (((0, 0, 1, 1, 2, 2, 2, 2), (4, 4, 1, 4, 4, 5, 5, 1)), "sequences"),
         (((),), "matrix"),
-        (((2,0), (0,2)), "matrix"),
-        (((1,1), (1,1)), "matrix"),
-        (((2,0,0),(0,2,2),(2,0,0)), "matrix"),
-        (((2,0,1,1), (0,2,1,1), (0,0,0,0), (0,0,0,0)), "matrix"),
-        (((0,0,1,1), (0,0,1,1), (1,0,1,0), (1,0,1,0)), "matrix"),
+        (((2, 0), (0, 2)), "matrix"),
+        (((1, 1), (1, 1)), "matrix"),
+        (((2, 0, 0), (0, 2, 2), (2, 0, 0)), "matrix"),
+        (((2, 0, 1, 1), (0, 2, 1, 1), (0, 0, 0, 0), (0, 0, 0, 0)), "matrix"),
+        (((0, 0, 1, 1), (0, 0, 1, 1), (1, 0, 1, 0), (1, 0, 1, 0)), "matrix"),
     ],
 )
 def test_haar_integral_orthogonal_gorin_collins_reconcile(monomial, structure):
     "Test that Gorin and Collins algorithms reconcile"
-    dimension_num = randint(7,15)
+    dimension_num = randint(7, 15)
     gorin_num = ap.haar_integral_orthogonal(monomial, dimension_num, "gorin", structure)
     gorin_symb = ap.haar_integral_orthogonal(monomial, d, "gorin", structure)
     collins_num = ap.haar_integral_orthogonal(monomial, dimension_num, "collins", structure)
@@ -474,23 +474,23 @@ def test_haar_integral_orthogonal_gorin_collins_reconcile(monomial, structure):
 @pytest.mark.parametrize(
     "value, parameter",
     [
-        ('a', "orthogonal_dimension"),
-        ([1,1], "orthogonal_dimension"),
+        ("a", "orthogonal_dimension"),
+        ([1, 1], "orthogonal_dimension"),
         (1, "algorithm"),
-        ([1,1], "algorithm"),
+        ([1, 1], "algorithm"),
         (1, "structure"),
-        ([1,1], "structure"),
+        ([1, 1], "structure"),
     ],
 )
 def test_haar_integral_orthogonal_type_error(value, parameter):
     "Test haar integral algorithm type error"
     with pytest.raises(TypeError):
         if parameter == "orthogonal_dimension":
-            ap.haar_integral_orthogonal(((),()), orthogonal_dimension = value)
+            ap.haar_integral_orthogonal(((), ()), orthogonal_dimension=value)
         if parameter == "algorithm":
-            ap.haar_integral_orthogonal(((),()), d, algorithm = value)
+            ap.haar_integral_orthogonal(((), ()), d, algorithm=value)
         if parameter == "structure":
-            ap.haar_integral_orthogonal(((),()), d, structure = value)
+            ap.haar_integral_orthogonal(((), ()), d, structure=value)
 
 
 @pytest.mark.parametrize(
@@ -508,11 +508,11 @@ def test_haar_integral_orthogonal_string_value_error(string_value, parameter):
         "The 'algorithm' must be either 'Collins' or 'Gorin'.\n"
         "The 'structure' must be either 'matrix' or 'sequences'"
     )
-    with pytest.raises(ValueError, match= error_msg):
+    with pytest.raises(ValueError, match=error_msg):
         if parameter == "algorithm":
-            ap.haar_integral_orthogonal(((),()), d, algorithm = string_value)
+            ap.haar_integral_orthogonal(((), ()), d, algorithm=string_value)
         if parameter == "structure":
-            ap.haar_integral_orthogonal(((),()), d, structure = string_value)
+            ap.haar_integral_orthogonal(((), ()), d, structure=string_value)
 
 
 @pytest.mark.parametrize(
@@ -535,26 +535,26 @@ def test_haar_integral_orthogonal_tuple_format_value_error(sequences):
 @pytest.mark.parametrize(
     "power_matrix",
     [
-        'a',
+        "a",
         range(4),
-        ('a', 'b'),
-        ((1,1), (1,'a')),
-        ((1,1), (1,-1)),
+        ("a", "b"),
+        ((1, 1), (1, "a")),
+        ((1, 1), (1, -1)),
     ],
 )
 def test_haar_integral_orthogonal_power_matrix_value_error(power_matrix):
     "Test haar integral power matrix value error"
     with pytest.raises(ValueError, match="Wrong power matrix format"):
-        ap.haar_integral_orthogonal(power_matrix, d, structure = "matrix")
+        ap.haar_integral_orthogonal(power_matrix, d, structure="matrix")
 
 
 @pytest.mark.parametrize(
     "column",
     [
-        (1,1,1),
-        (1,3,1),
-        (5,1,1,0,2),
-    ]
+        (1, 1, 1),
+        (1, 3, 1),
+        (5, 1, 1, 0, 2),
+    ],
 )
 def test_zero_column_integral_orthogonal(column):
     "Vanishing column integral"

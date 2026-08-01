@@ -350,22 +350,15 @@ def _haar_integral_orthogonal_gorin(
         column = tuple(power_matrix[i][0] for i in range(row_count))
         return _column_integral_orthogonal(column, group_dimension)
 
-    # last column recursion
     last_col = tuple(power_matrix[i][col_count - 1] for i in range(row_count))
     last_col_sum = sum(last_col)
 
-    # most probably remove since already tested that all rows and columns are even
-    if last_col_sum % 2:
-        return 0
-
     power_matrix_crop = tuple(tuple(row[: col_count - 1]) for row in power_matrix)
 
-    # the following can be removed if previously remove 0 rows and columns
     if last_col_sum == 0:
         return _haar_integral_orthogonal_gorin(power_matrix_crop, group_dimension)
 
     integral = 0
-    # kappa[i] is even and 0 <= kappa[i] <= last_col[i]
     kappa_vector_options = [list(range(0, m + 1, 2)) for m in last_col]
 
     # iterate on last column
@@ -373,16 +366,8 @@ def _haar_integral_orthogonal_gorin(
         kappa_vector = tuple(kappa_vector)
         kappa_sum = sum(kappa_vector)
 
-        # most probably can remove, kappa should never be odd
-        if kappa_sum % 2:
-            continue
-
         vector_binomial = prod(comb(m, k) for m, k in zip(last_col, kappa_vector))
         kappa_integral = _column_integral_orthogonal(kappa_vector, group_dimension)
-
-        # I don't believe that should ever happen if kappa is never zero
-        if kappa_integral == 0:
-            continue
 
         a, b = last_col_sum // 2, kappa_sum // 2
         z1 = (
@@ -409,27 +394,15 @@ def _haar_integral_orthogonal_gorin(
             if any(x % 2 for x in kcs_vector):
                 continue
 
-            kcs_integral = _column_integral_orthogonal(kcs_vector, group_dimension)
-
-            # I don't believe the following should happen
-            if kcs_integral == 0:
-                continue
-
             next_power_matrix = tuple(
                 tuple(a + b for a, b in zip(row_m, row_k))
                 for row_m, row_k in zip(power_matrix_crop, power_matrix_k)
             )
 
-            recursive_integral = _haar_integral_orthogonal_gorin(next_power_matrix, group_dimension)
-
-            # should never happen
-            if recursive_integral == 0:
-                continue
-
             reduced_integral += (
                 Integer(_vector_multinomial(prescribed_row_sum, power_matrix_k))
-                * kcs_integral
-                * recursive_integral
+                * _column_integral_orthogonal(kcs_vector, group_dimension)
+                * _haar_integral_orthogonal_gorin(next_power_matrix, group_dimension)
             )
 
         integral += col_coefficient * reduced_integral
