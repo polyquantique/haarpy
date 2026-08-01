@@ -267,7 +267,7 @@ def join_operation(
 
 
 def non_crossing_partitions(n: int, pair: bool = False) -> Iterator[tuple[tuple[int, ...], ...]]:
-    """Yields non crossing partitions of the set :math:`[n] = \{1,2,...,n\}`
+    r"""Yields non crossing partitions of the set :math:`[n] = \{1,2,...,n\}`
 
     Parameters
     ----------

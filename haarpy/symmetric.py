@@ -204,9 +204,9 @@ def proper_border_strip(
     Examples
     --------
     >>> from haarpy import proper_border_strip
-    >>> ap.proper_border_strip(((0, 0, 0), (0, 1)), (4,1))
+    >>> proper_border_strip(((0, 0, 0), (0, 1)), (4,1))
     True
-    >>> ap.proper_border_strip(((0, 0, 1), (0, 0)), (4,1))
+    >>> proper_border_strip(((0, 0, 1), (0, 0)), (4,1))
     False
     """
     if len(tableau) == 1:
@@ -466,7 +466,7 @@ def HyperoctahedralGroup(degree: int) -> PermutationGroup:
     Examples
     --------
     >>> from haarpy import HyperoctahedralGroup
-    >>> hyperoctahedral = ap.HyperoctahedralGroup(3)
+    >>> hyperoctahedral = HyperoctahedralGroup(3)
     >>> hyperoctahedral.order()
     48
     """
@@ -498,7 +498,7 @@ def hyperoctahedral_transversal(degree: int) -> Iterator[Permutation]:
     Examples
     --------
     >>> from haarpy import hyperoctahedral_transversal
-    >>> transversal = ap.hyperoctahedral_transversal(4)
+    >>> transversal = hyperoctahedral_transversal(4)
     >>> list(transversal)
     [Permutation(3), Permutation(3)(1, 2), Permutation(1, 3, 2)]
 
