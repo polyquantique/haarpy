@@ -180,6 +180,7 @@ def weingarten_unitary(cycle: Permutation | tuple[int, ...], unitary_dimension: 
                 representation_dimension(part, unitary_dimension),
             )
             for part, irrep_dimension in zip(partition_tuple, irrep_dimension_tuple)
+            if representation_dimension(part, unitary_dimension)
         ) * Fraction(1, factorial(degree) ** 2)
     else:
         weingarten_gen = (
@@ -398,7 +399,9 @@ def _haar_integral_unitary_gorin(
 
         integral += col_coefficient * reduced_integral
 
-    return factor(_simplify(integral)) if isinstance(unitary_dimension, Symbol) else Fraction(integral)
+    return (
+        factor(_simplify(integral)) if isinstance(unitary_dimension, Symbol) else Fraction(integral)
+    )
 
 
 @lru_cache
@@ -536,9 +539,13 @@ def haar_integral_unitary(
                 (monomial[0], monomial_conjugate[0]),
                 (monomial[1], monomial_conjugate[1]),
             )
-            power_matrix_m, power_matrix_n = _compressed_unitary_pair((power_matrix_m, power_matrix_n))
+            power_matrix_m, power_matrix_n = _compressed_unitary_pair(
+                (power_matrix_m, power_matrix_n)
+            )
         else:
-            power_matrix_m, power_matrix_n = _compressed_unitary_pair((monomial, monomial_conjugate))
+            power_matrix_m, power_matrix_n = _compressed_unitary_pair(
+                (monomial, monomial_conjugate)
+            )
         # returns 1 (the integral over the Haar measure) if the power matrix is empty
         return (
             _haar_integral_unitary_gorin(power_matrix_m, power_matrix_n, unitary_dimension)
@@ -553,7 +560,6 @@ def haar_integral_unitary(
     return _haar_integral_unitary_collins(
         (seq_i, seq_j, seq_i_prime, seq_j_prime), unitary_dimension
     )
-
 
     # FOR COLUMN INTEGRAL
     # if len(col_vector_m) != len(col_vector_n):
