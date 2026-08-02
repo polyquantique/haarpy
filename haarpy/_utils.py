@@ -181,7 +181,7 @@ def _matrix_to_sequence(
     col_index = tuple(
         i
         for row in power_matrix
-        for i, j in zip(tuple(range(len(power_matrix))), row)
+        for i, j in zip(tuple(range(len(power_matrix[0]))), row)
         for _ in range(j)
     )
 
@@ -224,5 +224,34 @@ def _sequence_to_matrix(
     for position, index_values in enumerate(zip(row_index_tuple, col_index_tuple)):
         for r, c in zip(*index_values):
             matrix_list[position][index_dict[r]][index_dict[c]] += 1
+
+    return [tuple(tuple(row) for row in matrix) for matrix in matrix_list]
+
+
+def _compressed_unitary_pair(matrix_tuple: tuple[tuple[tuple[int, ...], tuple[tuple[int, ...]]]]):
+    "Simplifies a pair of power matrices for unitary integral"
+    sequence_list = [_matrix_to_sequence(matrix) for matrix in matrix_tuple]
+    row_sequence_list = [sequence[0] for sequence in sequence_list]
+    col_sequence_list = [sequence[1] for sequence in sequence_list]
+
+    def compression(sequence_list):
+        index_set = set(
+            index for index_tuple in sequence_list for index in index_tuple
+        )
+        index_dict = {value: index for index, value in enumerate(index_set)}
+        compressed_sequence_tuple = tuple(
+            tuple(index_dict[i] for i in index_tuple)
+            for index_tuple in sequence_list
+        )
+
+        return len(index_set), compressed_sequence_tuple
+
+    row_count, row_compressed_seq_tuple = compression(row_sequence_list)
+    col_count, col_compressed_seq_tuple = compression(col_sequence_list)
+    matrix_list = [[[0] * col_count for _ in range(row_count)] for _ in range(2)]
+
+    for i in range(2):
+        for r, c in zip(row_compressed_seq_tuple[i], col_compressed_seq_tuple[i]):
+            matrix_list[i][r][c] += 1
 
     return [tuple(tuple(row) for row in matrix) for matrix in matrix_list]

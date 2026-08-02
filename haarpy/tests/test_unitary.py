@@ -17,12 +17,14 @@ Unitary tests
 
 import pytest
 from fractions import Fraction
+from random import seed, randint
 from sympy.combinatorics import Permutation
 from sympy import Symbol, simplify, fraction, factor
 from sympy.combinatorics.named_groups import SymmetricGroup
 import haarpy as ap
 from haarpy.unitary import _column_integral_unitary
 
+seed(137)
 d = Symbol("d")
 
 
@@ -246,7 +248,7 @@ def test_haar_integral_hand(sequences, weingarten_map):
     )
     numerator, denominator = fraction(simplify(integral))
     integral = factor(numerator) / factor(denominator)
-    assert ap.haar_integral_unitary(sequences, d) == integral
+    assert ap.haar_integral_unitary(sequences[:2], sequences[2:], d) == integral
 
 
 @pytest.mark.parametrize(
@@ -260,13 +262,66 @@ def test_haar_integral_hand(sequences, weingarten_map):
 def test_haar_integral_wrong_format(sequence):
     "Test wrong tuple format ValueError"
     with pytest.raises(ValueError, match="Wrong tuple format"):
-        ap.haar_integral_unitary(sequence, d)
+        ap.haar_integral_unitary(sequence[:2], sequence[2:], d)
 
 
+@pytest.mark.parametrize(
+    "monomial, monomial_conj, structure, algo, result",
+    [
+        (((2, 0, 0, 2), (0, 1, 1, 0), (2, 0, 0, 0)), ((3, 0, 0, 2), (0, 1, 1, 0), (2, 0, 0, 0)), "matrix", "Collins", 0),
+        (((1, 0), (0, 1)), ((1, 0), (0, 2)), "matrix", "Collins", 0),
+        (((1, 1, 1), (1, 1, 1), (1, 1, 1)), ((1, 2, 0), (1, 1, 1), (1, 1, 1)), "matrix", "Collins", 0),
+        (((),), ((),), "matrix", "Collins", 1),
+        (((), ()), ((), ()), "matrix", "Collins", 1),
+        (((0,),), ((0,),), "matrix", "Collins", 1),
+        (((0, 0), (0, 0)), ((0, 0), (0, 0)), "matrix", "Collins", 1),
+        (((1, 1, 2, 2), (1, 2, 2, 2)), ((1, 1, 1, 2), (1, 2, 2, 2)), "sequences", "Collins", 0),
+        (((1, 2, 2, 2), (2, 2, 2, 2)), ((1, 2, 2, 2), (2, 2, 2, 1)), "sequences", "Collins", 0),
+        (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), ((2, 2, 2, 2, 2), (1, 1, 1, 1, 1)), "sequences", "Collins", 0),
+        (((), ()), ((), ()), "sequences", "Collins", 1),
+        (((1, 0), (0, 1)), ((1, 0), (0, 2)), "matrix", "Gorin", 0),
+        (((),), ((),), "matrix", "Gorin", 1),
+        (((), ()), ((), ()), "matrix", "Gorin", 1),
+        (((), (), ()), ((), (), ()), "matrix", "Gorin", 1),
+        (((0,),), ((0,),), "matrix", "Gorin", 1),
+        (((0, 0), (0, 0)), ((0, 0), (0, 0)), "matrix", "Gorin", 1),
+        (((1, 1, 2, 2), (1, 2, 2, 2)), ((1, 1, 1, 2), (1, 2, 2, 2)), "sequences", "Gorin", 0),
+        (((1, 2, 2, 2), (2, 2, 2, 2)), ((1, 2, 2, 2), (2, 2, 2, 1)), "sequences", "Gorin", 0),
+        (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), ((2, 2, 2, 2, 2), (1, 1, 1, 1, 1)), "sequences", "Gorin", 0),
+        (((), ()), ((), ()), "sequences", "Gorin", 1),
+    ],
+)
+def test_haar_integral_unitary_trivial(monomial, monomial_conj, structure, algo, result):
+    "Test the trivial integrals"
+    assert ap.haar_integral_unitary(monomial, monomial_conj, d, algo, structure) == result
 
 
+@pytest.mark.parametrize(
+    "monomial, monomial_conj, structure",
+    [
+        (((), ()), ((), ()), "sequences"),
+        (((0, 0, 1, 1), (1, 0, 0, 1)), ((0, 1, 0, 1), (0, 1, 0, 1)), "sequences"),
+        (((0, 0, 1, 1, 2, 2), (1, 2, 2, 0, 1, 1)), ((2, 2, 0, 0, 1, 1), (1, 2, 2, 1, 0, 1)), "sequences"),
+        (((0, 0, 1, 1, 2), (4, 4, 4, 4, 5)), ((0, 0, 1, 1, 2), (4, 4, 4, 4, 5)), "sequences"),
+        (((2, 0), (0, 2)), ((2, 0), (0, 2)), "matrix"),
+        (((2, 0), (0, 2)), ((0, 2), (2, 0)), "matrix"),
+        (((2, 0), (0, 2)), ((1, 1), (1, 1)), "matrix"),
+        (((1, 1), (1, 1)), ((1, 1), (1, 1)), "matrix"),
+        (((2, 0, 0), (0, 2, 2), (2, 0, 0)), ((1, 1, 0), (1, 1, 2), (2, 0, 0)), "matrix"),
+        (((1, 1, 1), (1, 1, 1), (1, 1, 1)), ((3, 0, 0), (0, 3, 0), (0, 0, 3)), "matrix"),
+    ],
+)
+def test_haar_integral_unitary_gorin_collins_reconcile(monomial, monomial_conj, structure):
+    "Test that Gorin and Collins algorithms reconcile"
+    dimension_num = randint(7, 15)
+    gorin_num = ap.haar_integral_unitary(monomial, monomial_conj, dimension_num, "gorin", structure)
+    gorin_symb = ap.haar_integral_unitary(monomial, monomial_conj, d, "gorin", structure)
+    collins_num = ap.haar_integral_unitary(monomial, monomial_conj, dimension_num, "collins", structure)
+    collins_symb = ap.haar_integral_unitary(monomial, monomial_conj, d, "collins", structure)
 
-
+    assert collins_num
+    assert gorin_symb == collins_symb
+    assert gorin_num == collins_num
 
 
 

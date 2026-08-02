@@ -50,6 +50,7 @@ from ._utils import (
     _matrix_to_sequence,
     _sequence_to_matrix,
     _is_power_matrix,
+    _compressed_unitary_pair,
 )
 
 
@@ -307,6 +308,9 @@ def _haar_integral_unitary_gorin(
 
     row_count, col_count = len(power_matrix_m), len(power_matrix_m[0])
 
+    if col_count == 0:
+        return 1
+
     if row_count == 1:
         return _column_integral_unitary(power_matrix_m[0], power_matrix_n[0], unitary_dimension)
 
@@ -394,7 +398,7 @@ def _haar_integral_unitary_gorin(
 
         integral += col_coefficient * reduced_integral
 
-    return factor(_simplify(integral))
+    return factor(_simplify(integral)) if isinstance(unitary_dimension, Symbol) else Fraction(integral)
 
 
 @lru_cache
@@ -532,8 +536,9 @@ def haar_integral_unitary(
                 (monomial[0], monomial_conjugate[0]),
                 (monomial[1], monomial_conjugate[1]),
             )
+            power_matrix_m, power_matrix_n = _compressed_unitary_pair((power_matrix_m, power_matrix_n))
         else:
-            power_matrix_m, power_matrix_n = monomial, monomial_conjugate
+            power_matrix_m, power_matrix_n = _compressed_unitary_pair((monomial, monomial_conjugate))
         # returns 1 (the integral over the Haar measure) if the power matrix is empty
         return (
             _haar_integral_unitary_gorin(power_matrix_m, power_matrix_n, unitary_dimension)
