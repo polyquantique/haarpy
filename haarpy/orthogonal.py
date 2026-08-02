@@ -441,7 +441,7 @@ def haar_integral_orthogonal(
     Raises
     ------
     TypeError
-        If ``algorithm``, ``orthogonal_dimension`` or ``orthogonal_dimension`` have the wrong type
+        If ``algorithm``, ``structure`` or ``orthogonal_dimension`` have the wrong type
     ValueError
         If ``algorithm`` is neither ``Collins`` nor ``Gorin``
     ValueError
