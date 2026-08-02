@@ -16,11 +16,14 @@ Unitary tests
 """
 
 import pytest
-import haarpy as ap
 from fractions import Fraction
 from sympy.combinatorics import Permutation
 from sympy import Symbol, simplify, fraction, factor
 from sympy.combinatorics.named_groups import SymmetricGroup
+import haarpy as ap
+from haarpy.unitary import _column_integral_unitary
+
+d = Symbol("d")
 
 
 @pytest.mark.parametrize(
@@ -145,7 +148,6 @@ def test_weingarten_reconciliation_numeric(cycle):
 )
 def test_weingarten_reconciliation_symbolic(cycle):
     "Symbolic reconciliation of permutation and conjugacy class input"
-    d = Symbol("d")
     assert ap.weingarten_unitary(cycle, d) == ap.weingarten_unitary(
         ap.get_conjugacy_class(cycle), d
     )
@@ -198,13 +200,12 @@ def test_weingarten_unitary_element_dimension_type_error(cycle, dimension):
 def test_weingarten_unitary_cycle_type_error(cycle):
     "Test the type error for wrong permutation input"
     with pytest.raises(TypeError):
-        ap.weingarten_unitary(cycle, Symbol("d"))
+        ap.weingarten_unitary(cycle, d)
 
 
 @pytest.mark.parametrize("n", range(2, 5))
 def test_gram_orthogonality_elements(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
-    d = Symbol("d")
     orthogonality = sum(
         d ** (g.cycles) * ap.weingarten_unitary(g, d)
         for g in SymmetricGroup(n).generate_schreier_sims()
@@ -215,7 +216,6 @@ def test_gram_orthogonality_elements(n):
 @pytest.mark.parametrize("n", range(2, 10))
 def test_gram_orthogonality_classes(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
-    d = Symbol("d")
     weight = lambda g: d ** (g.cycles) * ap.weingarten_unitary(ap.get_conjugacy_class(g), d)
     orthogonality = sum(len(c) * weight(c.pop()) for c in SymmetricGroup(n).conjugacy_classes())
     assert simplify(orthogonality) == 1
@@ -240,14 +240,13 @@ def test_gram_orthogonality_classes(n):
 )
 def test_haar_integral_hand(sequences, weingarten_map):
     "Test integral of Haar distribution unitaries against hand-calculated integrals"
-    dimension = Symbol("d")
     integral = sum(
-        frequency * ap.weingarten_unitary(conjugacy, dimension)
+        frequency * ap.weingarten_unitary(conjugacy, d)
         for conjugacy, frequency in weingarten_map.items()
     )
     numerator, denominator = fraction(simplify(integral))
     integral = factor(numerator) / factor(denominator)
-    assert ap.haar_integral_unitary(sequences, dimension) == integral
+    assert ap.haar_integral_unitary(sequences, d) == integral
 
 
 @pytest.mark.parametrize(
@@ -260,6 +259,37 @@ def test_haar_integral_hand(sequences, weingarten_map):
 )
 def test_haar_integral_wrong_format(sequence):
     "Test wrong tuple format ValueError"
-    dimension = Symbol("d")
     with pytest.raises(ValueError, match="Wrong tuple format"):
-        ap.haar_integral_unitary(sequence, dimension)
+        ap.haar_integral_unitary(sequence, d)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@pytest.mark.parametrize(
+    "column_m, column_n",
+    [
+        ((1, 1, 1), (2, 1, 1)),
+        ((1, 3, 1), (1, 3, 0)),
+        ((5, 1, 1, 0, 2), (5, 1, 1, 1, 1)),
+    ],
+)
+def test_zero_column_integral_unitary(column_m, column_n):
+    "Vanishing column integral"
+    assert not _column_integral_unitary(column_m, column_n, d)
