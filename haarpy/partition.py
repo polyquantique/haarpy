@@ -48,7 +48,7 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
 
     Raises
     ------
-    ValueError
+    TypeError
         If the collection is not a tuple
 
     Examples
@@ -64,6 +64,10 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
     """
     if not isinstance(collection, tuple):
         raise TypeError("collection must be a tuple")
+
+    if len(collection) == 0:
+        yield ()
+        return
 
     if len(collection) == 1:
         yield (collection,)
