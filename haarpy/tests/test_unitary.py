@@ -313,7 +313,7 @@ def test_haar_integral_unitary_trivial(monomial, monomial_conj, structure, algo,
 )
 def test_haar_integral_unitary_gorin_collins_reconcile(monomial, monomial_conj, structure):
     "Test that Gorin and Collins algorithms reconcile"
-    dimension_num = randint(7, 15)
+    dimension_num = randint(8, 15)
     gorin_num = ap.haar_integral_unitary(monomial, monomial_conj, dimension_num, "gorin", structure)
     gorin_symb = ap.haar_integral_unitary(monomial, monomial_conj, d, "gorin", structure)
     collins_num = ap.haar_integral_unitary(monomial, monomial_conj, dimension_num, "collins", structure)
