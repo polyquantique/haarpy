@@ -26,7 +26,7 @@ seed(137)
 d = Symbol("d")
 
 
-@pytest.mark.parametrize("size", range(1, 7))
+@pytest.mark.parametrize("size", range(0, 7))
 def test_set_partition_size(size):
     "Assert the number of partitions is given by the Bell number"
     assert len(tuple(ap.set_partitions(tuple(range(size))))) == bell(size)
@@ -82,7 +82,7 @@ def test_set_partition_type_error(collection):
         tuple(ap.set_partitions(collection))
 
 
-@pytest.mark.parametrize("size", range(2, 14))
+@pytest.mark.parametrize("size", range(0, 14))
 def test_pair_partitions_order(size):
     "test size of perfect matching partitions"
     assert len(tuple(ap.pair_partitions(tuple(range(size))))) == (
