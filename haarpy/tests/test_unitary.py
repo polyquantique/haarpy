@@ -324,17 +324,79 @@ def test_haar_integral_unitary_gorin_collins_reconcile(monomial, monomial_conj, 
     assert gorin_num == collins_num
 
 
+@pytest.mark.parametrize(
+    "value, parameter",
+    [
+        ("a", "unitary_dimension"),
+        ([1, 1], "unitary_dimension"),
+        (1, "algorithm"),
+        ([1, 1], "algorithm"),
+        (1, "structure"),
+        ([1, 1], "structure"),
+    ],
+)
+def test_haar_integral_unitary_type_error(value, parameter):
+    "Test haar integral algorithm type error"
+    with pytest.raises(TypeError):
+        if parameter == "unitary_dimension":
+            ap.haar_integral_unitary(((), ()), ((), ()), unitary_dimension=value)
+        if parameter == "algorithm":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, algorithm=value)
+        if parameter == "structure":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, structure=value)
 
 
+@pytest.mark.parametrize(
+    "string_value, parameter",
+    [
+        ("ggorin", "algorithm"),
+        ("ccollins", "algorithm"),
+        ("ssequences", "structure"),
+        ("mmatrix", "structure"),
+    ],
+)
+def test_haar_integral_unitary_string_value_error(string_value, parameter):
+    "Test haar integral algorithm and structure string value error"
+    error_msg = (
+        "The 'algorithm' must be either 'Collins' or 'Gorin'.\n"
+        "The 'structure' must be either 'matrix' or 'sequences'"
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        if parameter == "algorithm":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, algorithm=string_value)
+        if parameter == "structure":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, structure=string_value)
 
 
+@pytest.mark.parametrize(
+    "mono, mono_conj",
+    [
+        (((1,),), ((1,),(1,))),
+        (((1,),(1,)), ((1,),)),
+        (((1,),(1,2)), ((1,),(1,))),
+        (((1,),(1,)), ((1,),(1,2))),
+    ],
+)
+def test_haar_integral_unitary_tuple_format_value_error(mono, mono_conj):
+    "Test haar integral tuple format value error"
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral_unitary(mono, mono_conj, d)
 
 
-
-
-
-
-
+@pytest.mark.parametrize(
+    "power_matrix, power_matrix_conj",
+    [
+        ("a", ((1, 1), (1, 1))),
+        (((1, 1), (1, 1)), range(4)),
+        (("a", "b"), ((1, 1), (1, 1))),
+        (((1, 1), (1, "a")), ((1, 1), (1, 1))),
+        (((1, 1), (1, -1)), ((1, 1), (1, 1))),
+    ],
+)
+def test_haar_integral_unitary_power_matrix_value_error(power_matrix, power_matrix_conj):
+    "Test haar integral power matrix value error"
+    with pytest.raises(ValueError, match="Wrong power matrix format"):
+        ap.haar_integral_unitary(power_matrix, power_matrix_conj, d, structure="matrix")
 
 
 @pytest.mark.parametrize(
@@ -348,3 +410,17 @@ def test_haar_integral_unitary_gorin_collins_reconcile(monomial, monomial_conj, 
 def test_zero_column_integral_unitary(column_m, column_n):
     "Vanishing column integral"
     assert not _column_integral_unitary(column_m, column_n, d)
+
+
+@pytest.mark.parametrize(
+    "column_m, column_n",
+    [
+        ((1, 1, 1), (1, 1, 0, 1)),
+        ((1, 3, 1), (1, 2, 1, 1)),
+        ((5, 1, 1, 0, 2), (5, 1, 1, 2)),
+    ],
+)
+def test_column_integral_unitary_value_error(column_m, column_n):
+    "Test value error if both columns are of different lengths"
+    with pytest.raises(ValueError):
+        _column_integral_unitary(column_m, column_n, d)

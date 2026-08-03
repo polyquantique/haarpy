@@ -252,11 +252,19 @@ def _column_integral_unitary(
     group_dimension : Symbol
         The dimension of the unitary group
 
+    Raises
+    ------
+    ValueError
+        If both input vectors have different lengths
+
     Returns
     -------
     Expr
         The integral under the Haar measure
     """
+    if len(col_vector_m) != len(col_vector_n):
+        raise ValueError
+
     if not all(m == n for m, n in zip(col_vector_m, col_vector_n)):
         return 0
 
@@ -412,7 +420,7 @@ def haar_integral_unitary(
     algorithm: str = "collins",
     structure: str = "sequences",
 ) -> Expr:
-    """Returns the integral over orthogonal group polynomial sampled at random from the Haar measure
+    """Returns the integral over unitary group polynomial sampled at random from the Haar measure
 
     Parameters
     ----------
@@ -439,7 +447,7 @@ def haar_integral_unitary(
     Raises
     ------
     TypeError
-        If ``algorithm``, ``orthogonal_dimension`` or ``orthogonal_dimension`` have the wrong type
+        If ``algorithm``, ``structure`` or ``unitary_dimension`` have the wrong type
     ValueError
         If ``algorithm`` is neither ``Collins`` nor ``Gorin``
     ValueError
@@ -463,11 +471,15 @@ def haar_integral_unitary(
     >>> from sympy import Symbol
     >>> from haarpy import haar_integral_unitary
     >>> d = Symbol("d")
-    >>> seq_i, seq_j = (0, 1, 2), (0, 0, 1)
-    >>> seq_i_prime, seq_j_prime = (0, 1, 2), (0, 1, 0)
-    >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), 5)
+    >>> sequences = ((0, 1, 2), (0, 0, 1))
+    >>> sequences_conjugate = ((0, 1, 2), (0, 1, 0))
+    >>> haar_integral_unitary(sequences, sequences_conjugate, 5)
     Fraction(-1, 840)
-    >>> haar_integral_unitary((seq_i, seq_j, seq_i_prime, seq_j_prime), d)
+    >>> haar_integral_unitary(sequences, sequences_conjugate, d)
+    -1/(d*(d - 1)*(d + 1)*(d + 2))
+    >>> power = ((1, 0, 0), (1, 0, 0), (0, 1, 0))
+    >>> power_conjugate = ((1, 0, 0), (0, 1, 0), (1, 0, 0))
+    >>> haar_integral_unitary(power, power_conjugate, d, algorithm = "Gorin", structure = "matrix")
     -1/(d*(d - 1)*(d + 1)*(d + 2))
 
     See Also
@@ -560,12 +572,3 @@ def haar_integral_unitary(
     return _haar_integral_unitary_collins(
         (seq_i, seq_j, seq_i_prime, seq_j_prime), unitary_dimension
     )
-
-    # FOR COLUMN INTEGRAL
-    # if len(col_vector_m) != len(col_vector_n):
-    #    raise ValueError
-
-    # CHANGE DOCSTRING EXAMPLES AND README EXAMPLE
-
-    # ADD NEW INPUT FORMAT INTO BREAKING CHANGE
-    # ADD NEW ALGORITHMS INTO CHANGES
