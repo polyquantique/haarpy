@@ -92,4 +92,9 @@ These components provide a reproducible and verifiable implementation of algorit
 
 No AI tools were used in the development of Haarpy.
 
+# Acknowledgements
+
+HdG would like to thank ACFAS for supporting some of this work. The authors acknowledge support from the National Sciences and Engineering Council of Canada.
+
+
 # References
