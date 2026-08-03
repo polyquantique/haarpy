@@ -299,9 +299,6 @@ def _haar_integral_unitary_gorin(
     Expr
         The integral under the Haar measure
     """
-    if not all(sum(row) == sum(row_conj) for row, row_conj in zip(power_matrix_m, power_matrix_n)):
-        return 0
-
     col_sum_tuple_m = tuple(
         sum(power_matrix_m[i][j] for i in range(len(power_matrix_m)))
         for j in range(len(power_matrix_m[0]))
@@ -317,9 +314,6 @@ def _haar_integral_unitary_gorin(
 
     row_count, col_count = len(power_matrix_m), len(power_matrix_m[0])
 
-    if col_count == 0:
-        return 1
-
     if row_count == 1:
         return _column_integral_unitary(power_matrix_m[0], power_matrix_n[0], unitary_dimension)
 
@@ -331,18 +325,10 @@ def _haar_integral_unitary_gorin(
     last_col_m = tuple(power_matrix_m[i][col_count - 1] for i in range(row_count))
     last_col_n = tuple(power_matrix_n[i][col_count - 1] for i in range(row_count))
 
-    last_col_sum_m, last_col_sum_n = sum(last_col_m), sum(last_col_n)
-
-    # this should never happen since, remove if untouched by coverage
-    #if last_col_sum_m != last_col_sum_n:
-    #    return 0
+    last_col_sum = sum(last_col_m)
 
     power_previous_m = tuple(tuple(row[: col_count - 1]) for row in power_matrix_m)
     power_previous_n = tuple(tuple(row[: col_count - 1]) for row in power_matrix_n)
-
-    # this should never happen, remove if untouched by coverage
-    #if last_col_sum_m == 0:
-    #    return _haar_integral_unitary_gorin(power_previous_m, power_previous_n, unitary_dimension)
 
     integral = 0
 
@@ -357,11 +343,8 @@ def _haar_integral_unitary_gorin(
         )
 
         kappa_integral = _column_integral_unitary(kappa_vector, kappa_vector, unitary_dimension)
-        # should not happen I believe
-        #if kappa_integral == 0:
-        #    continue
 
-        a, b = last_col_sum_m, kappa_sum
+        a, b = last_col_sum, kappa_sum
         z1, z2 = unitary_dimension, col_count - 1
         b_function = _simplify((-1) ** (a - b) * rf(z1, b) * rf(z1, a - b) / rf(z1 - z2, a))
 

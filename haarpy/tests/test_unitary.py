@@ -275,6 +275,7 @@ def test_haar_integral_wrong_format(sequence):
         (((), ()), ((), ()), "matrix", "Collins", 1),
         (((0,),), ((0,),), "matrix", "Collins", 1),
         (((0, 0), (0, 0)), ((0, 0), (0, 0)), "matrix", "Collins", 1),
+        (((1, 1, 1),), ((1, 1, 2),), "matrix", "Collins", 0),
         (((1, 1, 2, 2), (1, 2, 2, 2)), ((1, 1, 1, 2), (1, 2, 2, 2)), "sequences", "Collins", 0),
         (((1, 2, 2, 2), (2, 2, 2, 2)), ((1, 2, 2, 2), (2, 2, 2, 1)), "sequences", "Collins", 0),
         (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), ((2, 2, 2, 2, 2), (1, 1, 1, 1, 1)), "sequences", "Collins", 0),
@@ -289,6 +290,7 @@ def test_haar_integral_wrong_format(sequence):
         (((1, 2, 2, 2), (2, 2, 2, 2)), ((1, 2, 2, 2), (2, 2, 2, 1)), "sequences", "Gorin", 0),
         (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), ((2, 2, 2, 2, 2), (1, 1, 1, 1, 1)), "sequences", "Gorin", 0),
         (((), ()), ((), ()), "sequences", "Gorin", 1),
+        (((1, 1, 1),), ((1, 1, 2),), "matrix", "Gorin", 0),
     ],
 )
 def test_haar_integral_unitary_trivial(monomial, monomial_conj, structure, algo, result):
@@ -309,6 +311,7 @@ def test_haar_integral_unitary_trivial(monomial, monomial_conj, structure, algo,
         (((1, 1), (1, 1)), ((1, 1), (1, 1)), "matrix"),
         (((2, 0, 0), (0, 2, 2), (2, 0, 0)), ((1, 1, 0), (1, 1, 2), (2, 0, 0)), "matrix"),
         (((1, 1, 1), (1, 1, 1), (1, 1, 1)), ((3, 0, 0), (0, 3, 0), (0, 0, 3)), "matrix"),
+        (((1, 1, 1),), ((1, 1, 1),), "matrix"),
     ],
 )
 def test_haar_integral_unitary_gorin_collins_reconcile(monomial, monomial_conj, structure):
