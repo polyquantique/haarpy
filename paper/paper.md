@@ -96,5 +96,4 @@ No AI tools were used in the development of Haarpy.
 
 HdG would like to thank ACFAS for supporting some of this work. The authors acknowledge support from the National Sciences and Engineering Council of Canada.
 
-
 # References
