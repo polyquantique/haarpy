@@ -334,15 +334,15 @@ def _haar_integral_unitary_gorin(
     last_col_sum_m, last_col_sum_n = sum(last_col_m), sum(last_col_n)
 
     # this should never happen since, remove if untouched by coverage
-    if last_col_sum_m != last_col_sum_n:
-        return 0
+    #if last_col_sum_m != last_col_sum_n:
+    #    return 0
 
     power_previous_m = tuple(tuple(row[: col_count - 1]) for row in power_matrix_m)
     power_previous_n = tuple(tuple(row[: col_count - 1]) for row in power_matrix_n)
 
     # this should never happen, remove if untouched by coverage
-    if last_col_sum_m == 0:
-        return _haar_integral_unitary_gorin(power_previous_m, power_previous_n, unitary_dimension)
+    #if last_col_sum_m == 0:
+    #    return _haar_integral_unitary_gorin(power_previous_m, power_previous_n, unitary_dimension)
 
     integral = 0
 
@@ -358,8 +358,8 @@ def _haar_integral_unitary_gorin(
 
         kappa_integral = _column_integral_unitary(kappa_vector, kappa_vector, unitary_dimension)
         # should not happen I believe
-        if kappa_integral == 0:
-            continue
+        #if kappa_integral == 0:
+        #    continue
 
         a, b = last_col_sum_m, kappa_sum
         z1, z2 = unitary_dimension, col_count - 1
