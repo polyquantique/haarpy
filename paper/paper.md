@@ -96,6 +96,6 @@ No AI tools were used in the development of Haarpy.
 
 YC would like to thank B. Collins, S. Matsumoto and M. Fukuda for fruitful discussions, constructive feedback, and suggestions for new functionalities that contributed to the development and improvement of this library.
 HdG would like to thank ACFAS for supporting some of this work.
-The authors acknowledge support from the Natural Sciences and Engineering Research Council of Canada.
+The authors acknowledge support from the Natural Sciences and Engineering Research Council of Canada and thank the reviewers for their help in improving the quality of  Haarpy.
 
 # References
