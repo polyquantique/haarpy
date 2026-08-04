@@ -87,6 +87,7 @@ def _generate_matrices_with_row_sums(
     iterator of tuple[tuple[int, ...], ...]
         Yields all nonnegative integer matrix with prescribed row sum
     """
+
     def generate_compositions(total: int, length: int) -> Iterable[tuple[int, ...]]:
         "Generate all fixed length tuples of nonnegative integers summing to total"
         if length == 1:
@@ -120,6 +121,7 @@ def _vector_multinomial(
     int
         the product of the multinomial coefficients
     """
+
     def multinomial(total: int, parts: tuple[int, ...]) -> int:
         """Multinomial coefficient total! / prod parts_i!"""
         if sum(parts) != total:
@@ -228,20 +230,30 @@ def _sequence_to_matrix(
     return [tuple(tuple(row) for row in matrix) for matrix in matrix_list]
 
 
-def _compressed_unitary_pair(matrix_tuple: tuple[tuple[tuple[int, ...], tuple[tuple[int, ...]]]]):
-    "Simplifies a pair of power matrices for unitary integral"
+def _compressed_unitary_pair(
+    matrix_tuple: tuple[tuple[tuple[int, ...], tuple[tuple[int, ...]]]],
+) -> tuple[tuple[tuple[int, ...], tuple[tuple[int, ...]]]]:
+    """Simplifies a pair of power matrices for Haar unitary integral
+
+    Parameters
+    ----------
+    matrix_tuple: tuple[tuple[tuple[int, ...], tuple[tuple[int, ...]]]]
+        two power matrices to be compressed
+
+    Returns
+    -------
+    tuple[tuple[tuple[int, ...], tuple[tuple[int, ...]]]]
+        the simpliest power matrices yielding the same Haar unitary integral
+    """
     sequence_list = [_matrix_to_sequence(matrix) for matrix in matrix_tuple]
     row_sequence_list = [sequence[0] for sequence in sequence_list]
     col_sequence_list = [sequence[1] for sequence in sequence_list]
 
     def compression(sequence_list):
-        index_set = set(
-            index for index_tuple in sequence_list for index in index_tuple
-        )
+        index_set = set(index for index_tuple in sequence_list for index in index_tuple)
         index_dict = {value: index for index, value in enumerate(index_set)}
         compressed_sequence_tuple = tuple(
-            tuple(index_dict[i] for i in index_tuple)
-            for index_tuple in sequence_list
+            tuple(index_dict[i] for i in index_tuple) for index_tuple in sequence_list
         )
 
         return len(index_set), compressed_sequence_tuple
