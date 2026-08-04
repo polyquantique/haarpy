@@ -23,7 +23,7 @@ from sympy import Add, Mul, together, fraction, factor, factor_list, Expr, Polif
 
 
 def _simplify(expr_iter: Expr | Iterable[Expr], constant: Fraction = Fraction(1, 1)) -> Expr:
-    """Factorizes a sum of rational fraction into a
+    """Factorizes a sum of rational fractions into a
     single factorized, simplified fraction
 
     Parameters
@@ -72,7 +72,7 @@ def _generate_matrices_with_row_sums(
     row_sums: tuple[int, ...],
     col_count: int,
 ) -> Iterable[tuple[tuple[int, ...], ...]]:
-    """Generate all nonnegative integer matrices with prescribed row sums
+    """Yields all nonnegative integer matrices with prescribed row sums
 
     Parameters
     ----------
@@ -88,7 +88,7 @@ def _generate_matrices_with_row_sums(
         Yields all nonnegative integer matrix with prescribed row sum
     """
     def generate_compositions(total: int, length: int) -> Iterable[tuple[int, ...]]:
-        "Generate all length-tuples of nonnegative integers summing to total"
+        "Generate all fixed length tuples of nonnegative integers summing to total"
         if length == 1:
             yield (total,)
             return
@@ -193,7 +193,7 @@ def _sequence_to_matrix(
     col_index_tuple: tuple[tuple[int, ...], ...],
 ) -> list[tuple[tuple[int, ...], ...]]:
     """Converts sequences of row and column indices to a power matrix.
-        Will generate has many matrices as there are inputs
+        Will generate as many matrices as there are inputs
 
     Parameters
     ----------

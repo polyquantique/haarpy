@@ -48,7 +48,7 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
 
     Raises
     ------
-    ValueError
+    TypeError
         If the collection is not a tuple
 
     Examples
@@ -65,7 +65,7 @@ def set_partitions(collection: tuple) -> Iterator[tuple[tuple, ...]]:
     if not isinstance(collection, tuple):
         raise TypeError("collection must be a tuple")
 
-    if len(collection) == 1:
+    if len(collection) in (0,1):
         yield (collection,)
         return
 
@@ -85,7 +85,6 @@ def pair_partitions(
     ----------
     seed : tuple[int]
         A tuple representing the (multi-)set that will be partitioned.
-        Note that it must hold that ``len(s) >= 2``
 
     Returns
     -------
@@ -109,8 +108,9 @@ def pair_partitions(
     if not isinstance(seed, tuple):
         raise TypeError("seed must be a tuple")
 
-    if len(seed) == 2:
+    if len(seed) in (0,2):
         yield (seed,)
+        return
 
     for idx1 in range(1, len(seed)):
         item_partition = (seed[0], seed[idx1])
