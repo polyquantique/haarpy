@@ -23,14 +23,17 @@ References
     symmetric spaces. arXiv preprint arXiv:1301.5401.
 
     [3] Macdonald, I. G. (1998). Symmetric functions and Hall polynomials. Oxford university press.
+
+    [4] Gorin, T., & López, G. V. (2008). Monomial integrals on the classical groups. Journal of
+    mathematical physics, 49(1).
 """
 
-from math import prod
+from math import prod, comb
 from fractions import Fraction
 from itertools import product
 from functools import lru_cache
 from collections import Counter
-from sympy import Symbol, Expr, factorial
+from sympy import Symbol, Expr, factorial, rf, Integer, Rational
 from sympy.combinatorics import Permutation
 from sympy.utilities.iterables import partitions
 from haarpy import (
@@ -42,7 +45,14 @@ from haarpy import (
     coset_type,
     coset_type_representative,
 )
-from ._utils import _simplify
+from ._utils import (
+    _simplify,
+    _generate_matrices_with_row_sums,
+    _vector_multinomial,
+    _matrix_to_sequence,
+    _sequence_to_matrix,
+    _is_power_matrix,
+)
 
 
 @lru_cache
@@ -160,7 +170,7 @@ def weingarten_orthogonal(
         Returns the coset-type of a given permutation of the symmetric group
     :func:`haarpy.symmetric.coset_type_representative`
         Returns a representative permutation of the symmetric group :math:`S_{2p}`
-        for a given input coset-type
+        for a given coset-type
     """
     if not isinstance(orthogonal_dimension, (Expr, int)):
         raise TypeError("orthogonal_dimension must be an instance of int or sympy.Symbol")
@@ -227,15 +237,17 @@ def weingarten_orthogonal(
 
 
 @lru_cache
-def haar_integral_orthogonal(
+def _haar_integral_orthogonal_collins(
     sequences: tuple[tuple[int, ...], ...], orthogonal_dimension: Symbol
 ) -> Expr:
     """Returns the integral over orthogonal group polynomial sampled at random from the Haar measure
+    using Weingarten calculus
 
     Parameters
     ----------
     sequences : tuple[tuple[int, ...], ...]
         Sequences of matrix elements
+
     orthogonal_dimension : Symbol
         The dimension of the orthogonal group
 
@@ -243,46 +255,12 @@ def haar_integral_orthogonal(
     -------
     Expr
         The integral under the Haar measure
-
-    Raises
-    ------
-    ValueError
-        If the argument ``sequences`` does not contain 2 tuples
-    ValueError
-        If the sequences are of different lengths
-
-    Examples
-    --------
-    >>> from sympy import Symbol
-    >>> from haarpy import haar_integral_orthogonal
-    >>> d = Symbol("d")
-    >>> row_indices, column_indices = (0, 0, 1, 1, 2, 2), (0, 2, 2, 1, 1, 0)
-    >>> haar_integral_orthogonal((row_indices, column_indices), 4)
-    Fraction(1, 576)
-    >>> haar_integral_orthogonal((row_indices, column_indices), d)
-    2/(d*(d - 2)*(d - 1)*(d + 2)*(d + 4))
-
-    See Also
-    --------
-    :func:`haarpy.symmetric.coset_type`
-        Returns the coset-type of a given permutation of the symmetric group
-    :func:`haarpy.symmetric.hyperoctahedral_transversal`
-        Yields the permutations of :math:`M_{2p}`, the complete set of coset
-        representatives of the quotient group :math:`S_{2p}/H_p`
-    :func:`haarpy.orthogonal.weingarten_orthogonal`
-        Computes the orthogonal Weingarten function
     """
-    if len(sequences) != 2:
-        raise ValueError("Wrong tuple format")
-
     seq_i, seq_j = sequences
     degree = len(seq_i)
 
-    if degree != len(seq_j):
-        raise ValueError("Wrong tuple format")
-
-    if degree % 2:
-        return 0
+    if degree == 0:
+        return 1
 
     permutation_i = (
         perm
@@ -306,3 +284,252 @@ def haar_integral_orthogonal(
     )
 
     return sum(integral_gen) if isinstance(orthogonal_dimension, int) else _simplify(integral_gen)
+
+
+@lru_cache
+def _column_integral_orthogonal(col_vector: tuple[int, ...], group_dimension: Symbol) -> Expr:
+    """Integral over a single column of an orthogonal matrix
+
+    Parameters
+    ----------
+    col_vector : tuple[int, ...]
+        A vector of power of the orthogonal entries
+
+    group_dimension : Symbol
+        The dimension of the orthogonal group
+
+    Returns
+    -------
+    Expr
+        The integral under the Haar measure
+    """
+    if any(x % 2 for x in col_vector):
+        return 0
+
+    half_total = sum(col_vector) // 2
+
+    numerator = Integer(1)
+    for col_element in col_vector:
+        numerator *= rf(Rational(1, 2), col_element // 2)
+
+    denominator = rf(
+        (
+            group_dimension / 2
+            if isinstance(group_dimension, Symbol)
+            else Rational(group_dimension, 2)
+        ),
+        half_total,
+    )
+
+    return numerator / denominator
+
+
+@lru_cache
+def _haar_integral_orthogonal_gorin(
+    power_matrix: tuple[tuple[int, ...], ...],
+    group_dimension: Symbol | int,
+) -> Expr:
+    """Returns the integral over orthogonal group polynomial sampled at random from the Haar measure
+    using Gorin's algorithm
+
+    Parameters
+    ----------
+    power_matrix : tuple[tuple[int, ...], ...]
+        Power matrix of non-negative integers
+
+    orthogonal_dimension : Symbol
+        The dimension of the orthogonal group
+
+    Returns
+    -------
+    Expr
+        The integral under the Haar measure
+    """
+    row_count, col_count = len(power_matrix), len(power_matrix[0])
+    if col_count == 1:
+        column = tuple(power_matrix[i][0] for i in range(row_count))
+        return _column_integral_orthogonal(column, group_dimension)
+
+    last_col = tuple(power_matrix[i][col_count - 1] for i in range(row_count))
+    last_col_sum = sum(last_col)
+
+    power_matrix_crop = tuple(tuple(row[: col_count - 1]) for row in power_matrix)
+
+    if last_col_sum == 0:
+        return _haar_integral_orthogonal_gorin(power_matrix_crop, group_dimension)
+
+    integral = 0
+    kappa_vector_options = [list(range(0, m + 1, 2)) for m in last_col]
+
+    # iterate on last column
+    for kappa_vector in product(*kappa_vector_options):
+        kappa_vector = tuple(kappa_vector)
+        kappa_sum = sum(kappa_vector)
+
+        vector_binomial = prod(comb(m, k) for m, k in zip(last_col, kappa_vector))
+        kappa_integral = _column_integral_orthogonal(kappa_vector, group_dimension)
+
+        a, b = last_col_sum // 2, kappa_sum // 2
+        z1 = (
+            group_dimension / 2
+            if isinstance(group_dimension, Symbol)
+            else Rational(group_dimension, 2)
+        )
+        z2 = Rational(col_count - 1, 2)
+        b_function = (-1) ** (a - b) * rf(z1, b) * rf(z1, a - b) / rf(z1 - z2, a)
+
+        col_coefficient = vector_binomial * kappa_integral * b_function
+
+        prescribed_row_sum = tuple(m - k for m, k in zip(last_col, kappa_vector))
+
+        # iterate over power truncated power matrices
+        reduced_integral = 0
+        for power_matrix_k in _generate_matrices_with_row_sums(prescribed_row_sum, col_count - 1):
+            kcs_vector = tuple(
+                sum(power_matrix_k[i][j] for i in range(len(power_matrix_k)))
+                for j in range(len(power_matrix_k[0]))
+            )
+
+            # Only even column sums contribute, because of the one-vector average
+            if any(x % 2 for x in kcs_vector):
+                continue
+
+            next_power_matrix = tuple(
+                tuple(a + b for a, b in zip(row_m, row_k))
+                for row_m, row_k in zip(power_matrix_crop, power_matrix_k)
+            )
+
+            reduced_integral += (
+                Integer(_vector_multinomial(prescribed_row_sum, power_matrix_k))
+                * _column_integral_orthogonal(kcs_vector, group_dimension)
+                * _haar_integral_orthogonal_gorin(next_power_matrix, group_dimension)
+            )
+
+        integral += col_coefficient * reduced_integral
+
+    return _simplify(integral) if isinstance(group_dimension, Symbol) else Fraction(integral)
+
+
+@lru_cache
+def haar_integral_orthogonal(
+    monomial: tuple[tuple[int, ...], ...],
+    orthogonal_dimension: Symbol | int,
+    algorithm: str = "collins",
+    structure: str = "sequences",
+) -> Expr:
+    """Returns the integral over orthogonal group polynomial sampled at random from the Haar measure
+
+    Parameters
+    ----------
+    monomial : tuple[tuple[int, ...], ...]
+        Sequences of matrix elements or a power matrix of non-negative integers
+
+    orthogonal_dimension : Symbol
+        The dimension of the orthogonal group
+
+    algorithm : str
+        The algorithm to be used to compute the integral. Either ``Collins`` or ``Gorin``
+
+    structure : str
+        The type of ``monomial`` can be either ``sequences`` or ``matrix``
+
+    Returns
+    -------
+    Expr
+        The integral under the Haar measure
+
+    Raises
+    ------
+    TypeError
+        If ``algorithm``, ``structure`` or ``orthogonal_dimension`` have the wrong type
+    ValueError
+        If ``algorithm`` is neither ``Collins`` nor ``Gorin``
+    ValueError
+        If ``structure`` is neither ``matrix`` nor ``sequences``
+    ValueError
+        If the argument ``monomial`` does not contain 2 tuples with ``structure`` type ``sequences``
+    ValueError
+        If the sequences are of different lengths with ``structure`` type ``sequences``
+    ValueError
+        If ``monomial`` is not a proper power matrix with ``structure`` type ``matrix``
+
+    Examples
+    --------
+    >>> from sympy import Symbol
+    >>> from haarpy import haar_integral_orthogonal
+    >>> d = Symbol("d")
+    >>> row_indices, column_indices = (0, 0, 1, 1, 2, 2), (0, 2, 2, 1, 1, 0)
+    >>> haar_integral_orthogonal((row_indices, column_indices), 4)
+    Fraction(1, 576)
+    >>> haar_integral_orthogonal((row_indices, column_indices), d)
+    2/(d*(d - 2)*(d - 1)*(d + 2)*(d + 4))
+    >>> power_matrix = ((1, 0, 1), (0, 1, 1), (1, 1, 0))
+    >>> haar_integral_orthogonal(power_matrix, d, "Gorin", "matrix")
+    2/(d*(d - 2)*(d - 1)*(d + 2)*(d + 4))
+
+    See Also
+    --------
+    :func:`haarpy.symmetric.coset_type`
+        Returns the coset-type of a given permutation of the symmetric group
+    :func:`haarpy.symmetric.hyperoctahedral_transversal`
+        Yields the permutations of :math:`M_{2p}`, the complete set of coset
+        representatives of the quotient group :math:`S_{2p}/H_p`
+    :func:`haarpy.orthogonal.weingarten_orthogonal`
+        Computes the orthogonal Weingarten function
+    """
+    if (
+        not isinstance(algorithm, str)
+        or not isinstance(structure, str)
+        or not isinstance(orthogonal_dimension, (Symbol, int))
+    ):
+        raise TypeError
+
+    algorithm, structure = algorithm.lower(), structure.lower()
+
+    if algorithm not in ("collins", "gorin") or structure not in ("matrix", "sequences"):
+        raise ValueError(
+            "The 'algorithm' must be either 'Collins' or 'Gorin'.\n"
+            "The 'structure' must be either 'matrix' or 'sequences'"
+        )
+
+    # trivial case
+    if structure == "sequences":
+        if len(monomial) != 2 or len(monomial[0]) != len(monomial[1]):
+            raise ValueError("Wrong tuple format")
+
+        if len(monomial[0]) % 2:
+            return 0
+
+        occurence_row = tuple(monomial[0].count(index) for index in set(monomial[0]))
+        occurence_col = tuple(monomial[1].count(index) for index in set(monomial[1]))
+        if any(occurence % 2 for occurence in occurence_row + occurence_col):
+            return 0
+
+    # trivial case
+    if structure == "matrix":
+        if not _is_power_matrix(monomial):
+            raise ValueError("Wrong power matrix format")
+
+        row_sum_list = [sum(row) for row in monomial]
+        col_sum_list = [
+            sum(monomial[i][j] for i in range(len(monomial))) for j in range(len(monomial[0]))
+        ]
+        if any(s % 2 for s in row_sum_list) or any(s % 2 for s in col_sum_list):
+            return 0
+
+    if algorithm == "gorin":
+        if structure == "matrix":
+            # removes zero rows and columns
+            sequences = _matrix_to_sequence(monomial)
+            power_matrix = _sequence_to_matrix((sequences[0],), (sequences[1],))[0]
+        else:
+            power_matrix = _sequence_to_matrix((monomial[0],), (monomial[1],))[0]
+        # returns 1 (the integral over the Haar measure) if the power matrix is empty
+        return (
+            _haar_integral_orthogonal_gorin(power_matrix, orthogonal_dimension)
+            if power_matrix
+            else 1
+        )
+    # algorithm == "collins"
+    sequences = _matrix_to_sequence(monomial) if structure == "matrix" else monomial
+    return _haar_integral_orthogonal_collins(sequences, orthogonal_dimension)
