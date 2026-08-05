@@ -3,28 +3,27 @@ ______________________________________________________________________
 title: 'Haarpy: a Python library for Weingarten calculus and integration of classical compact groups and ensembles'
 tags:
 
-- random matrices
-- Haar measure
-- classical compact groups
-  authors:
-- name: Yanic Cardin
-  orcid: 0009-0005-6858-705X
-  affiliation: 1
-- name: Hubert de Guise
-  orcid: 0000-0002-1904-4287
-  affiliation: 2
-- name: Nicolás Quesada
-  orcid: 0000-0002-0175-1688
-  affiliation: 1
-  affiliations:
-- name: Département de génie physique, École polytechnique de Montréal, Montréal, QC H3T 1J4, Canada
-  index: 1
-- name: Department of Physics, Lakehead University, Thunder Bay, ON P7B 5E1, Canada
-  index: 2
-  date: 15 June 2026
-  bibliography: paper.bib
-
-______________________________________________________________________
+  - random matrices
+  - Haar measure
+  - classical compact groups
+authors:
+ - name: Yanic Cardin
+   orcid: 0009-0005-6858-705X
+   affiliation: 1
+ - name: Hubert de Guise
+   orcid: 0000-0002-1904-4287
+   affiliation: 2
+ - name: Nicolás Quesada
+   orcid: 0000-0002-0175-1688
+   affiliation: 1
+affiliations:
+ - name: Département de génie physique, École polytechnique de Montréal, Montréal, QC H3T 1J4, Canada
+   index: 1
+ - name: Department of Physics, Lakehead University, Thunder Bay, ON P7B 5E1, Canada
+   index: 2
+date: 15 June 2026
+bibliography: paper.bib
+---
 
 # Summary
 
