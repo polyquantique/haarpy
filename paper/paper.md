@@ -1,32 +1,35 @@
----
+______________________________________________________________________
+
 title: 'Haarpy: a Python library for Weingarten calculus and integration of classical compact groups and ensembles'
 tags:
-  - random matrices
-  - Haar measure
-  - classical compact groups
-authors:
- - name: Yanic Cardin
-   orcid: 0009-0005-6858-705X
-   affiliation: 1
- - name: Hubert de Guise
-   orcid: 0000-0002-1904-4287
-   affiliation: 2
- - name: Nicolás Quesada
-   orcid: 0000-0002-0175-1688
-   affiliation: 1
-affiliations:
- - name: Département de génie physique, École polytechnique de Montréal, Montréal, QC H3T 1J4, Canada
-   index: 1
- - name: Department of Physics, Lakehead University, Thunder Bay, ON P7B 5E1, Canada
-   index: 2
-date: 15 June 2026
-bibliography: paper.bib
----
+
+- random matrices
+- Haar measure
+- classical compact groups
+  authors:
+- name: Yanic Cardin
+  orcid: 0009-0005-6858-705X
+  affiliation: 1
+- name: Hubert de Guise
+  orcid: 0000-0002-1904-4287
+  affiliation: 2
+- name: Nicolás Quesada
+  orcid: 0000-0002-0175-1688
+  affiliation: 1
+  affiliations:
+- name: Département de génie physique, École polytechnique de Montréal, Montréal, QC H3T 1J4, Canada
+  index: 1
+- name: Department of Physics, Lakehead University, Thunder Bay, ON P7B 5E1, Canada
+  index: 2
+  date: 15 June 2026
+  bibliography: paper.bib
+
+______________________________________________________________________
 
 # Summary
 
-[Haarpy](https://github.com/polyquantique/haarpy) is a Python library for the symbolic calculation of Weingarten functions and related integals (also called moments or averages) of matrix ensembles under their Haar measure.
-There is a multiplicity of applications, both in physics and in mathematics, requiring the computation of averages of various polynomial functions over the classical compact groups (unitary, orthogonal and symplectic), their associated circular ensembles, the group of permutation and centered permutation matrices, and the quantum groups (free symmetric and free orthogonal) [@potters2020first].
+[Haarpy](https://github.com/polyquantique/haarpy) is a Python library for the symbolic calculation of Weingarten functions and related integrals (also called moments or averages) of matrix ensembles under their Haar measure.
+There is a multiplicity of applications, both in physics and in mathematics, requiring the computation of averages of various polynomial functions over the classical compact groups (unitary, orthogonal and symplectic), their associated circular ensembles, the groups of permutation matrices and centered permutation matrices, and the quantum groups (free symmetric and free orthogonal) [@potters2020first].
 Rather than relying on Monte Carlo simulation, which provides approximate results [@mezzadri2006generate], Haarpy enables exact analytical computation of such moments.
 
 Under the hood, Haarpy reduces the computation of integrals over the relevant ensembles to Weingarten calculus.
@@ -41,12 +44,13 @@ Built on top of the SymPy symbolic engine, Haarpy allows users to retain symboli
 The computation of averages over Haar-distributed random matrices is of growing importance in quantum information theory [@martinez2024linear; @cardin2024photon; @turkeshi2025magic], random matrix theory [@bordenave2024strong; @daigle2025mixed], and statistical physics [@cotler2017chaos; @potters2020first].
 These averages describe the typical behavior of complex systems, including their quantum and classical correlations.
 
-Standard approaches typically rely either on Monte Carlo simulation, which approximates integrals through sampling, or on manual analytical derivations, which often involves intricate combinatorics.
+Standard approaches typically rely either on Monte Carlo simulation, which approximates integrals through sampling, or on manual analytical derivations, which often involve intricate combinatorics.
 
 Haarpy is intended for researchers throughout physics, mathematicians working in representation theory, and researchers studying random matrix models.
 By making Weingarten calculus readily accessible in software, Haarpy enhances reproducibility, reduces computational overhead, and lowers the barrier to performing rigorous analytical calculations.
 
 # State of the field
+
 Several software packages support symbolic Haar integration and related calculations.
 Early implementations were developed in Mathematica [@deGuiseWeingit], while more recent projects such as RTNI2 [@fukuda2023symbolically] and IntegrateUnitary.jl [@pawela2026integrateunitary] provide advanced functionality for tensor-network-based computations and symbolic integration within their respective ecosystems.
 In particular, RTNI2 offers a powerful framework for diagrammatic calculations based on tensor network methods, while IntegrateUnitary.jl provides symbolic tools for Haar integration in Julia.
@@ -61,6 +65,7 @@ For classical compact groups, Haarpy additionally provides an alternative moment
 In many settings, this latter approach can offer improved performance compared to Weingarten-based computations.
 
 # Software design
+
 Haarpy is designed with a focus on mathematical fidelity, symbolic flexibility, and usability.
 A key consideration is the trade-off between symbolic and numerical computation: while purely numerical methods can offer speed, they often obscure structure and reduce reproducibility, whereas symbolic computation preserves the exact algebraic form needed for derivations and verification.
 For this reason, the implementation is deliberately built around a lightweight symbolic stack centered on SymPy, avoiding heavier external dependencies in order to keep the system transparent, portable, and easier to validate.
