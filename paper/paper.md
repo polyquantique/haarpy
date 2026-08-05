@@ -1,8 +1,6 @@
-______________________________________________________________________
-
+---
 title: 'Haarpy: a Python library for Weingarten calculus and integration of classical compact groups and ensembles'
 tags:
-
   - random matrices
   - Haar measure
   - classical compact groups
