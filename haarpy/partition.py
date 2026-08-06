@@ -207,7 +207,7 @@ def meet_operation(
         if block_1 & block_2
     ]
 
-    return tuple(sorted(tuple(block) for block in meet_list))
+    return tuple(sorted(tuple(sorted(block)) for block in meet_list))
 
 
 @lru_cache
