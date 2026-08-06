@@ -67,7 +67,7 @@ def mobius_function(
 
     if set().union(*partition_set_1) != set().union(*partition_set_2):
         raise ValueError(
-            "partition_1 and partition_2 must be partitions of the same underlying set"
+            "partition_1 and partition_2 must be partitions of the same underlying set."
         )
 
     partition_intersection = tuple(

@@ -112,7 +112,7 @@ def test_mobius_function_value_error(partition_1, partition_2):
     "test Mobius function value error"
     with pytest.raises(
         ValueError,
-        match="partition_1 and partition_2 must be partitions of the same underlying set",
+        match="partition_1 and partition_2 must be partitions of the same underlying set.",
     ):
         ap.mobius_function(partition_1, partition_2)
 
