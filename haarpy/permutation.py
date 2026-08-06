@@ -44,6 +44,11 @@ def mobius_function(
     partition_2 : tuple[tuple[int]]
         The partition summed over
 
+    Raises
+    ------
+    ValueError
+        If ``partition_1`` and ``partition_2`` are not partitions of the same underlying set
+
     Returns
     -------
     int
@@ -59,6 +64,11 @@ def mobius_function(
     """
     partition_set_1 = tuple(set(block) for block in partition_1)
     partition_set_2 = tuple(set(block) for block in partition_2)
+
+    if set().union(*partition_set_1) != set().union(*partition_set_2):
+        raise ValueError(
+            "partition_1 and partition_2 must be partitions of the same underlying set"
+        )
 
     partition_intersection = tuple(
         sum(1 for block_1 in partition_set_1 if block_1 & block_2) for block_2 in partition_set_2
