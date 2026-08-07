@@ -55,9 +55,9 @@ from sympy import Symbol
 from haarpy import haar_integral_unitary
 
 d = Symbol("d")
-haar_integral_unitary(("i", "j", "i", "j"), d)
+haar_integral_unitary(("i", "j"), ("i", "j"), d)
 # Output: 1/d
-haar_integral_unitary(("i", "j", "i", "j"), 3)  # We can also put integers
+haar_integral_unitary(("i", "j"), ("i", "j"), 3)  # We can also put integers
 # Output: 1/3
 ```
 
@@ -85,7 +85,7 @@ In other words, expectation of polynomials of entries of unitary matrices are gi
 The general average above in Eq. (1) can be compute in Haarpy as
 
 ```Python
-haar_integral_unitary(("i_1 i_2 ... i_p","j_1 j_2 ... j_p","i_1' i_2' ... i_p'","j_1' j_2' ... j_p'"), d)
+haar_integral_unitary(("i_1 i_2 ... i_p","j_1 j_2 ... j_p"), ("i_1' i_2' ... i_p'","j_1' j_2' ... j_p'"), d)
 ```
 
 One can access directly the Weingarten functions of a given permutation of the symmetric group by calling
@@ -200,4 +200,5 @@ Haarpy is free and open source, released under the Apache License, Version 2.0.
 
 ## Acknowledgements
 
+YC acknowledges support from Mitacs through the Globalink Research Award.
 The authors thank the Natural Sciences and Engineering Research Council of Canada and the Ministère de l'Économie, de l'Innovation et de l'Énergie du Québec.
