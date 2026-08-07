@@ -16,11 +16,16 @@ Unitary tests
 """
 
 import pytest
-import haarpy as ap
 from fractions import Fraction
+from random import seed, randint
 from sympy.combinatorics import Permutation
 from sympy import Symbol, simplify, fraction, factor
 from sympy.combinatorics.named_groups import SymmetricGroup
+import haarpy as ap
+from haarpy.unitary import _column_integral_unitary
+
+seed(137)
+d = Symbol("d")
 
 
 @pytest.mark.parametrize(
@@ -145,7 +150,6 @@ def test_weingarten_reconciliation_numeric(cycle):
 )
 def test_weingarten_reconciliation_symbolic(cycle):
     "Symbolic reconciliation of permutation and conjugacy class input"
-    d = Symbol("d")
     assert ap.weingarten_unitary(cycle, d) == ap.weingarten_unitary(
         ap.get_conjugacy_class(cycle), d
     )
@@ -198,13 +202,12 @@ def test_weingarten_unitary_element_dimension_type_error(cycle, dimension):
 def test_weingarten_unitary_cycle_type_error(cycle):
     "Test the type error for wrong permutation input"
     with pytest.raises(TypeError):
-        ap.weingarten_unitary(cycle, Symbol("d"))
+        ap.weingarten_unitary(cycle, d)
 
 
 @pytest.mark.parametrize("n", range(2, 5))
 def test_gram_orthogonality_elements(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
-    d = Symbol("d")
     orthogonality = sum(
         d ** (g.cycles) * ap.weingarten_unitary(g, d)
         for g in SymmetricGroup(n).generate_schreier_sims()
@@ -215,7 +218,6 @@ def test_gram_orthogonality_elements(n):
 @pytest.mark.parametrize("n", range(2, 10))
 def test_gram_orthogonality_classes(n):
     "Test the orthogonality relation between Weingarten matrix and Graham matrix"
-    d = Symbol("d")
     weight = lambda g: d ** (g.cycles) * ap.weingarten_unitary(ap.get_conjugacy_class(g), d)
     orthogonality = sum(len(c) * weight(c.pop()) for c in SymmetricGroup(n).conjugacy_classes())
     assert simplify(orthogonality) == 1
@@ -240,14 +242,13 @@ def test_gram_orthogonality_classes(n):
 )
 def test_haar_integral_hand(sequences, weingarten_map):
     "Test integral of Haar distribution unitaries against hand-calculated integrals"
-    dimension = Symbol("d")
     integral = sum(
-        frequency * ap.weingarten_unitary(conjugacy, dimension)
+        frequency * ap.weingarten_unitary(conjugacy, d)
         for conjugacy, frequency in weingarten_map.items()
     )
     numerator, denominator = fraction(simplify(integral))
     integral = factor(numerator) / factor(denominator)
-    assert ap.haar_integral_unitary(sequences, dimension) == integral
+    assert ap.haar_integral_unitary(sequences[:2], sequences[2:], d) == integral
 
 
 @pytest.mark.parametrize(
@@ -260,6 +261,169 @@ def test_haar_integral_hand(sequences, weingarten_map):
 )
 def test_haar_integral_wrong_format(sequence):
     "Test wrong tuple format ValueError"
-    dimension = Symbol("d")
     with pytest.raises(ValueError, match="Wrong tuple format"):
-        ap.haar_integral_unitary(sequence, dimension)
+        ap.haar_integral_unitary(sequence[:2], sequence[2:], d)
+
+
+@pytest.mark.parametrize(
+    "monomial, monomial_conj, structure, algo, result",
+    [
+        (((2, 0, 0, 2), (0, 1, 1, 0), (2, 0, 0, 0)), ((3, 0, 0, 2), (0, 1, 1, 0), (2, 0, 0, 0)), "matrix", "Collins", 0),
+        (((1, 0), (0, 1)), ((1, 0), (0, 2)), "matrix", "Collins", 0),
+        (((1, 1, 1), (1, 1, 1), (1, 1, 1)), ((1, 2, 0), (1, 1, 1), (1, 1, 1)), "matrix", "Collins", 0),
+        (((),), ((),), "matrix", "Collins", 1),
+        (((), ()), ((), ()), "matrix", "Collins", 1),
+        (((0,),), ((0,),), "matrix", "Collins", 1),
+        (((0, 0), (0, 0)), ((0, 0), (0, 0)), "matrix", "Collins", 1),
+        (((1, 1, 1),), ((1, 1, 2),), "matrix", "Collins", 0),
+        (((1, 1, 2, 2), (1, 2, 2, 2)), ((1, 1, 1, 2), (1, 2, 2, 2)), "sequences", "Collins", 0),
+        (((1, 2, 2, 2), (2, 2, 2, 2)), ((1, 2, 2, 2), (2, 2, 2, 1)), "sequences", "Collins", 0),
+        (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), ((2, 2, 2, 2, 2), (1, 1, 1, 1, 1)), "sequences", "Collins", 0),
+        (((), ()), ((), ()), "sequences", "Collins", 1),
+        (((1, 0), (0, 1)), ((1, 0), (0, 2)), "matrix", "Gorin", 0),
+        (((),), ((),), "matrix", "Gorin", 1),
+        (((), ()), ((), ()), "matrix", "Gorin", 1),
+        (((), (), ()), ((), (), ()), "matrix", "Gorin", 1),
+        (((0,),), ((0,),), "matrix", "Gorin", 1),
+        (((0, 0), (0, 0)), ((0, 0), (0, 0)), "matrix", "Gorin", 1),
+        (((1, 1, 2, 2), (1, 2, 2, 2)), ((1, 1, 1, 2), (1, 2, 2, 2)), "sequences", "Gorin", 0),
+        (((1, 2, 2, 2), (2, 2, 2, 2)), ((1, 2, 2, 2), (2, 2, 2, 1)), "sequences", "Gorin", 0),
+        (((1, 1, 1, 1, 1), (2, 2, 2, 2, 2)), ((2, 2, 2, 2, 2), (1, 1, 1, 1, 1)), "sequences", "Gorin", 0),
+        (((), ()), ((), ()), "sequences", "Gorin", 1),
+        (((1, 1, 1),), ((1, 1, 2),), "matrix", "Gorin", 0),
+    ],
+)
+def test_haar_integral_unitary_trivial(monomial, monomial_conj, structure, algo, result):
+    "Test the trivial integrals"
+    assert ap.haar_integral_unitary(monomial, monomial_conj, d, algo, structure) == result
+
+
+@pytest.mark.parametrize(
+    "monomial, monomial_conj, structure",
+    [
+        (((), ()), ((), ()), "sequences"),
+        (((0, 0, 1, 1), (1, 0, 0, 1)), ((0, 1, 0, 1), (0, 1, 0, 1)), "sequences"),
+        (((0, 0, 1, 1, 2, 2), (1, 2, 2, 0, 1, 1)), ((2, 2, 0, 0, 1, 1), (1, 2, 2, 1, 0, 1)), "sequences"),
+        (((0, 0, 1, 1, 2), (4, 4, 4, 4, 5)), ((0, 0, 1, 1, 2), (4, 4, 4, 4, 5)), "sequences"),
+        (((2, 0), (0, 2)), ((2, 0), (0, 2)), "matrix"),
+        (((2, 0), (0, 2)), ((0, 2), (2, 0)), "matrix"),
+        (((2, 0), (0, 2)), ((1, 1), (1, 1)), "matrix"),
+        (((1, 1), (1, 1)), ((1, 1), (1, 1)), "matrix"),
+        (((2, 0, 0), (0, 2, 2), (2, 0, 0)), ((1, 1, 0), (1, 1, 2), (2, 0, 0)), "matrix"),
+        (((1, 1, 1), (1, 1, 1), (1, 1, 1)), ((3, 0, 0), (0, 3, 0), (0, 0, 3)), "matrix"),
+        (((1, 1, 1),), ((1, 1, 1),), "matrix"),
+    ],
+)
+def test_haar_integral_unitary_gorin_collins_reconcile(monomial, monomial_conj, structure):
+    "Test that Gorin and Collins algorithms reconcile"
+    dimension_num = randint(8, 15)
+    gorin_num = ap.haar_integral_unitary(monomial, monomial_conj, dimension_num, "gorin", structure)
+    gorin_symb = ap.haar_integral_unitary(monomial, monomial_conj, d, "gorin", structure)
+    collins_num = ap.haar_integral_unitary(monomial, monomial_conj, dimension_num, "collins", structure)
+    collins_symb = ap.haar_integral_unitary(monomial, monomial_conj, d, "collins", structure)
+
+    assert collins_num
+    assert gorin_symb == collins_symb
+    assert gorin_num == collins_num
+
+
+@pytest.mark.parametrize(
+    "value, parameter",
+    [
+        ("a", "unitary_dimension"),
+        ([1, 1], "unitary_dimension"),
+        (1, "algorithm"),
+        ([1, 1], "algorithm"),
+        (1, "structure"),
+        ([1, 1], "structure"),
+    ],
+)
+def test_haar_integral_unitary_type_error(value, parameter):
+    "Test Haar integral algorithm type error"
+    with pytest.raises(TypeError):
+        if parameter == "unitary_dimension":
+            ap.haar_integral_unitary(((), ()), ((), ()), unitary_dimension=value)
+        if parameter == "algorithm":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, algorithm=value)
+        if parameter == "structure":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, structure=value)
+
+
+@pytest.mark.parametrize(
+    "string_value, parameter",
+    [
+        ("ggorin", "algorithm"),
+        ("ccollins", "algorithm"),
+        ("ssequences", "structure"),
+        ("mmatrix", "structure"),
+    ],
+)
+def test_haar_integral_unitary_string_value_error(string_value, parameter):
+    "Test Haar integral algorithm and structure string value error"
+    error_msg = (
+        "The 'algorithm' must be either 'Collins' or 'Gorin'.\n"
+        "The 'structure' must be either 'matrix' or 'sequences'"
+    )
+    with pytest.raises(ValueError, match=error_msg):
+        if parameter == "algorithm":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, algorithm=string_value)
+        if parameter == "structure":
+            ap.haar_integral_unitary(((), ()), ((), ()), d, structure=string_value)
+
+
+@pytest.mark.parametrize(
+    "mono, mono_conj",
+    [
+        (((1,),), ((1,),(1,))),
+        (((1,),(1,)), ((1,),)),
+        (((1,),(1,2)), ((1,),(1,))),
+        (((1,),(1,)), ((1,),(1,2))),
+    ],
+)
+def test_haar_integral_unitary_tuple_format_value_error(mono, mono_conj):
+    "Test Haar integral tuple format value error"
+    with pytest.raises(ValueError, match="Wrong tuple format"):
+        ap.haar_integral_unitary(mono, mono_conj, d)
+
+
+@pytest.mark.parametrize(
+    "power_matrix, power_matrix_conj",
+    [
+        ("a", ((1, 1), (1, 1))),
+        (((1, 1), (1, 1)), range(4)),
+        (("a", "b"), ((1, 1), (1, 1))),
+        (((1, 1), (1, "a")), ((1, 1), (1, 1))),
+        (((1, 1), (1, -1)), ((1, 1), (1, 1))),
+    ],
+)
+def test_haar_integral_unitary_power_matrix_value_error(power_matrix, power_matrix_conj):
+    "Test Haar integral power matrix value error"
+    with pytest.raises(ValueError, match="Wrong power matrix format"):
+        ap.haar_integral_unitary(power_matrix, power_matrix_conj, d, structure="matrix")
+
+
+@pytest.mark.parametrize(
+    "column_m, column_n",
+    [
+        ((1, 1, 1), (2, 1, 1)),
+        ((1, 3, 1), (1, 3, 0)),
+        ((5, 1, 1, 0, 2), (5, 1, 1, 1, 1)),
+    ],
+)
+def test_zero_column_integral_unitary(column_m, column_n):
+    "Vanishing column integral"
+    assert not _column_integral_unitary(column_m, column_n, d)
+
+
+@pytest.mark.parametrize(
+    "column_m, column_n",
+    [
+        ((1, 1, 1), (1, 1, 0, 1)),
+        ((1, 3, 1), (1, 2, 1, 1)),
+        ((5, 1, 1, 0, 2), (5, 1, 1, 2)),
+    ],
+)
+def test_column_integral_unitary_value_error(column_m, column_n):
+    "Test value error if both columns are of different lengths"
+    with pytest.raises(ValueError):
+        _column_integral_unitary(column_m, column_n, d)

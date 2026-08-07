@@ -3,11 +3,14 @@
 ### New features
 * Added functions in `circular_ensembles` to compute moments of the circular orthogonal and circular symplectic ensembles in [(#43)](https://github.com/polyquantique/haarpy/pull/43).
 * Added a new module `quantum` allowing to compute moments of quantum groups (free symmetric and free orthogonal groups) [(#54)](https://github.com/polyquantique/haarpy/pull/54).
+* Implemented the algorithm of Gorin and López to compute integrals over monomials of Haar-random orthogonal matrices [(#88)](https://github.com/polyquantique/haarpy/pull/88).
+* Implemented the algorithm of Gorin to compute integrals over monomials of Haar-random unitary matrices [(#91)](https://github.com/polyquantique/haarpy/pull/91).
 
 ### Breaking changes
 
 * `get_conjugacy_class()` : `degree` has been removed from the arguments since it is already contained in `permutation` [(#51)](https://github.com/polyquantique/haarpy/pull/51).
 * `sympy` requirements went from `1.12` to `1.14`. The version `1.14` has improved the algorithm for inversion of symbolic matrices which is necessary to compute moments of quantum groups [(#54)](https://github.com/polyquantique/haarpy/pull/54).
+* `haar_integral_unitary()` : `sequences` parameter as been replaced by parameters `monomial` and `monomial_conjugate` which separates the sequences between unitary matrix indices and conjugate unitary matrix indices [(#91)](https://github.com/polyquantique/haarpy/pull/91).
 
 ### Improvements
 
