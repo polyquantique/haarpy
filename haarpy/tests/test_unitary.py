@@ -339,7 +339,7 @@ def test_haar_integral_unitary_gorin_collins_reconcile(monomial, monomial_conj, 
     ],
 )
 def test_haar_integral_unitary_type_error(value, parameter):
-    "Test haar integral algorithm type error"
+    "Test Haar integral algorithm type error"
     with pytest.raises(TypeError):
         if parameter == "unitary_dimension":
             ap.haar_integral_unitary(((), ()), ((), ()), unitary_dimension=value)
@@ -359,7 +359,7 @@ def test_haar_integral_unitary_type_error(value, parameter):
     ],
 )
 def test_haar_integral_unitary_string_value_error(string_value, parameter):
-    "Test haar integral algorithm and structure string value error"
+    "Test Haar integral algorithm and structure string value error"
     error_msg = (
         "The 'algorithm' must be either 'Collins' or 'Gorin'.\n"
         "The 'structure' must be either 'matrix' or 'sequences'"
@@ -381,7 +381,7 @@ def test_haar_integral_unitary_string_value_error(string_value, parameter):
     ],
 )
 def test_haar_integral_unitary_tuple_format_value_error(mono, mono_conj):
-    "Test haar integral tuple format value error"
+    "Test Haar integral tuple format value error"
     with pytest.raises(ValueError, match="Wrong tuple format"):
         ap.haar_integral_unitary(mono, mono_conj, d)
 
@@ -397,7 +397,7 @@ def test_haar_integral_unitary_tuple_format_value_error(mono, mono_conj):
     ],
 )
 def test_haar_integral_unitary_power_matrix_value_error(power_matrix, power_matrix_conj):
-    "Test haar integral power matrix value error"
+    "Test Haar integral power matrix value error"
     with pytest.raises(ValueError, match="Wrong power matrix format"):
         ap.haar_integral_unitary(power_matrix, power_matrix_conj, d, structure="matrix")
 
