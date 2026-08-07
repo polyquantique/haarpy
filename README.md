@@ -134,6 +134,9 @@ Circular orthogonal matrices $V$ are simply symmetric unitary matrices. If $U$ i
 Circular symplectic matrices $R$ are obtained by drawing a Haar-random unitary $U$ of even size and calculating $R = -U \Omega U^T \Omega$. [Weingarten functions](https://doi.org/10.1142/S2010326313500019) of this ensemble take as input an element of the symmetric group as well as the dimension of the symplectic group and can be calculated using `weingarten_circular_symplectic`. Functionality to calculate averages will be added in the near term.
 
 
+### Quantum groups
+
+
 ### Permutation and centered permutation groups
 Weingarten functions associated with these group have been recently introduced. Integration over this discrete group can be performed using `haar_integral_permutation` and `haar_integral_centered_permutation` and the associated [Weingarten function](https://doi.org/10.48550/arXiv.2503.18453) can be accessed as `weingarten_permutation` and `weingarten_centered_permutation`.
 
