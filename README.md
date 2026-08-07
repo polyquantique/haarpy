@@ -123,7 +123,7 @@ $$
 -I_d & 0_d \end{array}\right)
 $$ 
 
-is the symplectic form. [Weingarten functions](https://doi.org/10.1007/s00220-006-1554-3) of this group take as input an element of the symmetric group as well as the dimension of the symplectic group and can be calculated using `weingarten_symplectic`. Functionality to calculate averages will be added in the near term.
+is the symplectic form. One can calculate averages over the unitary-symplectic Haar measure using `haar_integral_symplectic` and obtain their associated [Weingarten function](https://doi.org/10.1142/S2010326313500019) using `weingarten_symplectic`. The latter function takes as input a permutation specified by a SymPy `Permutation` object as well as half the dimension of the unitary-symplectic group specified either by a SymPy `Symbol` or by an integer.
 
 
 ### Circular Orthogonal ensemble
@@ -149,7 +149,7 @@ Under the hood, Haarpy implements a number of group-theoretic machinery that can
 
 
 ## Installation
-Haarpy requires Python version 3.9 or later. Installation can be done through the pip command
+Haarpy requires Python version 3.10 or later. Installation can be done through the pip command
 ```
 pip install haarpy
 ```
