@@ -65,8 +65,8 @@ Notice the order of the indices! The first `"i"` and `"j"` are the indices of $U
 
 Imagine that now we want to calculate something like $\int dU U_{i,m} U_{j,n} U_{k,o} U_{i,m}^* U_{j,n}^* U_{k,p}^*$ $= \int dU |U_{i,m} U_{j,n} U_{k,o}|^2$ we simply do
 
-```
-haar_integral_unitary(("ijk", "mno", "ijk", "mno"), d)
+```Python
+haar_integral_unitary(("ijk", "mno"), ("ijk", "mno"), d)
 # Output: (d**2 - 2)/(d*(d - 2)*(d - 1)*(d + 1)*(d + 2))
 ```
 
