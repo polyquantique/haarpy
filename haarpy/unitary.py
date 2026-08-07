@@ -413,8 +413,8 @@ def haar_integral_unitary(
     monomial_conjugate : tuple[tuple[int, ...], ...]
         Sequences of matrix elements or a power matrix of non-negative integers
 
-    orthogonal_dimension : Symbol
-        The dimension of the orthogonal group
+    unitary_dimension : Symbol
+        The dimension of the unitary group
 
     algorithm : str
         The algorithm to be used to compute the integral. Either ``Collins`` or ``Gorin``
