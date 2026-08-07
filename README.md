@@ -58,7 +58,7 @@ d = Symbol("d")
 haar_integral_unitary(("i", "j"), ("i", "j"), d)
 # Output: 1/d
 haar_integral_unitary(("i", "j"), ("i", "j"), 3)  # We can also put integers
-# Output: 1/3
+# Output: Fraction(1, 3)
 ```
 
 Notice the order of the indices! The first `"i"` and `"j"` are the indices of $U$ while the second pair of `"i"` and `"j"` are the indices of $U^*$.
@@ -95,14 +95,14 @@ from sympy.combinatorics import Permutation
 from haarpy import weingarten_unitary
 
 weingarten_unitary(Permutation(5)(4,3)(2,1,0), d)
-# Output: (-2*d**2 - 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
+# Output: -(2*d**2 + 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
 ```
 
 Equivalently, since the unitary Weingarten function is a class function, one can call the previous using the cycle-type of any given permutation, i.e., the partition that labels its conjugacy class.
 
 ```Python
 weingarten_unitary((3,2,1), d)
-# Output: (-2*d**2 - 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
+# Output: -(2*d**2 + 13)/(d*(d - 5)*(d - 4)*(d - 2)*(d - 1)**2*(d + 1)**2*(d + 2)*(d + 4)*(d + 5))
 ```
 
 ## Haarpy functionality
