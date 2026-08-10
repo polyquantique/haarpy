@@ -1,5 +1,5 @@
 ---
-title: 'Haarpy: a Python library for Weingarten calculus and integration of classical compact groups their associated circular ensembles and quantum groups'
+title: 'Haarpy: a Python library for Weingarten calculus and integration over classical compact groups, their associated circular ensembles, the permutation and centered permutation groups, and quantum groups'
 tags:
   - random matrices
   - Haar measure
