@@ -1,5 +1,5 @@
 ---
-title: 'Haarpy: a Python library for Weingarten calculus and integration of classical compact groups their associated circular ensembles and quantum groups'
+title: 'Haarpy: a Python library for Weingarten calculus and integration over classical compact groups, their associated circular ensembles, the permutation and centered permutation groups, and quantum groups'
 tags:
   - random matrices
   - Haar measure
@@ -38,7 +38,7 @@ Built on top of the SymPy symbolic engine, Haarpy allows users to retain symboli
 
 # Statement of need
 
-The computation of averages over Haar-distributed random matrices is of growing importance in quantum information theory [@martinez2024linear; @cardin2024photon; @turkeshi2025magic], random matrix theory [@bordenave2024strong; @daigle2025mixed], and statistical physics [@cotler2017chaos; @potters2020first].
+The computation of averages over Haar-distributed random matrices is of growing importance in quantum information theory [@OliviaDiMatteo2021; @martinez2024linear; @cardin2024photon; @mele2024introduction; @turkeshi2025magic], random matrix theory [@bordenave2024strong; @daigle2025mixed], and statistical physics [@cotler2017chaos; @potters2020first].
 These averages describe the typical behavior of complex systems, including their quantum and classical correlations.
 
 Standard approaches typically rely either on Monte Carlo simulation, which approximates integrals through sampling, or on manual analytical derivations, which often involve intricate combinatorics.
@@ -97,6 +97,7 @@ No AI tools were used in the development of Haarpy.
 # Acknowledgements
 
 YC would like to thank B. Collins, S. Matsumoto and M. Fukuda for fruitful discussions, constructive feedback, and suggestions for new functionalities that contributed to the development and improvement of this library.
+YC acknowledges support from Mitacs through the Globalink Research Award.
 HdG would like to thank ACFAS for supporting some of this work.
 The authors acknowledge support from the Natural Sciences and Engineering Research Council of Canada and thank the reviewers for their help in improving the quality of  Haarpy.
 
