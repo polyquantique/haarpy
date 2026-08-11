@@ -49,7 +49,7 @@ By making Weingarten calculus readily accessible as a software package, Haarpy e
 # State of the field
 
 Several software packages support symbolic Haar integration and related calculations.
-Early implementations were developed in the proprietary computer algebra systems Mathematica [@puchala2017symbolic; @deGuiseWeingit] and Maple [@ginory2021weingarten], while more recent projects such as RTNI2 [@fukuda2023symbolically] and IntegrateUnitary.jl [@pawela2026integrateunitary] provide advanced functionality for tensor-network-based computations and symbolic integration within their respective ecosystems.
+Early implementations were developed in the proprietary computer algebra systems Mathematica [@puchala2017symbolic; @deGuiseWeingit] and Maple [@GINORY2021178], while more recent projects such as RTNI2 [@fukuda2023symbolically] and IntegrateUnitary.jl [@pawela2026integrateunitary] provide advanced functionality for tensor-network-based computations and symbolic integration within their respective ecosystems.
 In particular, RTNI2 offers a powerful framework for diagrammatic calculations based on tensor network methods, while IntegrateUnitary.jl provides symbolic tools for Haar integration in Julia.
 
 Haarpy complements these efforts by providing an open-source, Python-native implementation tightly integrated with the scientific Python ecosystem and with SymPy.
