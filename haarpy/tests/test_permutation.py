@@ -100,6 +100,24 @@ def test_mobius_inversion_formula(size):
 
 
 @pytest.mark.parametrize(
+    "partition_1, partition_2",
+    [
+        (((0,), (1,)), ((0,), (2,))),
+        (((0, 1, 2),), ((0, 1, 2, 3),)),
+        (((0, 1), (2,)), ((0, 1), (3,))),
+        (((0, 1), (2,)), ((0, 1),)),
+    ],
+)
+def test_mobius_function_value_error(partition_1, partition_2):
+    "test Mobius function value error"
+    with pytest.raises(
+        ValueError,
+        match="partition_1 and partition_2 must be partitions of the same underlying set.",
+    ):
+        ap.mobius_function(partition_1, partition_2)
+
+
+@pytest.mark.parametrize(
     "partition1, partition2, result_key",
     [
         (((0,), (1,)), ((0,), (1,)), 21),
