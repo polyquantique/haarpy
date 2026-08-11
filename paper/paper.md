@@ -44,7 +44,7 @@ These averages describe the typical behavior of complex systems, including their
 Standard approaches typically rely either on Monte Carlo simulation, which approximates integrals through sampling, or on manual analytical derivations, which often involve intricate combinatorics.
 
 Haarpy is intended for researchers throughout physics, mathematicians working in representation theory, and researchers studying random matrix models.
-By making Weingarten calculus readily accessible in software, Haarpy enhances reproducibility, reduces computational overhead, and lowers the barrier to performing rigorous analytical calculations.
+By making Weingarten calculus readily accessible as a software package, Haarpy enhances reproducibility, reduces computational overhead, and lowers the barrier to performing rigorous analytical calculations.
 
 # State of the field
 
