@@ -1,4 +1,4 @@
-# Release 0.1.0
+# Release 0.1.1
 
 ### New features
 * Added functions in `circular_ensembles` to compute moments of the circular orthogonal and circular symplectic ensembles in [(#43)](https://github.com/polyquantique/haarpy/pull/43).

@@ -186,7 +186,7 @@ Please cite as:
   publisher={GitHub},
   journal={GitHub repository},
   howpublished = {\url{https://github.com/polyquantique/haarpy}},
-  version = {0.1.0}
+  version = {0.1.1}
 }
 ```
 
