@@ -45,7 +45,7 @@ classifiers = [
 setup(
     name="haarpy",
     version=version,
-    description="Symbolic calculation of Weingarten functions",
+    description="A library for symbolic Weingarten calculus",
     url="https://github.com/polyquantique/haarpy",
     author="Yanic Cardin",
     author_email="yanic.cardin@polymtl.ca",

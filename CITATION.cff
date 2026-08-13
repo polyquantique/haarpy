@@ -1,16 +1,45 @@
-cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+cff-version: "1.2.0"
 authors:
-- family-names: "Cardin"
-  given-names: "Yanic"
+- family-names: Cardin
+  given-names: Yanic
   orcid: "https://orcid.org/0009-0005-6858-705X"
-- family-names: "de Guise"
-  given-names: "Hubert"
+- family-names: Guise
+  given-names: Hubert
+  name-particle: de
   orcid: "https://orcid.org/0000-0002-1904-4287"
-- family-names: "Quesada"
-  given-names: "Nicolás"
+- family-names: Quesada
+  given-names: Nicolás
   orcid: "https://orcid.org/0000-0002-0175-1688"
-title: "Haarpy: a Python library for Weingarten calculus and integration over classical compact groups, their associated circular ensembles, the permutation and centered permutation groups, and quantum groups"
-version: 0.1.1
-date-released: 2026-08-12
-url: "https://github.com/polyquantique/haarpy"
+doi: 10.5281/zenodo.21909566
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Cardin
+    given-names: Yanic
+    orcid: "https://orcid.org/0009-0005-6858-705X"
+  - family-names: Guise
+    given-names: Hubert
+    name-particle: de
+    orcid: "https://orcid.org/0000-0002-1904-4287"
+  - family-names: Quesada
+    given-names: Nicolás
+    orcid: "https://orcid.org/0000-0002-0175-1688"
+  date-published: 2026-08-12
+  doi: 10.21105/joss.11002
+  issn: 2475-9066
+  issue: 124
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 11002
+  title: "Haarpy: a Python library for Weingarten calculus and
+    integration over classical compact groups, their associated circular
+    ensembles, the permutation and centered permutation groups, and
+    quantum groups"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.11002"
+  volume: 11
+title: "Haarpy: a Python library for Weingarten calculus and integration
+  over classical compact groups, their associated circular ensembles,
+  the permutation and centered permutation groups, and quantum groups"
