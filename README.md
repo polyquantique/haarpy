@@ -183,27 +183,18 @@ Haarpy has the following dependencies:
 Please cite as:
 
 ```
-@misc{cardin2024haarpy,
-  author={Cardin, Yanic and de Guise, Hubert and Quesada, Nicol{\'a}s},
-  title={Haarpy, a Python library for Weingarten calculus and integration of classical compact groups and ensembles},
-  year={2024},
-  publisher={GitHub},
-  journal={GitHub repository},
-  howpublished = {\url{https://github.com/polyquantique/haarpy}},
-  version = {0.1.1}
-}
-
 @article{Cardin2026,
-  doi = {10.21105/joss.11002},
-  url = {https://doi.org/10.21105/joss.11002},
+  author = {Cardin, Yanic and {de Guise}, Hubert and Quesada, Nicol{\'a}s},
+  title = {Haarpy: a {P}ython library for {W}eingarten calculus and integration over classical compact groups, their associated circular ensembles, the permutation and centered permutation groups, and quantum groups},
+  journal = {Journal of {O}pen {S}ource {S}oftware},
   year = {2026},
-  publisher = {The Open Journal},
   volume = {11},
   number = {124},
   pages = {11002},
-  author = {Cardin, Yanic and de Guise, Hubert and Quesada, Nicolás},
-  title = {Haarpy: a Python library for Weingarten calculus and integration over classical compact groups, their associated circular ensembles, the permutation and centered permutation groups, and quantum groups}, journal = {Journal of Open Source Software}
-} 
+  doi = {10.21105/joss.11002},
+  url = {https://doi.org/10.21105/joss.11002},
+  publisher = {The {O}pen {J}ournal}
+}
 ```
 
 ## Authors
