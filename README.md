@@ -20,6 +20,10 @@
     <img src="https://img.shields.io/pypi/v/haarpy.svg" alt="PyPI version"/>
   </a>
 
+  <a href="https://doi.org/10.21105/joss.11002">
+    <img src="https://joss.theoj.org/papers/10.21105/joss.11002/status.svg" alt="JOSS - The Journal of Open Source Software"/>
+  </a>
+
 </div>
 
 <br>
@@ -188,6 +192,18 @@ Please cite as:
   howpublished = {\url{https://github.com/polyquantique/haarpy}},
   version = {0.1.1}
 }
+
+@article{Cardin2026,
+  doi = {10.21105/joss.11002},
+  url = {https://doi.org/10.21105/joss.11002},
+  year = {2026},
+  publisher = {The Open Journal},
+  volume = {11},
+  number = {124},
+  pages = {11002},
+  author = {Cardin, Yanic and de Guise, Hubert and Quesada, Nicolás},
+  title = {Haarpy: a Python library for Weingarten calculus and integration over classical compact groups, their associated circular ensembles, the permutation and centered permutation groups, and quantum groups}, journal = {Journal of Open Source Software}
+} 
 ```
 
 ## Authors
